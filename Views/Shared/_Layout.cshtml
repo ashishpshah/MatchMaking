@@ -1,49 +1,138 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MatchMaking</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MatchMaking.styles.css" asp-append-version="true" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Match Making</title>
+
+	<link rel="stylesheet" href="~/assets/css/animate.css">
+	<link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="~/assets/css/icofont.min.css">
+	<link rel="stylesheet" href="~/assets/css/swiper.min.css">
+	<link rel="stylesheet" href="~/assets/css/style.css">
+
+	<link href="~/assets/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
+
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/MatchMaking.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MatchMaking</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+	<!-- preloader start here -->
+	<div class="preloader">
+		<div class="preloader-inner">
+			<div class="preloader-icon">
+				<span></span>
+				<span></span>
+			</div>
+		</div>
+	</div>
+	<!-- preloader ending here -->
+	<!-- ==========Header Section Starts Here========== -->
+	<header class="header-section">
+		<div class="header-bottom">
+			<div class="container">
+				<div class="header-wrapper">
+					<div class="logo">
+						<a asp-area="" asp-controller="Home" asp-action="Index">
+							<img src="~/assets/images/logo/logo.png" alt="logo">
+						</a>
+					</div>
+					<div class="menu-area">
+						<ul class="menu">
+							<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Member">Members</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Community">Community</a></li>
+							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+						</ul>
+						<a asp-area="" asp-controller="Home" asp-action="Login" class="login"><i class="icofont-user"></i> <span>LOG IN</span> </a>
+						<a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="signup"><i class="icofont-users"></i> <span>SIGN UP</span> </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MatchMaking - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+						<!-- toggle icons -->
+						<div class="header-bar d-lg-none">
+							<span></span>
+							<span></span>
+							<span></span>
+						</div>
+						<div class="ellepsis-bar d-lg-none">
+							<i class="icofont-info-square"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- ==========Header Section Ends Here========== -->
+	@RenderBody()
+	@* 
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+		Launch static backdrop modal
+	</button>
+ *@
+	<!-- Modal -->
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
+				<div class="modal-header" style="padding: 0.3rem 0.75rem;">
+					<h3 class="title">Register Now</h3>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="formRegister" asp-area="" asp-controller="Home" asp-action="Register" method="post" enctype="multipart/form-data" class="account-form">
+						<div class="form-group">
+							<input type="text" placeholder="User Name" name="Username" data-required data-msg="The Username field is required." autocomplete="off">
+						</div>
+						<div class="form-group">
+							<input type="text" placeholder="Email" name="Email" data-required data-msg="The Email field is required." autocomplete="off">
+						</div>
+						<div class="form-group">
+							<input type="password" placeholder="Password" name="Password" data-required data-msg="The Password field is required." autocomplete="off">
+						</div>
+						<div class="form-group">
+							<input type="password" placeholder="Confirm Password" name="ConfirmPassword" data-required data-msg="The Confirm Password field is required." autocomplete="off">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary btnSubmit" data-form="formRegister" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ================ footer Section start Here =============== -->
+	<footer class="footer-section">
+		<div class="footer-bottom">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="footer-bottom-content text-center">
+							<p>&copy; 2022 <a asp-area="" asp-controller="Home" asp-action="Index">TuruLav</a> - Best For Dating HTML Template.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- ================ footer Section end Here =============== -->
+	<!-- scrollToTop start here -->
+	<a href="#" class="scrollToTop"><i class="icofont-rounded-up"></i></a>
+	<!-- scrollToTop ending here -->
+
+	<script src="~/assets/js/jquery.js"></script>
+	<script src="~/assets/js/bootstrap.bundle.min.js"></script>
+	<script src="~/assets/js/waypoints.min.js"></script>
+	<script src="~/assets/js/swiper.min.js"></script>
+	<script src="~/assets/js/jquery.counterup.min.js"></script>
+	<script src="~/assets/js/wow.min.js"></script>
+	<script src="~/assets/js/isotope.pkgd.min.js"></script>
+	<script src="~/assets/js/functions.js"></script>
+
+	<script src="~/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+	<script src="~/js/common.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -44,7 +44,7 @@
 							<li><a asp-area="" asp-controller="Home" asp-action="Community">Community</a></li>
 							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
 						</ul>
-						<a asp-area="" asp-controller="Home" asp-action="Login" class="login"><i class="icofont-user"></i> <span>LOG IN</span> </a>
+						<a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="login"><i class="icofont-user"></i> <span>LOG IN</span> </a>
 						<a href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="signup"><i class="icofont-users"></i> <span>SIGN UP</span> </a>
 
 						<!-- toggle icons -->
@@ -74,22 +74,20 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
 				<div class="modal-header" style="padding: 0.3rem 0.75rem;">
-					<h3 class="title">Register Now</h3>
+					<h3 class="title title_Register">Register Now</h3>
+					<h3 class="title title_Login" style="display:none;">Login Now</h3>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<form id="formRegister" asp-area="" asp-controller="Home" asp-action="Register" method="post" enctype="multipart/form-data" class="account-form">
 						<div class="form-group">
-							<input type="text" placeholder="User Name" name="Username" data-required data-msg="The Username field is required." autocomplete="off">
+							<input type="text" placeholder="Email" name="Username" data-required data-msg="The Email field is required." autocomplete="off">
 						</div>
 						<div class="form-group">
-							<input type="text" placeholder="Email" name="Email" data-required data-msg="The Email field is required." autocomplete="off">
+							<input type="password" id="Password" placeholder="Password" name="Password" data-required data-msg="The Password field is required." autocomplete="off">
 						</div>
 						<div class="form-group">
-							<input type="password" placeholder="Password" name="Password" data-required data-msg="The Password field is required." autocomplete="off">
-						</div>
-						<div class="form-group">
-							<input type="password" placeholder="Confirm Password" name="ConfirmPassword" data-required data-msg="The Confirm Password field is required." autocomplete="off">
+							<input type="password" id="ConfirmPassword" placeholder="Confirm Password" name="ConfirmPassword" data-required data-msg="The Confirm Password field is required." autocomplete="off">
 						</div>
 					</form>
 				</div>
@@ -131,7 +129,6 @@
 
 	<script src="~/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
 
-	<script src="~/js/common.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

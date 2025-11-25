@@ -4,7 +4,7 @@ namespace MatchMaking
 {
 	public class LoginViewModel
 	{
-		[Required(ErrorMessage = "Please enter user name.")] public string UserName { get; set; }
+		[Required(ErrorMessage = "Please enter user name.")] public string Username { get; set; }
 		[Required(ErrorMessage = "Please enter password.")] public string Password { get; set; }
 		public string User_Type { get; set; }
 		public bool RememberMe { get; set; }
@@ -12,7 +12,8 @@ namespace MatchMaking
 	public class RegisterViewModel
 	{
 		[Required]
-		public string UserName { get; set; }
+		public string Username { get; set; }
+		public string Email { get; set; }
 		[Required]
 		public string Password { get; set; }
 		[Required]

@@ -36,7 +36,7 @@ namespace MatchMaking.Infra
 		// -----------------------------
 		public T Add(T entity)
 		{
-			_context.Set<T>().Add(entity);
+			_context.Add(entity);
 			_context.SaveChanges();
 
 			// Reload with DB values (identity / default values)

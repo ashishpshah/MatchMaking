@@ -1,8 +1,11 @@
 ﻿using MatchMaking.Infra;
+using MatchMaking.Infra.Services;
 using MatchMaking.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace MatchMaking.Controllers
 {
@@ -93,9 +96,126 @@ namespace MatchMaking.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Register()
+		public IActionResult Register(RegisterViewModel viewModel)
 		{
-			return View();
+			try
+			{
+				if (viewModel != null)
+				{
+					#region Validation
+
+					if (string.IsNullOrEmpty(viewModel.Username))
+					{
+						CommonViewModel.Message = "Please enter Email.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (!string.IsNullOrEmpty(viewModel.Username) && !ValidateField.IsValidEmail(viewModel.Username))
+					{
+						CommonViewModel.Message = "Please enter valid Email.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (string.IsNullOrEmpty(viewModel.Password))
+					{
+						CommonViewModel.Message = "Please enter Password.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (string.IsNullOrEmpty(viewModel.ConfirmPassword))
+					{
+						CommonViewModel.Message = "Please enter Confirm Password.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (viewModel.Password != viewModel.ConfirmPassword)
+					{
+						CommonViewModel.Message = "Password and Confirm Password do not match.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (_context.Using<User>().Any(x => x.UserName.ToLower() == Convert.ToString((viewModel.Username)).ToLower()))
+					{
+						CommonViewModel.Message = "Username already exist. Please try another Username.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					#endregion
+
+
+					#region Database-Transaction
+
+					using (var transaction = _context.BeginTransaction())
+					{
+						try
+						{
+							var user = new User()
+							{
+								UserName = Convert.ToString((viewModel.Username)),
+								Password = Common.Encrypt(Convert.ToString((viewModel.Password))),
+								NoOfWrongPasswordAttempts = 5,
+								NextChangePasswordDate = DateTime.Now,
+								CreatedBy = 1
+							};
+
+							user = _context.Using<User>().Add(user);
+
+							var role = _context.Using<Role>().GetByCondition(x => x.Name == "Candidate").FirstOrDefault();
+
+							if (role == null)
+							{
+								role = new Role() { Name = "Candidate", IsAdmin = true, CreatedBy = 1 };
+								role = _context.Using<Role>().Add(role);
+							}
+
+							if (role != null)
+							{
+								var userRole = new UserRoleMapping() { UserId = user.Id, RoleId = role.Id, CreatedBy = 1 };
+								_context.Using<UserRoleMapping>().Add(userRole);
+							}
+
+							CommonViewModel.IsConfirm = true;
+							CommonViewModel.IsSuccess = true;
+							CommonViewModel.StatusCode = ResponseStatusCode.Success;
+							CommonViewModel.Message = "Record saved successfully ! ";
+
+							CommonViewModel.RedirectURL = Url.Action("Profile", "Home", new { area = "" });
+
+							transaction.Commit();
+
+							return Json(CommonViewModel);
+						}
+						catch (Exception ex) { transaction.Rollback(); }
+					}
+
+					#endregion
+				}
+			}
+			catch (Exception ex) { }
+
+			CommonViewModel.Message = ResponseStatusMessage.Error;
+			CommonViewModel.IsSuccess = false;
+			CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+			return Json(CommonViewModel);
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

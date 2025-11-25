@@ -31,8 +31,6 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<Role>(entity =>
 			{
 				entity.Property(e => e.Name).HasMaxLength(50);
-
-				entity.Property(e => e.ProjectDetailTypeAccess).HasMaxLength(500);
 			});
 
 			modelBuilder.Entity<RoleMenuAccess>(entity =>
@@ -73,37 +71,38 @@ namespace MatchMaking.Infra
 			var user = Common.LoggedUser_Id();
 
 			if (user == null || user <= 0)
-				throw new InvalidOperationException("Opps...! An unexpected error occurred while saving.");
-			else
+				//throw new InvalidOperationException("Opps...! An unexpected error occurred while saving.");
+				user = 1;
+
+
+			foreach (var entity in entities)
 			{
-				foreach (var entity in entities)
+				if (entity.State == EntityState.Added)
 				{
-					if (entity.State == EntityState.Added)
-					{
-						((EntitiesBase)entity.Entity).IsActive = true;
-						((EntitiesBase)entity.Entity).IsDeleted = false;
-						((EntitiesBase)entity.Entity).CreatedDate = DateTime.Now;
-						((EntitiesBase)entity.Entity).CreatedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
-						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-						((EntitiesBase)entity.Entity).LastModifiedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
-					}
-
-					if (entity.State == EntityState.Modified)
-					{
-						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-						((EntitiesBase)entity.Entity).LastModifiedBy = user;
-					}
-
-					if (entity.State == EntityState.Deleted)
-					{
-						((EntitiesBase)entity.Entity).IsActive = false;
-						((EntitiesBase)entity.Entity).IsDeleted = true;
-						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-						((EntitiesBase)entity.Entity).LastModifiedBy = user;
-					}
-
+					((EntitiesBase)entity.Entity).IsActive = true;
+					((EntitiesBase)entity.Entity).IsDeleted = false;
+					((EntitiesBase)entity.Entity).CreatedDate = DateTime.Now;
+					((EntitiesBase)entity.Entity).CreatedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
+					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+					((EntitiesBase)entity.Entity).LastModifiedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
 				}
+
+				if (entity.State == EntityState.Modified)
+				{
+					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+					((EntitiesBase)entity.Entity).LastModifiedBy = user;
+				}
+
+				if (entity.State == EntityState.Deleted)
+				{
+					((EntitiesBase)entity.Entity).IsActive = false;
+					((EntitiesBase)entity.Entity).IsDeleted = true;
+					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+					((EntitiesBase)entity.Entity).LastModifiedBy = user;
+				}
+
 			}
+
 
 			return base.SaveChanges();
 		}

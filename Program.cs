@@ -1,3 +1,7 @@
+using MatchMaking.Infra;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+
 namespace MatchMaking
 {
     public class Program
@@ -6,10 +10,56 @@ namespace MatchMaking
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+			builder.Services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
-            var app = builder.Build();
+			builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+			{
+				options.SerializerOptions.PropertyNameCaseInsensitive = false;
+				options.SerializerOptions.PropertyNamingPolicy = null;
+				options.SerializerOptions.WriteIndented = true;
+			});
+
+			builder.Services.AddHttpClient();
+
+			builder.Services.AddHttpContextAccessor();
+
+			builder.Services.Configure<RequestLocalizationOptions>(options =>
+			{
+				var cultureInfo = new CultureInfo("en-IN");
+				cultureInfo.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy";
+				cultureInfo.DateTimeFormat.LongDatePattern = "dd/MM/yyyy HH:mm:ss";
+
+				var supportedCultures = new List<CultureInfo> { cultureInfo };
+
+				options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-IN");
+
+				options.DefaultRequestCulture.Culture.DateTimeFormat.ShortDatePattern = "dd/MM/yyyy";
+				options.DefaultRequestCulture.Culture.DateTimeFormat.LongDatePattern = "dd/MM/yyyy HH:mm:ss";
+
+				options.SupportedCultures = supportedCultures;
+				options.SupportedUICultures = supportedCultures;
+			});
+
+			var culture = CultureInfo.CreateSpecificCulture("en-IN");
+
+			var dateformat = new DateTimeFormatInfo { ShortDatePattern = "dd/MM/yyyy", LongDatePattern = "dd/MM/yyyy HH:mm:ss" };
+
+			culture.DateTimeFormat = dateformat;
+
+			var supportedCultures = new[] { culture };
+
+			builder.Services.Configure<RequestLocalizationOptions>(options =>
+			{
+				options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture(culture);
+				options.SupportedCultures = supportedCultures;
+				options.SupportedUICultures = supportedCultures;
+			});
+
+			builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(30); });
+
+			builder.Services.AddDbContext<DataContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")), ServiceLifetime.Singleton);
+
+			var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

@@ -1,14 +1,15 @@
 using MatchMaking.Infra;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace MatchMaking
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			var builder = WebApplication.CreateBuilder(args);
 
 			builder.Services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
@@ -57,30 +58,40 @@ namespace MatchMaking
 
 			builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(30); });
 
-			builder.Services.AddDbContext<DataContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")), ServiceLifetime.Singleton);
+			builder.Services.AddDbContext<DataContext>(options =>
+			{
+				options.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection"));
+				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+			});
+
+			builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
 			var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+			AppHttpContextAccessor.Configure(((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IHttpContextAccessor>(), ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IHostEnvironment>(), builder.Environment, ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IDataProtectionProvider>(), ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IConfiguration>(), ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IHttpClientFactory>());
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+			// Configure the HTTP request pipeline.
+			if (!app.Environment.IsDevelopment())
+			{
+				app.UseExceptionHandler("/Home/Error");
+				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+				app.UseHsts();
+			}
 
-            app.UseRouting();
+			app.UseHttpsRedirection();
+			app.UseStaticFiles();
 
-            app.UseAuthorization();
+			app.UseRouting();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+			app.UseAuthorization();
 
-            app.Run();
-        }
-    }
+			app.UseSession();
+
+			app.MapControllerRoute(name: "areas", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+			app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+
+			app.Run();
+		}
+	}
 }

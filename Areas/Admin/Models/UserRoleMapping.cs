@@ -1,18 +1,22 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MatchMaking
 {
-    public partial class UserRoleMapping
+    public partial class UserRoleMapping : EntitiesBase
     {
-        public long Id { get; set; }
+        public override long Id { get; set; }
         public long UserId { get; set; }
         public long RoleId { get; set; }
-        public long CreatedBy { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public long LastModifiedBy { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsDeleted { get; set; }
+
+        [NotMapped] public string RoleName { get; set; } = null;
+        [NotMapped] public string UserName { get; set; } = null;
+        [NotMapped] public long[] SelectedRoleId { get; set; } = null;
+        [NotMapped] public long[] SeelectedUserId { get; set; } = null;
+        [NotMapped] public List<SelectListItem> Users { get; set; }
+        [NotMapped] public List<SelectListItem> Roles { get; set; }
+        [NotMapped] public List<Menu> Menus { get; set; }
     }
 }

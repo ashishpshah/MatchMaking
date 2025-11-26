@@ -16,8 +16,9 @@ namespace MatchMaking.Infra
 		public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
 		public virtual DbSet<User> Users { get; set; } = null!;
 		public virtual DbSet<UserRoleMapping> UserRoleMappings { get; set; } = null!;
+		public virtual DbSet<UserMenuAccess> UserMenuAccesses { get; set; } = null;
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Menu>(entity =>
 			{
@@ -55,8 +56,10 @@ namespace MatchMaking.Infra
 			{
 				entity.ToTable("UserRoleMapping");
 			});
+            modelBuilder.Entity<UserMenuAccess>().ToTable("UserMenuAccess");
+            modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
 
-			OnModelCreatingPartial(modelBuilder);
+            OnModelCreatingPartial(modelBuilder);
 		}
 
 		partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

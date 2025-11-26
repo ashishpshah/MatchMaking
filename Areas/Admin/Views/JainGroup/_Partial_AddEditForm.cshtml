@@ -1,0 +1,59 @@
+﻿@model ResponseModel<JainGroup>
+
+@{
+	Layout = null;
+}
+
+<div class="col-md-12">
+	<div class="card card-info">
+
+		<div class="card-header">
+			<h3 class="card-title">@(Model.Obj != null && Model.Obj.Id > 0 ? "Edit" : "Create") User</h3>
+			<input type="text" class="form-control d-none" id="Id" name="Obj.Id" value="@(Model.Obj != null && Model.Obj.Id > 0 ? Model.Obj.Id.ToString() : "")">
+		</div>
+
+		<div class="card-body form-horizontal">
+			<div class="row mb-3">
+				<label for="name" class="col-2 col-form-label text-end">Name</label>
+				<div class="col-4">
+					<input type="text" class="form-control form-control-sm" id="name" name="Obj.Name" value="@Model.Obj.Name" placeholder="Name" autocomplete="off">
+				</div>
+			</div>
+
+			<div class="row mb-3">
+				<label for="switch_Status" class="col-2 col-form-label text-end">Status</label>
+				<div class="col-4">
+					<div class="form-check form-check-inline form-control border-0">
+						<input type="checkbox" class="form-check-input" id="switch_Status"
+							   name="Obj.IsActive" @((Model.Obj != null && Model.Obj.IsActive == true) || Model.Obj.Id == 0 ? "checked" : "")
+							   onchange="fnChange_Switch(this, 'label_Switch_Status')">
+						<label class="form-check-label" for="switch_Status" id="label_Switch_Status" data-true="Active" data-false="Inactive">
+							@((Model.Obj != null && Model.Obj.IsActive == true) || Model.Obj.Id == 0 ? "Active" : "Inactive")
+						</label>
+					</div>
+				</div>
+			</div>
+
+			
+
+		</div>
+
+		<div class="card-footer">
+			<div class="justify-content-end row">
+				<div class="col-10">
+					<button type="button" class="btn btn-success btnSubmit px-5">Save</button>
+					<button type="button" class="btn btn-outline-danger px-3" onclick="fnBackToList();">Cancel</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+		});
+	</script>
+}

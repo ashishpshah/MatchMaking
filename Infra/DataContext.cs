@@ -1,4 +1,5 @@
-﻿using MatchMaking.Models;
+﻿using MatchMaking.Areas.Admin.Models;
+using MatchMaking.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,7 +14,8 @@ namespace MatchMaking.Infra
 
 		public virtual DbSet<Menu> Menus { get; set; } = null!;
 		public virtual DbSet<Role> Roles { get; set; } = null!;
-		public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
+        public virtual DbSet<JainGroup> JainGroup { get; set; } = null!;
+        public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
 		public virtual DbSet<User> Users { get; set; } = null!;
 		public virtual DbSet<UserRoleMapping> UserRoleMappings { get; set; } = null!;
 		public virtual DbSet<UserMenuAccess> UserMenuAccesses { get; set; } = null;

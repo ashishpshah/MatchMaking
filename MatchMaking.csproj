@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models_Temp\**" />
+    <Content Remove="Models_Temp\**" />
+    <EmbeddedResource Remove="Models_Temp\**" />
+    <None Remove="Models_Temp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.36" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.36">
       <PrivateAssets>all</PrivateAssets>

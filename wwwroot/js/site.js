@@ -59,23 +59,10 @@ $('body').on('click', '.btnSubmit', function (e) {
     else fnSubmitForm($(this).attr('data-form'));
 });
 
-//$('.modal').on('shown.bs.modal', function (e) {
+$('.modal').on('shown.bs.modal', function (e) {
 
-//    /*$('body').append('<div class="modal-backdrop fade show" id="div-modal-backdrop"></div>')*/
+    /*$('body').append('<div class="modal-backdrop fade show" id="div-modal-backdrop"></div>')*/
 
-//});
-
-$('#staticBackdrop').on('show.bs.modal', function (e) {
-
-    var btn = $(e.relatedTarget);  // button that opened modal
-
-    if (btn.hasClass('login')) {
-        setupLoginModal();
-    }
-
-    if (btn.hasClass('signup')) {
-        setupRegisterModal();
-    }
 });
 
 $('.modal').on('hide.bs.modal', function (e) {
@@ -113,40 +100,11 @@ $('.modal').on('hide.bs.modal', function (e) {
     //    e.preventDefault();
 });
 
-
-function setupLoginModal() {
-    $('.title_Register').text('Login Now');
-
-    // hide confirm password for login
-    $('[name="ConfirmPassword"]').closest('.form-group').hide();
-
-    // change submit button text
-    $('.btnSubmit').text('Login');
-
-    // set form action if needed
-    $('#formRegister').attr('action', '/Home/Login');
-}
-
-function setupRegisterModal() {
-    $('.title_Register').text('Register Now');
-
-    // show confirm password
-    $('[name="ConfirmPassword"]').closest('.form-group').show();
-
-    // change submit button text
-    $('.btnSubmit').text('Register');
-
-    // set form action if needed
-    $('#formRegister').attr('action', '/Home/Register');
-}
-
-
 function ShowLoader(isShow) {
 
     if (isShow == true) $('.preloader').removeClass('d-none');
     else $('.preloader').addClass('d-none');
 }
-
 
 function formValidate($id) {
 
@@ -283,7 +241,6 @@ function fnSubmitForm($id) {
     else { ShowLoader(false); return false; }
 
 }
-
 
 function CommonAlert_Error(msg, redirectUrl) {
 

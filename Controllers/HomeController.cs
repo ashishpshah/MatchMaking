@@ -92,7 +92,105 @@ namespace MatchMaking.Controllers
 
 		public IActionResult Profile()
 		{
-			return View();
+			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+
+			return View(profile ?? new Profile());
+		}
+
+		public IActionResult ProfileUpdate()
+		{
+			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+
+			return View(profile ?? new Profile());
+		}
+
+		[HttpPost]
+		public IActionResult Login(RegisterViewModel viewModel)
+		{
+			try
+			{
+				if (viewModel != null)
+				{
+					if (string.IsNullOrEmpty(viewModel.Username))
+					{
+						CommonViewModel.Message = "Please enter Email.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (string.IsNullOrEmpty(viewModel.Password))
+					{
+						CommonViewModel.Message = "Please enter Password.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (!_context.Using<User>().Any(x => x.UserName.ToLower() == Convert.ToString((viewModel.Username)).ToLower()))
+					{
+						CommonViewModel.Message = "Username not already exist";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (!_context.Using<User>().Any(x => x.UserName.ToLower() == Convert.ToString(viewModel.Username)
+						&& x.Password == Common.Encrypt(Convert.ToString((viewModel.Password)))))
+					{
+						CommonViewModel.Message = "Invalid Password";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					var user = _context.Using<User>().GetByCondition(x => x.UserName.ToLower() == Convert.ToString(viewModel.Username)
+						&& x.Password == Common.Encrypt(Convert.ToString((viewModel.Password)))).FirstOrDefault();
+
+					if (user != null)
+					{
+						//var userDtls = _context.Using<Profile>().GetByCondition(x => x.UserId == user.Id).FirstOrDefault();
+
+						//if (userDtls != null)
+						//{
+						//	Common.Set_Session("UserFullName", string.Format("{0}", Convert.ToString(userDtls.FirstName), Convert.ToString(userDtls.LastName)));
+						//}
+						//else
+						//{
+						//	Common.Set_Session("UserFullName", Convert.ToString(user.UserName));
+						//}
+
+						Common.Set_Session_Int(SessionKey.KEY_USER_ID, Convert.ToInt32(user.Id));
+
+						CommonViewModel.IsConfirm = false;
+						CommonViewModel.IsSuccess = true;
+						CommonViewModel.StatusCode = ResponseStatusCode.Success;
+						CommonViewModel.Message = "Login successful ! ";
+						CommonViewModel.RedirectURL = Url.Action("Profile", "Home", new { area = "" });
+						return Json(CommonViewModel);
+					}
+					else
+					{
+						CommonViewModel.Message = "Invalid Username and Password";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+				}
+			}
+			catch (Exception ex) { }
+
+			CommonViewModel.Message = ResponseStatusMessage.Error;
+			CommonViewModel.IsSuccess = false;
+			CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+			return Json(CommonViewModel);
 		}
 
 		[HttpPost]

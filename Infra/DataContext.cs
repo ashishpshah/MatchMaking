@@ -17,6 +17,8 @@ namespace MatchMaking.Infra
 		public virtual DbSet<User> Users { get; set; } = null!;
 		public virtual DbSet<UserRoleMapping> UserRoleMappings { get; set; } = null!;
 
+		public virtual DbSet<Profile> Profiles { get; set; } = null!;
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<Menu>(entity =>
@@ -54,6 +56,63 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<UserRoleMapping>(entity =>
 			{
 				entity.ToTable("UserRoleMapping");
+			});
+
+			modelBuilder.Entity<Profile>(entity =>
+			{
+				entity.Property(e => e.BodyType).HasMaxLength(50);
+
+				entity.Property(e => e.Address).HasMaxLength(100);
+
+				entity.Property(e => e.City).HasMaxLength(100);
+
+				entity.Property(e => e.Country).HasMaxLength(100);
+
+				entity.Property(e => e.CoverPhotoPath).HasMaxLength(300);
+
+				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
+
+				entity.Property(e => e.Education).HasMaxLength(200);
+
+				entity.Property(e => e.Ethnicity).HasMaxLength(100);
+
+				entity.Property(e => e.EyeColor).HasMaxLength(50);
+
+				entity.Property(e => e.Firstname).HasMaxLength(100);
+
+				entity.Property(e => e.Mothername).HasMaxLength(100);
+
+				entity.Property(e => e.Gender).HasMaxLength(10);
+
+				entity.Property(e => e.LookingForGender).HasMaxLength(10);
+
+				entity.Property(e => e.MaritalStatus).HasMaxLength(10);
+
+				entity.Property(e => e.HairColor).HasMaxLength(50);
+
+				entity.Property(e => e.Height).HasMaxLength(50);
+
+				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
+
+				entity.Property(e => e.Lastname).HasMaxLength(100);
+
+				entity.Property(e => e.MaternalSurname).HasMaxLength(100);
+
+				entity.Property(e => e.Mosal).HasMaxLength(100);
+
+				entity.Property(e => e.Occupation).HasMaxLength(200);
+
+				entity.Property(e => e.PaternalSurname).HasMaxLength(100);
+
+				entity.Property(e => e.ProfilePhotoPath).HasMaxLength(300);
+
+				entity.Property(e => e.Smoking).HasMaxLength(100);
+
+				entity.Property(e => e.State).HasMaxLength(100);
+
+				entity.Property(e => e.Summary).HasMaxLength(500);
+
+				entity.Property(e => e.Weight).HasMaxLength(50);
 			});
 
 			OnModelCreatingPartial(modelBuilder);

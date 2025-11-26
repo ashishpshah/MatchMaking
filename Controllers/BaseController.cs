@@ -50,7 +50,7 @@ namespace MatchMaking.Controllers
 						//CommonViewModel.IsUpdate = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsUpdate;
 						//CommonViewModel.IsDelete = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsDelete;
 
-						try { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].MenuId); }
+						try { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, Convert.ToInt32(listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].MenuId)); }
 						catch { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, 0); }
 					}
 				}

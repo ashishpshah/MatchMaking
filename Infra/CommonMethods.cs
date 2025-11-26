@@ -138,6 +138,40 @@ namespace MatchMaking.Infra
 		//		return ByteArrayToString(imageArray);
 		//	}
 		//}
+
+		public static (int Years, int Months, int Days) GetAge(DateTime? dob = null)
+		{
+			if (dob == null || !dob.HasValue)
+				return (0, 0, 0);
+
+			DateTime birth = dob.Value.Date;
+			DateTime today = DateTime.Today;
+
+			if (birth > today)
+				return (0, 0, 0); // future DOB safeguard
+
+			int years = today.Year - birth.Year;
+			int months = today.Month - birth.Month;
+			int days = today.Day - birth.Day;
+
+			// Adjust day underflow
+			if (days < 0)
+			{
+				today = today.AddMonths(-1);
+				days += DateTime.DaysInMonth(today.Year, today.Month);
+				months--;
+			}
+
+			// Adjust month underflow
+			if (months < 0)
+			{
+				months += 12;
+				years--;
+			}
+
+			return (years, months, days);
+		}
+
 	}
 
 	public class SelectListItem_Custom

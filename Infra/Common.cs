@@ -22,10 +22,11 @@ namespace MatchMaking.Infra
 
 		public static void Clear_Session() => AppHttpContextAccessor.AppHttpContext.Session.Clear();
 
-		public static void Set_Session_Int(string key, Int32 value) => AppHttpContextAccessor.AppHttpContext.Session.SetInt32(key, value);
-		public static Int32 Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.GetInt32(key).HasValue ? AppHttpContextAccessor.AppHttpContext.Session.GetInt32(SessionKey.KEY_USER_ID).Value : -1);
+		public static void Set_Session_Int(string key, Int64 value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value.ToString());
+		//public static Int32 Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.GetInt32(key).HasValue ? AppHttpContextAccessor.AppHttpContext.Session.GetInt32(SessionKey.KEY_USER_ID).Value : -1);
+        public static long Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.Keys.Any(x => x == key) ? Convert.ToInt64(AppHttpContextAccessor.AppHttpContext.Session.GetString(key) ?? "0") : -1);
 
-		public static void Set_Session(string key, string value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value);
+        public static void Set_Session(string key, string value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value);
 		public static string Get_Session(string key) => (AppHttpContextAccessor.AppHttpContext.Session.Keys.Any(x => x == key) ? AppHttpContextAccessor.AppHttpContext.Session.GetString(key) : null);
 
 

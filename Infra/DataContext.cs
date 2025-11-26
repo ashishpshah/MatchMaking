@@ -40,7 +40,7 @@ namespace MatchMaking.Infra
 
 			modelBuilder.Entity<RoleMenuAccess>(entity =>
 			{
-				entity.HasNoKey();
+				entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete }); 
 
 				entity.ToTable("RoleMenuAccess");
 			});
@@ -62,8 +62,8 @@ namespace MatchMaking.Infra
 			});
             modelBuilder.Entity<UserMenuAccess>().ToTable("UserMenuAccess");
             modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
-
-			modelBuilder.Entity<Profile>(entity =>
+            modelBuilder.Entity<RoleMenuAccess>().HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
+            modelBuilder.Entity<Profile>(entity =>
 			{
 				entity.Property(e => e.BodyType).HasMaxLength(50);
 

@@ -58,13 +58,14 @@ namespace MatchMaking
 
 			builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(30); });
 
-			builder.Services.AddDbContext<DataContext>(options =>
-			{
-				options.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection"));
-				options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-			});
+			//builder.Services.AddDbContext<DataContext>(options =>
+			//{
+			//	options.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")),, ServiceLifetime.Singleton
+   //             //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+   //         });
+            builder.Services.AddDbContext<DataContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")), ServiceLifetime.Singleton);
 
-			builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+            builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
 			var app = builder.Build();
 

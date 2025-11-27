@@ -92,6 +92,14 @@ namespace MatchMaking.Areas.Admin.Controllers
 
                         return Json(CommonViewModel);
                     }
+                    if(!string.IsNullOrEmpty(viewModel.Obj.Email) && !IsValidEmail(viewModel.Obj.Email))
+                    {
+                        CommonViewModel.Message = "Please enter valid Email";
+                        CommonViewModel.IsSuccess = false;
+                        CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+                        return Json(CommonViewModel);
+                    }
 
                     if (string.IsNullOrEmpty(viewModel.Obj.Password) && viewModel.Obj.Id == 0)
                     {

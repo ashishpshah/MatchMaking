@@ -49,14 +49,16 @@ namespace MatchMaking.Infra
 
 			modelBuilder.Entity<RoleMenuAccess>(entity =>
 			{
-				entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete }); 
+				//entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete }); 
 
 				entity.ToTable("RoleMenuAccess");
 			});
 
 			modelBuilder.Entity<User>(entity =>
 			{
-				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
+				entity.HasKey(e => new { e.Id });
+
+                entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
 
 				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
 
@@ -67,8 +69,14 @@ namespace MatchMaking.Infra
 
 			modelBuilder.Entity<UserRoleMapping>(entity =>
 			{
-				entity.ToTable("UserRoleMapping");
+                entity.HasKey(e => new { e.Id ,e.UserId, e.RoleId });
+                entity.ToTable("UserRoleMapping");
 			});
+            modelBuilder.Entity<JainGroup>(entity =>
+            {
+                entity.HasKey(e => new { e.Id });
+                entity.ToTable("JainGroup");
+            });
             modelBuilder.Entity<UserMenuAccess>().ToTable("UserMenuAccess");
             modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
             modelBuilder.Entity<RoleMenuAccess>().HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });

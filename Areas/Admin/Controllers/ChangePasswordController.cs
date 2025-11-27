@@ -24,8 +24,17 @@ namespace MatchMaking.Areas.Admin.Controllers
                 {
                     CommonViewModel.Message = "Invalid request";
                     CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
+                if (string.IsNullOrEmpty(viewModel.Obj.OldPassword))
+                {
+                    CommonViewModel.Message = "Please Enter Old Password";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                    return Json(CommonViewModel);
+                }
+               
 
                 var userId = Common.LoggedUser_Id();
                 var user = _context.Using<User>().GetByCondition(x => x.Id == userId).FirstOrDefault();
@@ -34,6 +43,7 @@ namespace MatchMaking.Areas.Admin.Controllers
                 {
                     CommonViewModel.Message = "User not found!";
                     CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
                 var enteredOldPasswordEncrypted = Common.Encrypt(viewModel.Obj.OldPassword);
@@ -42,15 +52,31 @@ namespace MatchMaking.Areas.Admin.Controllers
                 {
                     CommonViewModel.Message = "Old password is incorrect!";
                     CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
-
+                if (string.IsNullOrEmpty(viewModel.Obj.NewPassword))
+                {
+                    CommonViewModel.Message = "Please Enter New Password";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                    return Json(CommonViewModel);
+                }
+                if (string.IsNullOrEmpty(viewModel.Obj.ConfirmPassword))
+                {
+                    CommonViewModel.Message = "Please Enter Confirm Password";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                    return Json(CommonViewModel);
+                }
                 if (viewModel.Obj.NewPassword != viewModel.Obj.ConfirmPassword)
                 {
                     CommonViewModel.Message = "Confirm password does not match new password!";
                     CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
+
                 var encryptedNewPassword = Common.Encrypt(viewModel.Obj.NewPassword);
                 // Update password
                 user.Password = encryptedNewPassword;
@@ -58,10 +84,12 @@ namespace MatchMaking.Areas.Admin.Controllers
                 user.LastModifiedBy = userId;
 
                 _context.Using<User>().Update(user);
-
-                CommonViewModel.Message = "Password changed successfully!";
+                CommonViewModel.IsConfirm = true;
                 CommonViewModel.IsSuccess = true;
+                CommonViewModel.Message = "Password changed successfully!";
                 CommonViewModel.StatusCode = ResponseStatusCode.Success;
+                CommonViewModel.RedirectURL = Url.Action("Account", "Home", new { area = "Admin" });
+               
                 return Json(CommonViewModel);
             }
             catch (Exception ex)

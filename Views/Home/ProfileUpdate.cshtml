@@ -150,31 +150,31 @@
 																			<li>
 																				<p class="info-name">I'm a</p>
 																				<p class="info-details">
-																					<select name="Gender" class="">
-																						<option value="1">Male</option>
-																						<option value="2">Female</option>
-																						<option value="3">Others</option>
+																					<select id="Gender" name="Gender" class="">
+																						<option value="M">Male</option>
+																						<option value="F">Female</option>
+																						<option value="O">Others</option>
 																					</select>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Loking for a</p>
 																				<p class="info-details">
-																					<select name="LookingForGender" class="">
-																						<option value="1">Male</option>
-																						<option value="2">Female</option>
-																						<option value="3">Others</option>
+																					<select id="LookingForGender" name="LookingForGender" class="">
+																						<option value="M">Male</option>
+																						<option value="F">Female</option>
+																						<option value="O">Others</option>
 																					</select>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Marital Status</p>
 																				<p class="info-details">
-																					<select name="MaritalStatus" class="">
-																						<option value="1">Single</option>
-																						<option value="2">Divorced</option>
-																						<option value="3">Widowed</option>
-																						<option value="4">Separated</option>
+																					<select id="MaritalStatus" name="MaritalStatus" class="">
+																						<option value="S">Single</option>
+																						<option value="D">Divorced</option>
+																						<option value="W">Widowed</option>
+																						<option value="S">Separated</option>
 																					</select>
 																				</p>
 																			</li>
@@ -283,7 +283,7 @@
 																			<li>
 																				<p class="info-name">Jain Group</p>
 																				<p class="info-details">
-																					<select name="GroupId" class="">
+																					<select id="GroupId" name="GroupId" class="">
 																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "JG"))
 																						{
 																							if (Model.Profile.GroupId.ToString() == item.Value)
@@ -371,7 +371,7 @@
 							</div>
 
 
-							<div class="row g-3 g-lg-4 justify-content-center row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6">
+							<div class="row justify-content-center col-12">
 								@if (filePath_OtherPhotos != null && filePath_OtherPhotos.Count() > 0)
 								{
 									foreach (var filePath in filePath_OtherPhotos)

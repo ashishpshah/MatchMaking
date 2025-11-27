@@ -17,9 +17,6 @@ namespace MatchMaking.Controllers
 
 		public IActionResult Index()
 		{
-			//if (Common.LoggedUser_Id() <= 0)
-			//	return RedirectToAction("Account", "Home", new { Area = "Admin" });
-
 			var list = _context.Using<User>().GetAll().ToList();
 
 			var (IsSuccess, Message, Id) = (false, "", (long)0);
@@ -94,7 +91,17 @@ namespace MatchMaking.Controllers
 
 		public IActionResult Profile()
 		{
+			if (AppHttpContextAccessor.LoggedUserId <= 0)
+				return RedirectToAction("Index", "Home", new { Area = "" });
+
 			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+
+			var jainGroups = _context.Using<JainGroup>().GetAll().ToList();
+
+			if (profile != null)
+			{
+				profile.GroupName = jainGroups.Where(x => x.Id == profile.GroupId).Select(x => x.Name).FirstOrDefault();
+			}
 
 			return View(profile ?? new Profile());
 		}
@@ -103,7 +110,8 @@ namespace MatchMaking.Controllers
 		{
 			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
 
-			var jainGroups = _context.Using<JainGroup>().GetAll().Select(x=> new SelectListItem_Custom(x.Id.ToString(), x.Name, "JG")).ToList();
+			var jainGroups = _context.Using<JainGroup>().GetByCondition(x => x.IsActive == true).ToList()
+				.Select(x => new SelectListItem_Custom(x.Id.ToString(), x.Name, "JG")).ToList();
 
 			return View((profile ?? new Profile(), jainGroups));
 		}

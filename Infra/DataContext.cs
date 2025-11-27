@@ -58,7 +58,7 @@ namespace MatchMaking.Infra
 			{
 				entity.HasKey(e => new { e.Id });
 
-                entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
+				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
 
 				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
 

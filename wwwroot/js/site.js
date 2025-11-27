@@ -108,10 +108,10 @@ $('.modal').on('hide.bs.modal', function (e) {
         $modal.find('input[type="file"]').val(null).trigger('change');
     } catch { }
 
-    try {
-        $modal.find('button.btn-close').trigger('blur');     // remove focus
-        $modal.setAttribute("aria-hidden", "true");
-    } catch { }
+    //try {
+    //    $modal.find('button.btn-close').trigger('blur');     // remove focus
+    //    $modal.setAttribute("aria-hidden", "true");
+    //} catch { }
 
     //$('body div#div-modal-backdrop').remove();
 

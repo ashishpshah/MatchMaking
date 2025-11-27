@@ -39,33 +39,35 @@ namespace MatchMaking.Controllers
 
 				if (string.IsNullOrEmpty(AreaName)) AreaName = Convert.ToString(context.RouteData.Values["area"]);
 
-				List<UserMenuAccess> listMenuAccess = Common.GetUserMenuPermission();
-
-				if (listMenuAccess != null && listMenuAccess.Count > 0)
+				if (!string.IsNullOrEmpty(AreaName))
 				{
-					if (listMenuAccess.FindIndex(x => x.Controller == ControllerName) > -1)
-					{
-						//CommonViewModel.IsCreate = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsCreate;
-						//CommonViewModel.IsRead = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsRead;
-						//CommonViewModel.IsUpdate = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsUpdate;
-						//CommonViewModel.IsDelete = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsDelete;
+					List<UserMenuAccess> listMenuAccess = Common.GetUserMenuPermission();
 
-						try { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, Convert.ToInt32(listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].MenuId)); }
-						catch { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, 0); }
+					if (listMenuAccess != null && listMenuAccess.Count > 0)
+					{
+						if (listMenuAccess.FindIndex(x => x.Controller == ControllerName) > -1)
+						{
+							//CommonViewModel.IsCreate = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsCreate;
+							//CommonViewModel.IsRead = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsRead;
+							//CommonViewModel.IsUpdate = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsUpdate;
+							//CommonViewModel.IsDelete = listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].IsDelete;
+
+							try { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, Convert.ToInt32(listMenuAccess[listMenuAccess.FindIndex(x => x.Controller == ControllerName)].MenuId)); }
+							catch { Common.Set_Session_Int(SessionKey.CURRENT_MENU_ID, 0); }
+						}
+					}
+
+					if (!Common.IsUserLogged() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
+					{
+						context.Result = new RedirectResult(Url.Content("~/") + (string.IsNullOrEmpty(AreaName) ? "" : AreaName + "/") + "Home/Account");
+						return;
+					}
+					else if (!Common.IsUserLogged() && !Common.IsAdmin() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
+					{
+						context.Result = new RedirectResult(Url.Content("~/") + "Home/Login");
+						return;
 					}
 				}
-
-				if (!Common.IsUserLogged() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
-				{
-					context.Result = new RedirectResult(Url.Content("~/") + (string.IsNullOrEmpty(AreaName) ? "" : AreaName + "/") + "Home/Account");
-					return;
-				}
-				else if (!Common.IsUserLogged() && !Common.IsAdmin() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
-				{
-					context.Result = new RedirectResult(Url.Content("~/") + "Home/Login");
-					return;
-				}
-
 			}
 			catch (Exception ex) { LogService.LogInsert(GetCurrentAction(), "", ex); }
 		}

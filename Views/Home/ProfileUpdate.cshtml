@@ -1,15 +1,16 @@
-﻿@using MatchMaking.Infra
-@model Profile
+﻿@using MatchMaking.Areas.Admin.Models
+@using MatchMaking.Infra
+@model (Profile Profile, List<SelectListItem_Custom> SelectListItems)
 
 @{
 	ViewData["Title"] = "Profile";
 
 	DateTime? nullDateTime = null;
 
-	string filePath_CoverPhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Cover", Model.Id + ".jpg");
-	string filePath_ProfilePhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile", Model.Id + ".jpg");
+	string filePath_CoverPhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Cover", Model.Profile.Id + ".jpg");
+	string filePath_ProfilePhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile", Model.Profile.Id + ".jpg");
 
-	List<string> filePath_OtherPhotos = Directory.GetFiles(System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others"), $"{Model.Id}_*.jpg", SearchOption.AllDirectories).OrderByDescending(f => f).ToList();
+	List<string> filePath_OtherPhotos = Directory.GetFiles(System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others"), $"{Model.Profile.Id}_*.jpg", SearchOption.AllDirectories).OrderByDescending(f => f).ToList();
 }
 
 
@@ -60,7 +61,7 @@
 			<div class="member-profile">
 				<div class="profile-item">
 					<div class="profile-cover">
-						@if (Model != null && Model.Id > 0 && System.IO.File.Exists(filePath_CoverPhoto))
+						@if (Model.Profile != null && Model.Profile.Id > 0 && System.IO.File.Exists(filePath_CoverPhoto))
 						{
 							<img src="@filePath_CoverPhoto.Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/")" alt="cover-pic">
 						}
@@ -79,7 +80,7 @@
 					</div>
 					<div class="profile-information">
 						<div class="profile-pic">
-							@if (Model != null && Model.Id > 0 && System.IO.File.Exists(filePath_ProfilePhoto))
+							@if (Model.Profile != null && Model.Profile.Id > 0 && System.IO.File.Exists(filePath_ProfilePhoto))
 							{
 								<img src="@filePath_ProfilePhoto.Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/")" alt="profile-pic">
 							}
@@ -100,7 +101,7 @@
 							</div>
 						</div>
 						<div class="profile-name">
-							<h4>@(Model != null && !string.IsNullOrEmpty(Model.FullName) && Model.FullName.Trim().Count() > 2 ? Model.FullName : "Your Name")</h4>
+							<h4>@(Model.Profile != null && !string.IsNullOrEmpty(Model.Profile.FullName) && Model.Profile.FullName.Trim().Count() > 2 ? Model.Profile.FullName : "Your Name")</h4>
 						</div>
 					</div>
 				</div>
@@ -142,8 +143,8 @@
 																			<li>
 																				<p class="info-name">Name</p>
 																				<p class="info-details">
-																					<input type="text" name="Firstname" value="@Model.Firstname" class="w-100 mb-0 py-1 px-2 border-1">
-																					<input type="text" name="Id" value="@Model.Id" class="d-none">
+																					<input type="text" name="Firstname" value="@Model.Profile.Firstname" class="w-100 mb-0 py-1 px-2 border-1">
+																					<input type="text" name="Id" value="@Model.Profile.Id" class="d-none">
 																				</p>
 																			</li>
 																			<li>
@@ -179,22 +180,22 @@
 																			</li>
 																			<li>
 																				<p class="info-name">Date of Birth</p>
-																				<p class="info-details"><input type="date" name="DateOfBirth" value="@Model.DateOfBirth?.ToString("yyyy-MM-dd")" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="date" name="DateOfBirth" value="@Model.Profile.DateOfBirth?.ToString("yyyy-MM-dd")" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Address</p>
 																				<p class="info-details">
-																					<textarea name="FullAddress" rows="3">@(Model != null && !string.IsNullOrEmpty(Model.FullAddress) ? Model.FullAddress : "")</textarea>
+																					<textarea name="FullAddress" rows="3">@(Model.Profile != null && !string.IsNullOrEmpty(Model.Profile.FullAddress) ? Model.Profile.FullAddress : "")</textarea>
 																				</p>
 																			</li>
 																			<br />
 																			<li>
 																				<p class="info-name">Education</p>
-																				<p class="info-details"><input type="text" name="Education" value="@Model.Education" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Education" value="@Model.Profile.Education" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Occupation</p>
-																				<p class="info-details"><input type="text" name="Occupation" value="@Model.Occupation" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Occupation" value="@Model.Profile.Occupation" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																		</ul>
 
@@ -206,7 +207,7 @@
 																		<h6>Myself Summary</h6>
 																	</div>
 																	<div class="info-card-content">
-																		<p><textarea name="Summary" rows="3">@(Model != null && !string.IsNullOrEmpty(Model.Summary) ? Model.Summary : "")</textarea></p>
+																		<p><textarea name="Summary" rows="3">@(Model.Profile != null && !string.IsNullOrEmpty(Model.Profile.Summary) ? Model.Profile.Summary : "")</textarea></p>
 																	</div>
 																</div>
 
@@ -218,15 +219,15 @@
 																		<ul class="info-list">
 																			<li>
 																				<p class="info-name">Interest</p>
-																				<p class="info-details"><input type="text" name="Interests" value="@Model.Interests" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Interests" value="@Model.Profile.Interests" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Smoking</p>
-																				<p class="info-details"><input type="text" name="Smoking" value="@Model.Smoking" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Smoking" value="@Model.Profile.Smoking" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Language</p>
-																				<p class="info-details"><input type="text" name="Language" value="@Model.Language" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Language" value="@Model.Profile.Language" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																		</ul>
 
@@ -246,28 +247,28 @@
 																			<li>
 																				<p class="info-name">Height</p>
 																				<p class="info-details input-group">
-																					<input type="text" name="Height" value="@Model.Height" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon1">
+																					<input type="text" name="Height" value="@Model.Profile.Height" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon1">
 																					<span class="input-group-text" id="basic-addon1">ft</span>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Weight</p>
 																				<p class="info-details input-group">
-																					<input type="text" name="Weight" value="@Model.Weight" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon2">
+																					<input type="text" name="Weight" value="@Model.Profile.Weight" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon2">
 																					<span class="input-group-text" id="basic-addon2">kg</span>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Hair Color</p>
-																				<p class="info-details"><input type="text" name="HairColor" value="@Model.HairColor" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="HairColor" value="@Model.Profile.HairColor" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Eye Color</p>
-																				<p class="info-details"><input type="text" name="EyeColor" value="@Model.EyeColor" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="EyeColor" value="@Model.Profile.EyeColor" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Body Type</p>
-																				<p class="info-details"><input type="text" name="BodyType" value="@Model.BodyType" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="BodyType" value="@Model.Profile.BodyType" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																		</ul>
 
@@ -283,32 +284,39 @@
 																				<p class="info-name">Jain Group</p>
 																				<p class="info-details">
 																					<select name="GroupId" class="">
-																						<option value="1">Single</option>
-																						<option value="2">Divorced</option>
-																						<option value="3">Widowed</option>
-																						<option value="4">Separated</option>
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "JG"))
+																						{
+																							if (Model.Profile.GroupId.ToString() == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
 																					</select>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Surname</p>
-																				<p class="info-details"><input type="text" name="PaternalSurname" value="@Model.PaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="PaternalSurname" value="@Model.Profile.PaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Father's name</p>
-																				<p class="info-details"><input type="text" name="Fathername" value="@Model.Fathername" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Fathername" value="@Model.Profile.Fathername" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Mother's name</p>
-																				<p class="info-details"><input type="text" name="Mothername" value="@Model.Mothername" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Mothername" value="@Model.Profile.Mothername" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Mother’s Family name</p>
-																				<p class="info-details"><input type="text" name="MaternalSurname" value="@Model.MaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="MaternalSurname" value="@Model.Profile.MaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
 																				<p class="info-name">Mother’s native village (Mosal)</p>
-																				<p class="info-details"><input type="text" name="Mosal" value="@Model.Mosal" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details"><input type="text" name="Mosal" value="@Model.Profile.Mosal" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																		</ul>
 

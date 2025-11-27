@@ -1,4 +1,5 @@
-﻿using MatchMaking.Infra;
+﻿using MatchMaking.Areas.Admin.Models;
+using MatchMaking.Infra;
 using MatchMaking.Infra.Services;
 using MatchMaking.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -102,7 +103,9 @@ namespace MatchMaking.Controllers
 		{
 			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
 
-			return View(profile ?? new Profile());
+			var jainGroups = _context.Using<JainGroup>().GetAll().Select(x=> new SelectListItem_Custom(x.Id.ToString(), x.Name, "JG")).ToList();
+
+			return View((profile ?? new Profile(), jainGroups));
 		}
 
 		[HttpPost]

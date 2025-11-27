@@ -34,71 +34,79 @@ namespace MatchMaking.Areas.Admin.Controllers
                     CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
-               
 
-                var userId = Common.LoggedUser_Id();
-                var user = _context.Using<User>().GetByCondition(x => x.Id == userId).FirstOrDefault();
+                using (var transaction = _context.BeginTransaction())
+                {
+                    try
+                    {
+                        var userId = Common.LoggedUser_Id();
+                        var user = _context.Using<User>().GetByCondition(x => x.Id == userId).FirstOrDefault();
 
-                if (user == null)
-                {
-                    CommonViewModel.Message = "User not found!";
-                    CommonViewModel.IsSuccess = false;
-                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                    return Json(CommonViewModel);
-                }
-                var enteredOldPasswordEncrypted = Common.Encrypt(viewModel.Obj.OldPassword);
-                // user.Password = Common.Decrypt(viewModel.Obj.OldPassword);
-                if (user.Password != enteredOldPasswordEncrypted)
-                {
-                    CommonViewModel.Message = "Old password is incorrect!";
-                    CommonViewModel.IsSuccess = false;
-                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                    return Json(CommonViewModel);
-                }
-                if (string.IsNullOrEmpty(viewModel.Obj.NewPassword))
-                {
-                    CommonViewModel.Message = "Please Enter New Password";
-                    CommonViewModel.IsSuccess = false;
-                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                    return Json(CommonViewModel);
-                }
-                if (string.IsNullOrEmpty(viewModel.Obj.ConfirmPassword))
-                {
-                    CommonViewModel.Message = "Please Enter Confirm Password";
-                    CommonViewModel.IsSuccess = false;
-                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                    return Json(CommonViewModel);
-                }
-                if (viewModel.Obj.NewPassword != viewModel.Obj.ConfirmPassword)
-                {
-                    CommonViewModel.Message = "Confirm password does not match new password!";
-                    CommonViewModel.IsSuccess = false;
-                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                    return Json(CommonViewModel);
-                }
+                        if (user == null)
+                        {
+                            CommonViewModel.Message = "User not found!";
+                            CommonViewModel.IsSuccess = false;
+                            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                            return Json(CommonViewModel);
+                        }
+                        var enteredOldPasswordEncrypted = Common.Encrypt(viewModel.Obj.OldPassword);
+                        // user.Password = Common.Decrypt(viewModel.Obj.OldPassword);
+                        if (user.Password != enteredOldPasswordEncrypted)
+                        {
+                            CommonViewModel.Message = "Old password is incorrect!";
+                            CommonViewModel.IsSuccess = false;
+                            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                            return Json(CommonViewModel);
+                        }
+                        if (string.IsNullOrEmpty(viewModel.Obj.NewPassword))
+                        {
+                            CommonViewModel.Message = "Please Enter New Password";
+                            CommonViewModel.IsSuccess = false;
+                            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                            return Json(CommonViewModel);
+                        }
+                        if (string.IsNullOrEmpty(viewModel.Obj.ConfirmPassword))
+                        {
+                            CommonViewModel.Message = "Please Enter Confirm Password";
+                            CommonViewModel.IsSuccess = false;
+                            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                            return Json(CommonViewModel);
+                        }
+                        if (viewModel.Obj.NewPassword != viewModel.Obj.ConfirmPassword)
+                        {
+                            CommonViewModel.Message = "Confirm password does not match new password!";
+                            CommonViewModel.IsSuccess = false;
+                            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+                            return Json(CommonViewModel);
+                        }
 
-                var encryptedNewPassword = Common.Encrypt(viewModel.Obj.NewPassword);
-                // Update password
-                user.Password = encryptedNewPassword;
-                user.LastModifiedDate = DateTime.Now;
-                user.LastModifiedBy = userId;
+                        var encryptedNewPassword = Common.Encrypt(viewModel.Obj.NewPassword);
+                        // Update password
+                        user.Password = encryptedNewPassword;
+                        user.LastModifiedDate = DateTime.Now;
+                        user.LastModifiedBy = userId;
 
-                _context.Using<User>().Update(user);
-                CommonViewModel.IsConfirm = true;
-                CommonViewModel.IsSuccess = true;
-                CommonViewModel.Message = "Password changed successfully!";
-                CommonViewModel.StatusCode = ResponseStatusCode.Success;
-                CommonViewModel.RedirectURL = Url.Action("Account", "Home", new { area = "Admin" });
-               
-                return Json(CommonViewModel);
+                        _context.Using<User>().Update(user);
+                        CommonViewModel.IsConfirm = true;
+                        CommonViewModel.IsSuccess = true;
+                        CommonViewModel.Message = "Password changed successfully!";
+                        CommonViewModel.StatusCode = ResponseStatusCode.Success;
+                        CommonViewModel.RedirectURL = Url.Action("Account", "Home", new { area = "Admin" });
+                        transaction.Commit();
+                        return Json(CommonViewModel);
+                    }
+                    catch (Exception ex) { transaction.Rollback(); }
+                }
             }
             catch (Exception ex)
             {
-                CommonViewModel.Message = ex.Message;
-                CommonViewModel.IsSuccess = false;
-                CommonViewModel.StatusCode = ResponseStatusCode.Error;
-                return Json(CommonViewModel);
+               
+               
             }
+            CommonViewModel.Message = ResponseStatusMessage.Error; 
+            CommonViewModel.IsSuccess = false;
+            CommonViewModel.StatusCode = ResponseStatusCode.Error;
+            return Json(CommonViewModel);
         }
 
     }

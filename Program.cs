@@ -64,6 +64,7 @@ namespace MatchMaking
 			//	//options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 			//});
 			builder.Services.AddDbContext<DataContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")), ServiceLifetime.Singleton);
+			//builder.Services.AddDbContext<DataContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")), ServiceLifetime.Scoped);
 
 			builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 

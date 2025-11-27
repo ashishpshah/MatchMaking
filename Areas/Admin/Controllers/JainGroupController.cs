@@ -50,6 +50,8 @@ namespace MatchMaking.Areas.Admin.Controllers
                 if (viewModel?.Obj == null)
                 {
                     CommonViewModel.Message = "Invalid data.";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
 
@@ -61,6 +63,8 @@ namespace MatchMaking.Areas.Admin.Controllers
                 if (string.IsNullOrWhiteSpace(viewModel.Obj.Name))
                 {
                     CommonViewModel.Message = "Please enter Name.";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
 
@@ -70,6 +74,8 @@ namespace MatchMaking.Areas.Admin.Controllers
                                && x.Id != Decrypt_Id))
                 {
                     CommonViewModel.Message = "Name already exists.";
+                    CommonViewModel.IsSuccess = false;
+                    CommonViewModel.StatusCode = ResponseStatusCode.Error;
                     return Json(CommonViewModel);
                 }
 

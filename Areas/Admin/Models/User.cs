@@ -9,6 +9,7 @@ namespace MatchMaking
         public override long Id { get; set; }
         public string? UserName { get; set; }
         public string? Password { get; set; }
+        public string? Email { get; set; }
         public int? NoOfWrongPasswordAttempts { get; set; }
         public DateTime? NextChangePasswordDate { get; set; }
         [NotMapped] public string User_Role { get; set; }

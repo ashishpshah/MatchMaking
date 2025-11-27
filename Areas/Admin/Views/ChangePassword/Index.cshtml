@@ -1,0 +1,106 @@
+﻿@model ResponseModel<ChangePasswordViewModel>
+
+@{
+    ViewBag.Title = "Change Password";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<form id="formSave" action="@Url.Action("Save","ChangePassword", new { area = "Admin" })" method="post">
+    <div class="col-md-12" style="padding-top:20px !important">
+        <div class="card card-info">
+            <input type="hidden" id="Id" name="Obj.Id" value="@Model.Obj.Id" />
+
+            <div class="card-body">
+                <div class="panel-divider mb-3">
+                    <span>Change Password</span>
+
+                    <div class="form-group row">
+                        <label for="OldPassword" class="col-sm-2 col-form-label text-right required-label">Old Password</label>
+                        <div class="col-sm-4 position-relative">
+                            <input type="password" class="form-control form-control-sm" id="OldPassword" name="Obj.OldPassword" autocomplete="off" required>
+                            <span class="toggle-password" toggle="#OldPassword">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+
+                        <label for="NewPassword" class="col-sm-2 col-form-label text-right required-label">New Password</label>
+                        <div class="col-sm-4 position-relative">
+                            <input type="password" class="form-control form-control-sm" id="NewPassword" name="Obj.NewPassword" autocomplete="off" required>
+                            <span class="toggle-password" toggle="#NewPassword">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="ConfirmPassword" class="col-sm-2 col-form-label text-right required-label">Confirm Password</label>
+                        <div class="col-sm-4 position-relative">
+                            <input type="password" class="form-control form-control-sm" id="ConfirmPassword" name="Obj.ConfirmPassword" autocomplete="off" required>
+                            <span class="toggle-password" toggle="#ConfirmPassword">
+                                <i class="fa fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="row no-gutters">
+                    <div class="col-sm-12 text-center">
+                        <button type="submit" class="btn btn-success btnSubmit">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const togglePasswordIcons = document.querySelectorAll(".toggle-password");
+
+            togglePasswordIcons.forEach(function (icon) {
+                icon.addEventListener("click", function () {
+                    const input = document.querySelector(this.getAttribute("toggle"));
+                    const iconElement = this.querySelector("i");
+
+                    if (input.type === "password") {
+                        input.type = "text";
+                        iconElement.classList.remove("fa-eye");
+                        iconElement.classList.add("fa-eye-slash");
+                    } else {
+                        input.type = "password";
+                        iconElement.classList.remove("fa-eye-slash");
+                        iconElement.classList.add("fa-eye");
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        .required-label::after {
+            content: " *";
+            color: red;
+            margin-left: 5px;
+        }
+
+        .position-relative {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+        }
+
+            .toggle-password:hover {
+                color: #333;
+            }
+    </style>
+}

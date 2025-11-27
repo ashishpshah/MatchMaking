@@ -1,4 +1,5 @@
 ﻿using MatchMaking.Models;
+using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,7 +8,139 @@ namespace MatchMaking.Infra
 {
 	public static class Common
 	{
-		private static string EncrKey = AppHttpContextAccessor.EncrKey;
+        public static async Task<(bool IsSuccess, string Message)> SendEmail(string subject, string recipient_mails, bool isBodyHtml = false, string? body = null, string? templateFile = null, string? templateData = null)
+        {
+            LogService.LogInsert("Common - SendEmail", $"Send Email => Starting at {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss").Replace("-", "/")} | Subject : {subject} | To : {string.Join(", ", recipient_mails)}", null);
+
+            (bool IsSuccess, string Message) result = (false, "Sending Mail service is stop.");
+
+            try
+            {
+                if (AppHttpContextAccessor.IsSendMail && recipient_mails != null && recipient_mails.Length > 0)
+                {
+
+                    if (string.IsNullOrEmpty(subject))
+                    {
+                        result.Message = $"Please enter valid subject.";
+                        return result;
+                    }
+
+                    if (string.IsNullOrEmpty(recipient_mails))
+                    {
+                        result.Message = $"Please enter valid recipient mail address(s).";
+                        return result;
+                    }
+
+                    subject = subject.Replace("<DD-MM-YYYY>", DateTime.Now.ToString("dd-MM-yyyy"));
+                    subject = subject.Replace("<DD/MM/YYYY>", DateTime.Now.ToString("dd/MM/yyyy").Replace("-", "/"));
+                    subject = subject.Replace("<YYYYMMDD>", DateTime.Now.ToString("yyyyMMdd"));
+                    subject = subject.Replace("<DDMMYYYY>", DateTime.Now.ToString("yyyyMMdd"));
+                    subject = subject.Replace("<HH:MM TT>", DateTime.Now.ToString("hh:mm tt"));
+                    subject = subject.Replace("<HH:MM>", DateTime.Now.ToString("HH:mm"));
+                    subject = subject.Replace("<HH>", DateTime.Now.ToString("HH"));
+                    subject = subject.Replace("<MM>", DateTime.Now.ToString("mm"));
+
+                    if (isBodyHtml == true && !string.IsNullOrEmpty(templateFile))
+                    {
+                        using (StreamReader reader = new StreamReader(System.IO.Path.Combine(AppHttpContextAccessor.ContentRootPath + "/Content/Email_Templates", templateFile + "_enquiry.html")))
+                        {
+                            body = reader.ReadToEnd();
+                        }
+
+                        if (!string.IsNullOrEmpty(templateData))
+                        {
+                            JObject data = JObject.Parse(templateData);
+
+                            foreach (var prop in data.Properties())
+                            {
+                                string key = "{{" + prop.Name.ToLower() + "}}";
+                                string value = prop.Value?.ToString() ?? "";
+
+                                if (prop.Name.Equals("email", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    value = $"<a href='mailto:{value}'>{value}</a>";
+                                }
+
+
+
+                                body = body.Replace(key, value);
+                            }
+                        }
+
+                        body = System.Text.RegularExpressions.Regex.Replace(body, "{{.*?}}", "");
+                    }
+
+
+                    using (System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage())
+                    {
+                        mailMessage.From = new System.Net.Mail.MailAddress(AppHttpContextAccessor.AdminFromMail, AppHttpContextAccessor.DisplayName);
+                        mailMessage.Subject = subject;
+                        mailMessage.Body = body;
+                        mailMessage.IsBodyHtml = isBodyHtml;
+
+                        foreach (string item in recipient_mails.Split(",").ToArray())
+                            mailMessage.To.Add(new System.Net.Mail.MailAddress(item.Trim()));
+
+                        System.Net.Mail.SmtpClient smtpClient = new System.Net.Mail.SmtpClient(AppHttpContextAccessor.Host, AppHttpContextAccessor.Port)
+                        {
+                            EnableSsl = AppHttpContextAccessor.EnableSsl,
+                            Credentials = new System.Net.NetworkCredential(AppHttpContextAccessor.AdminFromMail, AppHttpContextAccessor.MailPassword),
+                            DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
+                            UseDefaultCredentials = AppHttpContextAccessor.DefaultCredentials
+                        };
+
+                        await smtpClient.SendMailAsync(mailMessage);
+
+                        result.IsSuccess = true;
+                        result.Message = "Mail Sent successfully.";
+                    }
+
+                }
+                else
+                {
+                    result.IsSuccess = false;
+                    result.Message = "Sending Mail service is stop.";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccess = false;
+
+                if (ex != null)
+                {
+                    result.Message = "Error : " + ex.Message.ToString() + Environment.NewLine;
+
+                    if (ex.InnerException != null)
+                    {
+                        try { result.Message = result.Message + " | InnerException: " + ex.InnerException.ToString().Substring(0, (ex.InnerException.ToString().Length > 1000 ? 1000 : ex.InnerException.ToString().Length)); } catch { result.Message = result.Message + "InnerException: " + ex.InnerException?.ToString(); }
+                    }
+
+                    if (ex.StackTrace != null)
+                    {
+                        try { result.Message = result.Message + " | StackTrace: " + ex.StackTrace.ToString().Substring(0, (ex.StackTrace.ToString().Length > 1000 ? 1000 : ex.StackTrace.ToString().Length)); } catch { result.Message = result.Message + "InnerException: " + ex.StackTrace?.ToString(); }
+                    }
+
+                    if (ex.Source != null)
+                    {
+                        try { result.Message = result.Message + " | Source: " + ex.Source.ToString().Substring(0, (ex.Source.ToString().Length > 1000 ? 1000 : ex.Source.ToString().Length)); } catch { result.Message = result.Message + "InnerException: " + ex.Source?.ToString(); }
+                    }
+
+                    if (ex.StackTrace == null && ex.Source == null)
+                    {
+                        try { result.Message = result.Message + " | Exception: " + ex.ToString().Substring(0, (ex.Source.ToString().Length > 3000 ? 3000 : ex.Source.ToString().Length)); } catch { result.Message = result.Message + "Exception: " + ex?.ToString(); }
+                    }
+                }
+            }
+
+           // LogService.LogInsert("Common - SendEmail", $"Send Email => Completed at {DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss").Replace("-", "/")} | IsSuccess : {result.IsSuccess} | Message : {result.Message} | Subject : {subject} | To : {string.Join(", ", recipient_mails)}", null);
+
+            return result;
+        }
+
+
+
+        private static string EncrKey = AppHttpContextAccessor.EncrKey;
 
 
 		public static string DateTimeFormat_ddMMyyyy => "dd/MM/yyyy";
@@ -22,10 +155,11 @@ namespace MatchMaking.Infra
 
 		public static void Clear_Session() => AppHttpContextAccessor.AppHttpContext.Session.Clear();
 
-		public static void Set_Session_Int(string key, Int32 value) => AppHttpContextAccessor.AppHttpContext.Session.SetInt32(key, value);
-		public static Int32 Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.GetInt32(key).HasValue ? AppHttpContextAccessor.AppHttpContext.Session.GetInt32(SessionKey.KEY_USER_ID).Value : -1);
+		public static void Set_Session_Int(string key, Int64 value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value.ToString());
+		//public static Int32 Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.GetInt32(key).HasValue ? AppHttpContextAccessor.AppHttpContext.Session.GetInt32(SessionKey.KEY_USER_ID).Value : -1);
+        public static long Get_Session_Int(string key) => (AppHttpContextAccessor.AppHttpContext != null && AppHttpContextAccessor.AppHttpContext.Session.Keys.Any(x => x == key) ? Convert.ToInt64(AppHttpContextAccessor.AppHttpContext.Session.GetString(key) ?? "0") : -1);
 
-		public static void Set_Session(string key, string value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value);
+        public static void Set_Session(string key, string value) => AppHttpContextAccessor.AppHttpContext.Session.SetString(key, value);
 		public static string Get_Session(string key) => (AppHttpContextAccessor.AppHttpContext.Session.Keys.Any(x => x == key) ? AppHttpContextAccessor.AppHttpContext.Session.GetString(key) : null);
 
 

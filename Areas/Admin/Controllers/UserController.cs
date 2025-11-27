@@ -23,7 +23,7 @@ namespace MatchMaking.Areas.Admin.Controllers
                                        join y in _context.Using<UserRoleMapping>().GetAll().ToList() on x.Id equals y.UserId
                                        join z in _context.Using<Role>().GetAll().ToList() on y.RoleId equals z.Id
                                        where y.RoleId > 1 
-                                       select new User() { Id = x.Id, UserName = x.UserName, /*EmailId = x.EmailId, MobileNo = x.MobileNo,*/ User_Role_Id = z.Id, User_Role = z.Name, CreatedBy = x.CreatedBy }).ToList();
+                                       select new User() { Id = x.Id, UserName = x.UserName,Email = x.Email, /*EmailId = x.EmailId, MobileNo = x.MobileNo,*/ User_Role_Id = z.Id, User_Role = z.Name, CreatedBy = x.CreatedBy }).ToList();
 
            
             return View(CommonViewModel);
@@ -40,7 +40,7 @@ namespace MatchMaking.Areas.Admin.Controllers
                                        join y in _context.Using<UserRoleMapping>().GetAll().ToList() on x.Id equals y.UserId
                                        join z in _context.Using<Role>().GetAll().ToList() on y.RoleId equals z.Id
                                        where x.Id == Id && x.Id > 1 && z.Id > 1 && y.RoleId > 1 && y.UserId != Common.LoggedUser_Id()
-                                       select new User() { Id = x.Id, UserName = x.UserName, /*EmailId = x.EmailId, MobileNo = x.MobileNo,*/ User_Role_Id = z.Id, User_Role = z.Name, IsActive = x.IsActive }).FirstOrDefault();
+                                       select new User() { Id = x.Id, UserName = x.UserName, Email = x.Email, /*EmailId = x.EmailId, MobileNo = x.MobileNo,*/ User_Role_Id = z.Id, User_Role = z.Name, IsActive = x.IsActive }).FirstOrDefault();
             }
 
             //if (!string.IsNullOrEmpty(CommonViewModel.Obj.Password))
@@ -87,6 +87,14 @@ namespace MatchMaking.Areas.Admin.Controllers
                     {
 
                         CommonViewModel.Message = "Username already exist. Please try another Username.";
+                        CommonViewModel.IsSuccess = false;
+                        CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+                        return Json(CommonViewModel);
+                    }
+                    if(!string.IsNullOrEmpty(viewModel.Obj.Email) && !IsValidEmail(viewModel.Obj.Email))
+                    {
+                        CommonViewModel.Message = "Please enter valid Email";
                         CommonViewModel.IsSuccess = false;
                         CommonViewModel.StatusCode = ResponseStatusCode.Error;
 
@@ -152,6 +160,7 @@ namespace MatchMaking.Areas.Admin.Controllers
                             if (obj != null && (Common.IsAdmin()))
                             {
                                 obj.UserName = viewModel.Obj.UserName;
+                                obj.Email = viewModel.Obj.Email;
 
                                 if (viewModel.Obj.IsPassword_Reset == true) obj.Password = viewModel.Obj.Password;
 

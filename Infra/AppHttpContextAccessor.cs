@@ -48,12 +48,22 @@ namespace MatchMaking.Infra
 		public static string Protect(string str) => $"{_dataProtector.Protect(str)}";
 		public static string UnProtect(string str) => $"{_dataProtector.Unprotect(str)}";
 
-		//public static HttpClient AppHttpClient_AuthAPI()
-		//{
-		//	HttpClient client = _clientFactory.CreateClient();
-		//	client.BaseAddress = new Uri(_authAPIUrl);
-		//	return client;
-		//}
+        //public static HttpClient AppHttpClient_AuthAPI()
+        //{
+        //	HttpClient client = _clientFactory.CreateClient();
+        //	client.BaseAddress = new Uri(_authAPIUrl);
+        //	return client;
+        //}
 
-	}
+        public static bool IsSendMail => Convert.ToBoolean(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("IsSendMail").Value);
+        public static string AdminFromMail => Convert.ToString(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("AdminFromMail").Value);
+        public static string DisplayName => Convert.ToString(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("DisplayName").Value);
+        public static string Host => Convert.ToString(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("Host").Value);
+        public static int Port => Convert.ToInt32(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("Port").Value);
+        public static bool DefaultCredentials => Convert.ToBoolean(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("DefaultCredentials").Value);
+        public static bool EnableSsl => Convert.ToBoolean(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("EnableSsl").Value);
+        public static string MailPassword => Convert.ToString(AppHttpContextAccessor.AppConfiguration.GetSection("Email_Configuration").GetSection("Password").Value);
+
+
+    }
 }

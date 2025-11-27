@@ -6,17 +6,12 @@ namespace MatchMaking
 {
     public partial class User : EntitiesBase
     {
-        public long Id { get; set; }
+        public override long Id { get; set; }
         public string? UserName { get; set; }
         public string? Password { get; set; }
+        public string? Email { get; set; }
         public int? NoOfWrongPasswordAttempts { get; set; }
         public DateTime? NextChangePasswordDate { get; set; }
-        public long? CreatedBy { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public long? LastModifiedBy { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
-        public bool? IsActive { get; set; }
-        public bool? IsDeleted { get; set; }
         [NotMapped] public string User_Role { get; set; }
         [NotMapped] public long User_Role_Id { get; set; }
         [NotMapped] public long RoleId { get; set; }

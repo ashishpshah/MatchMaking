@@ -1,4 +1,5 @@
-﻿using MatchMaking.Models;
+﻿using MatchMaking.Areas.Admin.Models;
+using MatchMaking.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,7 +14,9 @@ namespace MatchMaking.Infra
 
 		public virtual DbSet<Menu> Menus { get; set; } = null!;
 		public virtual DbSet<Role> Roles { get; set; } = null!;
-		public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
+        public virtual DbSet<JainGroup> JainGroup { get; set; } = null!;
+        public virtual DbSet<ForgotPassword> ForgotPassword { get; set; } = null!;
+        public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
 		public virtual DbSet<User> Users { get; set; } = null!;
 		public virtual DbSet<UserRoleMapping> UserRoleMappings { get; set; } = null!;
 		public virtual DbSet<UserMenuAccess> UserMenuAccesses { get; set; } = null;
@@ -30,22 +33,32 @@ namespace MatchMaking.Infra
 
 				entity.Property(e => e.Id).ValueGeneratedOnAdd();
 			});
+			//     modelBuilder.Entity<ForgotPassword>().ToTable("ForgetPassword")
+			//.HasKey(x => x.Id);
 
-			modelBuilder.Entity<Role>(entity =>
+			modelBuilder.Entity<ForgotPassword>(entity => 
+			{
+				entity.HasKey(e => e.Id);
+				entity.ToTable("ForgetPassword");
+			});
+
+            modelBuilder.Entity<Role>(entity =>
 			{
 				entity.Property(e => e.Name).HasMaxLength(50);
 			});
 
 			modelBuilder.Entity<RoleMenuAccess>(entity =>
 			{
-				entity.HasNoKey();
+				//entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete }); 
 
 				entity.ToTable("RoleMenuAccess");
 			});
 
 			modelBuilder.Entity<User>(entity =>
 			{
-				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
+				entity.HasKey(e => new { e.Id });
+
+                entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
 
 				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
 
@@ -56,12 +69,18 @@ namespace MatchMaking.Infra
 
 			modelBuilder.Entity<UserRoleMapping>(entity =>
 			{
-				entity.ToTable("UserRoleMapping");
+                entity.HasKey(e => new { e.Id ,e.UserId, e.RoleId });
+                entity.ToTable("UserRoleMapping");
 			});
+            modelBuilder.Entity<JainGroup>(entity =>
+            {
+                entity.HasKey(e => new { e.Id });
+                entity.ToTable("JainGroup");
+            });
             modelBuilder.Entity<UserMenuAccess>().ToTable("UserMenuAccess");
             modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
-
-			modelBuilder.Entity<Profile>(entity =>
+            modelBuilder.Entity<RoleMenuAccess>().HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
+            modelBuilder.Entity<Profile>(entity =>
 			{
 				entity.Property(e => e.BodyType).HasMaxLength(50);
 
@@ -133,34 +152,37 @@ namespace MatchMaking.Infra
 
 			foreach (var entity in entities)
 			{
-				if (entity.State == EntityState.Added)
+				if (entity.Entity is EntitiesBase baseEntity) // only process if inherited
 				{
-					((EntitiesBase)entity.Entity).IsActive = true;
-					((EntitiesBase)entity.Entity).IsDeleted = false;
-					((EntitiesBase)entity.Entity).CreatedDate = DateTime.Now;
-					((EntitiesBase)entity.Entity).CreatedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
-					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-					((EntitiesBase)entity.Entity).LastModifiedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
+					if (entity.State == EntityState.Added)
+					{
+						((EntitiesBase)entity.Entity).IsActive = true;
+						((EntitiesBase)entity.Entity).IsDeleted = false;
+						((EntitiesBase)entity.Entity).CreatedDate = DateTime.Now;
+						((EntitiesBase)entity.Entity).CreatedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
+						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+						((EntitiesBase)entity.Entity).LastModifiedBy = ((EntitiesBase)entity.Entity).CreatedBy == 0 ? user : ((EntitiesBase)entity.Entity).CreatedBy;
+					}
+
+					if (entity.State == EntityState.Modified)
+					{
+						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+						((EntitiesBase)entity.Entity).LastModifiedBy = user;
+					}
+
+					if (entity.State == EntityState.Deleted)
+					{
+						((EntitiesBase)entity.Entity).IsActive = false;
+						((EntitiesBase)entity.Entity).IsDeleted = true;
+						((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
+						((EntitiesBase)entity.Entity).LastModifiedBy = user;
+					}
 				}
 
-				if (entity.State == EntityState.Modified)
-				{
-					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-					((EntitiesBase)entity.Entity).LastModifiedBy = user;
-				}
-
-				if (entity.State == EntityState.Deleted)
-				{
-					((EntitiesBase)entity.Entity).IsActive = false;
-					((EntitiesBase)entity.Entity).IsDeleted = true;
-					((EntitiesBase)entity.Entity).LastModifiedDate = DateTime.Now;
-					((EntitiesBase)entity.Entity).LastModifiedBy = user;
-				}
-
-			}
+		    }
 
 
-			return base.SaveChanges();
+				return base.SaveChanges();
 		}
 	}
 

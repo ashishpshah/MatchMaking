@@ -3,13 +3,14 @@ using MatchMaking.Infra;
 using MatchMaking.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace MatchMaking.Areas.Admin.Controllers
 {
-	[Area("Admin")]
-	public class HomeController : BaseController<ResponseModel<LoginViewModel>>
-	{
-		public HomeController(IRepositoryWrapper repository) : base(repository) { }
+    [Area("Admin")]
+    public class HomeController : BaseController<ResponseModel<LoginViewModel>>
+    {
+        public HomeController(IRepositoryWrapper repository) : base(repository) { }
 
         public ActionResult Index()
         {
@@ -102,7 +103,7 @@ namespace MatchMaking.Areas.Admin.Controllers
                         Common.Set_Session_Int(SessionKey.KEY_IS_ADMIN, (role.IsAdmin || obj.RoleId == 1 ? 1 : 0));
                         Common.Set_Session_Int(SessionKey.KEY_IS_SUPER_USER, (obj.RoleId == 1 ? 1 : 0));
 
-                       
+
 
                         CommonViewModel.IsSuccess = true;
                         CommonViewModel.StatusCode = ResponseStatusCode.Success;
@@ -136,5 +137,87 @@ namespace MatchMaking.Areas.Admin.Controllers
 
             return RedirectToAction("Account", "Home", new { Area = "Admin" });
         }
+
+
+        [HttpGet]
+        public PartialViewResult ForgotPassword()
+        {
+            return PartialView("_Partial_ForgotPassword", new ResponseModel<ForgotPassword>());
+        }
+
+        // Step 1: Submit email
+        [HttpPost]
+        public JsonResult ForgotPassword_SendOTP(string email)
+        {
+            var userExists = _context.Using<User>().Any(u => u.Email == email);
+
+            if (!userExists)
+            {
+                return Json(new { IsSuccess = false, Message = "Email does not exist." });
+            }
+
+            // Generate OTP
+            var otp = new Random().Next(100000, 999999).ToString();
+            var otpEntry = new ForgotPassword
+            {
+                Email = email,
+                OTP = otp,
+                CreatedAt = DateTime.Now,
+                IsUsed = false
+            };
+
+            _context.Using<ForgotPassword>().Add(otpEntry);
+
+
+            Common.SendEmail(
+               "Your OTP Code",
+               email,
+               true,                       // HTML enabled
+               "",                         // body will be replaced by template
+               "otp_message",              // template name without _enquiry.html
+               JsonConvert.SerializeObject(new { otp = otp })
+           );
+            
+
+            // Send Email (use your Common.SendEmail logic)
+            // await Common.SendEmail(...);
+
+            return Json(new { IsSuccess = true, Message = "OTP sent to email." });
+        }
+
+        // Step 2: Verify OTP
+        [HttpPost]
+        public JsonResult ForgotPassword_VerifyOTP(string email, string otp)
+        {
+            var record = _context.Using<ForgotPassword>()
+                .GetByCondition(f => f.Email == email && f.OTP == otp && !f.IsUsed)
+                .OrderByDescending(f => f.CreatedAt)
+                .FirstOrDefault();
+
+            if (record == null)
+                return Json(new { IsSuccess = false, Message = "Invalid OTP." });
+
+            // Mark as used
+            record.IsUsed = true;
+            _context.Using<ForgotPassword>().Update(record);
+
+            return Json(new { IsSuccess = true, Message = "OTP verified." });
+        }
+
+        // Step 3: Reset Password
+        [HttpPost]
+        public JsonResult ForgotPassword_ResetPassword(string email, string newPassword)
+        {
+            var user = _context.Using<User>().GetByCondition(u => u.Email == email).FirstOrDefault();
+            if (user == null)
+                return Json(new { IsSuccess = false, Message = "User not found." });
+
+            user.Password = Common.Encrypt(newPassword);
+            _context.Using<User>().Update(user);
+
+            return Json(new { IsSuccess = true, Message = "Password reset successfully." });
+        }
+
+
     }
 }

@@ -5,6 +5,11 @@
 	ViewData["Title"] = "Profile";
 
 	DateTime? nullDateTime = null;
+
+	string filePath_CoverPhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Cover", Model.Id + ".jpg");
+	string filePath_ProfilePhoto = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile", Model.Id + ".jpg");
+
+	List<string> filePath_OtherPhotos = Directory.GetFiles(System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others"), $"{Model.Id}_*.jpg", SearchOption.AllDirectories).OrderByDescending(f => f).ToList();
 }
 
 
@@ -24,7 +29,7 @@
 			box-shadow: none;
 		}
 
-		#formUploadPictures .custom-upload {
+		#formUploadPhotos .custom-upload {
 			top: 20px;
 			right: 20px;
 			width: max-content;
@@ -39,8 +44,14 @@
 			-moz-transition: all 0.3s ease;
 			transition: all 0.3s ease;
 		}
+
+		.gallery-img img {
+			height: 225px !important;
+		}
 	</style>
 }
+
+
 
 <!-- ==========Profile Section Start Here========== -->
 <section class="profile-section padding-tb bg-ash">
@@ -49,12 +60,9 @@
 			<div class="member-profile">
 				<div class="profile-item">
 					<div class="profile-cover">
-						@if (Model != null && !string.IsNullOrEmpty(Model.CoverPhotoPath) && File.Exists(Model.CoverPhotoPath))
+						@if (Model != null && Model.Id > 0 && System.IO.File.Exists(filePath_CoverPhoto))
 						{
-							var path = Model.CoverPhotoPath.ToString().StartsWith("/") || Model.CoverPhotoPath.ToString().StartsWith("\\")
-							? "~" + Model.CoverPhotoPath.ToString() : Model.CoverPhotoPath.ToString();
-
-							<img src="@path" alt="cover-pic">
+							<img src="@filePath_CoverPhoto.Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/")" alt="cover-pic">
 						}
 						else
 						{
@@ -63,21 +71,17 @@
 						}
 
 						<div class="edit-photo custom-upload">
-							<div class="file-btn">
+							<div class="file-btn" data-bs-toggle="modal" data-bs-target="#modalUploadPhotos" data-for-target="Cover">
 								<i class="icofont-camera"></i>
 								Edit Photo
 							</div>
-							<input type="file" name="fileCover">
 						</div>
 					</div>
 					<div class="profile-information">
 						<div class="profile-pic">
-							@if (Model != null && !string.IsNullOrEmpty(Model.ProfilePhotoPath) && File.Exists(Model.ProfilePhotoPath))
+							@if (Model != null && Model.Id > 0 && System.IO.File.Exists(filePath_ProfilePhoto))
 							{
-								var path = Model.ProfilePhotoPath.ToString().StartsWith("/") || Model.ProfilePhotoPath.ToString().StartsWith("\\")
-								? "~" + Model.ProfilePhotoPath.ToString() : Model.ProfilePhotoPath.ToString();
-
-								<img src="@path" alt="profile-pic">
+								<img src="@filePath_ProfilePhoto.Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/")" alt="profile-pic">
 							}
 							else
 							{
@@ -86,14 +90,13 @@
 							}
 
 							<div class="custom-upload">
-								<div class="file-btn">
+								<div class="file-btn" data-bs-toggle="modal" data-bs-target="#modalUploadPhotos" data-for-target="Profile">
 									<span class="d-none d-lg-inline-block">
 										<i class="icofont-camera"></i>
 										Edit
 									</span>
 									<span class="d-lg-none mr-0"><i class="icofont-plus"></i></span>
 								</div>
-								<input type="file" name="fileProfile">
 							</div>
 						</div>
 						<div class="profile-name">
@@ -102,7 +105,7 @@
 					</div>
 				</div>
 				<div class="profile-details">
-					<nav class="profile-nav">
+					<nav class="profile-nav mb-2">
 						<div class="nav nav-tabs" id="nav-tab" role="tablist">
 							<button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab"
 									data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
@@ -122,8 +125,8 @@
 						<div class="tab-pane activity-page fade show active" id="profile" role="tabpanel" aria-labelledby="nav-profile-tab">
 							<div class="container">
 								<div class="row no-gutters">
-									<div class="col-lg-12">
-										<article class="contact-form-wrapper bg-transparent">
+									<div class="col-lg-12 px-0">
+										<article class="contact-form-wrapper bg-transparent px-0 pt-0">
 											<div class="contact-form">
 												<form id="formProfile" asp-area="" asp-controller="Home" asp-action="Profile" method="post" class="comment-form">
 
@@ -138,7 +141,10 @@
 																		<ul class="info-list">
 																			<li>
 																				<p class="info-name">Name</p>
-																				<p class="info-details"><input type="text" name="Firstname" value="@Model.Firstname" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details">
+																					<input type="text" name="Firstname" value="@Model.Firstname" class="w-100 mb-0 py-1 px-2 border-1">
+																					<input type="text" name="Id" value="@Model.Id" class="d-none">
+																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">I'm a</p>
@@ -239,11 +245,17 @@
 																		<ul class="info-list">
 																			<li>
 																				<p class="info-name">Height</p>
-																				<p class="info-details"><input type="text" name="Height" value="@Model.Height" class="w-100 mb-0 py-1 px-2 border-1"> ft</p>
+																				<p class="info-details input-group">
+																					<input type="text" name="Height" value="@Model.Height" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon1">
+																					<span class="input-group-text" id="basic-addon1">ft</span>
+																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Weight</p>
-																				<p class="info-details"><input type="text" name="Weight" value="@Model.Weight" class="w-100 mb-0 py-1 px-2 border-1"> kg</p>
+																				<p class="info-details input-group">
+																					<input type="text" name="Weight" value="@Model.Weight" class="mb-0 py-1 px-2 border-1" aria-describedby="basic-addon2">
+																					<span class="input-group-text" id="basic-addon2">kg</span>
+																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Hair Color</p>
@@ -270,7 +282,7 @@
 																			<li>
 																				<p class="info-name">Jain Group</p>
 																				<p class="info-details">
-																					<select name="GroupName" class="">
+																					<select name="GroupId" class="">
 																						<option value="1">Single</option>
 																						<option value="2">Divorced</option>
 																						<option value="3">Widowed</option>
@@ -304,7 +316,7 @@
 																</div>
 																<div class="info-card mb-20">
 																	<div class="info-card-title">
-																		<button type="submit" class="lab-btn pt-0 w-100 btnSubmit" data-form="formProfile">
+																		<button type="button" class="lab-btn pt-0 w-100 btnSubmit" data-form="formProfile">
 																			<span>Submit</span>
 																		</button>
 																	</div>
@@ -330,145 +342,60 @@
 											<h3 class="mb-0">Upload Pictures</h3>
 										</li>
 										<li class="group-search-btn lab-btn">
-											<form id="formUploadPictures" asp-area="" asp-controller="Home" asp-action="UploadPictures" method="post" enctype="multipart/form-data">
+
+											@* <form id="formUploadPhotos" asp-area="" asp-controller="Home" asp-action="UploadPhotos" method="post" enctype="multipart/form-data">
 												<div class="edit-photo custom-upload">
 													<div class="file-btn">
 														<i class="icofont-camera"></i>
 														Upload Photo(s)
 													</div>
-													<input type="file">
+													<input type="file" multiple>
 												</div>
-											</form>
+											</form> *@
+
+											<a href="#" data-bs-toggle="modal" data-bs-target="#modalUploadPhotos" data-for-target="Others" class="signup">
+												<i class="icofont-camera"></i> <span>Upload Photos</span>
+											</a>
 
 										</li>
 									</ul>
 								</div>
 							</div>
+
+
 							<div class="row g-3 g-lg-4 justify-content-center row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6">
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/03.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/02.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/01.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/04.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/05.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/06.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/07.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/08.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/09.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/10.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/11.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/12.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/13.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/14.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/15.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/16.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/17.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/18.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/19.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
-								<div class="col">
-									<div class="gallery-img">
-										<img src="~/assets/images/member/20.jpg" alt="image" class="rounded">
-
-									</div>
-								</div>
+								@if (filePath_OtherPhotos != null && filePath_OtherPhotos.Count() > 0)
+								{
+									foreach (var filePath in filePath_OtherPhotos)
+									{
+										<div class="col">
+											<div class="gallery-img">
+												<img src="@filePath.Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/")" alt="image" class="rounded">
+											</div>
+										</div>
+									}
+								}
+								else
+								{
+									<section class="fore-zero padding-tb bg-ash">
+										<div class="container">
+											<div class="section-wrapper">
+												<div class="zero-item">
+													<div class="zero-content">
+														<h2>No any Photo(s) uploaded.</h2>
+														<a href="#" data-bs-toggle="modal" data-bs-target="#modalUploadPhotos" data-for-target="Others" class="lab-btn">
+															<i class="icofont-camera"></i> <span>Upload Photos</span>
+														</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</section>
+								}
 							</div>
-							<div class="load-btn">
+							@* <div class="load-btn">
 								<a href="#" class="lab-btn">Load More<i class="icofont-spinner"></i></a>
-							</div>
+							</div> *@
 						</div>
 					</div>
 				</div>

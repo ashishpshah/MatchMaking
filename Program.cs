@@ -1,5 +1,6 @@
 using MatchMaking.Infra;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -65,6 +66,10 @@ namespace MatchMaking
 			});
 
 			builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+
+			builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 500 * 1024 * 1024; }); // 500 MB
+
+			builder.WebHost.ConfigureKestrel(options => { options.Limits.MaxRequestBodySize = 500 * 1024 * 1024; }); // 500 MB
 
 			var app = builder.Build();
 

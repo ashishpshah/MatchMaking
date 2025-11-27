@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="~/assets/css/style.css">
 
 	<link href="~/assets/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
-
-	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link href="~/css/imageuploadify.min.css" rel="stylesheet" />
+	<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
 
 	@await RenderSectionAsync("Styles", required: false)
 
@@ -51,6 +51,7 @@
 							@if (AppHttpContextAccessor.LoggedUserId > 0)
 							{
 								<li><a asp-area="" asp-controller="Home" asp-action="Profile" class="ml-3"><i class="icofont-user"></i> <span>Profile</span> </a></li>
+								<li><a asp-area="" asp-controller="Home" asp-action="Logout" class="ml-2"><i class="icofont-logout"></i> <span>Logout</span> </a></li>
 							}
 						</ul>
 
@@ -58,7 +59,7 @@
 						@if (AppHttpContextAccessor.LoggedUserId <= 0)
 						{
 							<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="login">
-								<i class="icofont-user"></i> <span>LOG IN</span>
+								<i class="icofont-login"></i> <span>LOG IN</span>
 							</a>
 
 							<a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" class="signup">
@@ -97,7 +98,7 @@
 				<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
 					<div class="modal-header" style="padding: 0.3rem 0.75rem;">
 						<h3 class="title">Register Now</h3>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
 					</div>
 					<div class="modal-body">
 						<form id="formRegister" asp-area="" asp-controller="Home" asp-action="Register" method="post" enctype="multipart/form-data" class="account-form">
@@ -113,8 +114,8 @@
 						</form>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary btnSubmit" data-form="formRegister" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
+						<button type="button" class="btn btn-primary btnSubmit" data-form="formRegister" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
 					</div>
 				</div>
 			</div>
@@ -139,14 +140,35 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
-						<button type="submit" class="btn btn-primary btnSubmit" data-form="formLogin" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+						<button type="button" class="btn btn-primary btnSubmit" data-form="formLogin" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
 	}
-
+	@if (AppHttpContextAccessor.LoggedUserId > 0)
+	{
+		<div class="modal fade" id="modalUploadPhotos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalUploadPhotosLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
+					<div class="modal-header" style="padding: 0.3rem 0.75rem;">
+						<h3 class="title">Upload Photo(s)</h3>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formUploadPhotos" asp-area="" asp-controller="Home" asp-action="UploadPhotos" method="post" enctype="multipart/form-data" class="account-form">
+							<input type="file" id="inputUploadPhoto" accept="image/*" multiple class="d-none">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
+						<button type="button" class="btn btn-primary btnSubmit" data-form="formUploadPhotos" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
 	<!-- ================ footer Section start Here =============== -->
 	<footer class="footer-section">
 		<div class="footer-bottom">
@@ -154,7 +176,7 @@
 				<div class="row">
 					<div class="col-12">
 						<div class="footer-bottom-content text-center">
-							<p>&copy; 2022 <a asp-area="" asp-controller="Home" asp-action="Index">TuruLav</a> - Best For Dating HTML Template.</p>
+							<p>&copy; 2022 <a asp-area="" asp-controller="Home" asp-action="Index">MatchMaking</a></p>
 						</div>
 					</div>
 				</div>
@@ -176,7 +198,7 @@
 	<script src="~/assets/js/functions.js"></script>
 
 	<script src="~/assets/plugins/sweetalert2/sweetalert2.min.js"></script>
-
+	<script src="~/js/imageuploadify.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

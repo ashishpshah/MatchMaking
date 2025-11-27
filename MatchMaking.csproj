@@ -29,6 +29,9 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="wwwroot\UploadPhotos\Cover\" />
+    <Folder Include="wwwroot\UploadPhotos\Others\" />
+    <Folder Include="wwwroot\UploadPhotos\Profile\" />
   </ItemGroup>
 
 </Project>

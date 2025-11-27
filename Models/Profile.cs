@@ -9,7 +9,11 @@ namespace MatchMaking.Models
 		public override long Id { get; set; }
 		public long? UserId { get; set; }
 		public string? Firstname { get; set; }
-		public string? Lastname { get; set; }
+		public string? Fathername { get; set; }
+		public string? Mothername { get; set; }
+		public string? PaternalSurname { get; set; }
+		public string? MaternalSurname { get; set; }
+		public string? Mosal { get; set; }
 		public string? Gender { get; set; }
 		public string? LookingForGender { get; set; }
 		public string? MaritalStatus { get; set; }
@@ -23,13 +27,6 @@ namespace MatchMaking.Models
 		public string? Summary { get; set; }
 		public int? GroupId { get; set; }
 		[NotMapped] public string? GroupName { get; set; }
-		public string? Fathername { get; set; }
-		public string? Mothername { get; set; }
-		public string? PaternalSurname { get; set; }
-		public string? MaternalSurname { get; set; }
-		public string? Mosal { get; set; }
-		public string? ProfilePhotoPath { get; set; }
-		public string? CoverPhotoPath { get; set; }
 		public string? Interests { get; set; }
 		public string? Smoking { get; set; }
 		public string? Height { get; set; }
@@ -40,8 +37,8 @@ namespace MatchMaking.Models
 		public string? Ethnicity { get; set; }
 		public string? Language { get; set; }
 
-		public string? FullName { get { return $"{Firstname} {Lastname}"; } }
-		public string? FullAddress { get { return $"{Firstname} {Lastname}"; } }
+		public string? FullName { get { return $"{Firstname} {PaternalSurname}"; } }
+		public string? FullAddress { get { return $"{Firstname} {PaternalSurname}"; } }
 	}
 
 }

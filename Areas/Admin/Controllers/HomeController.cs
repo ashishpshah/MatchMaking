@@ -94,8 +94,8 @@ namespace MatchMaking.Areas.Admin.Controllers
 
                         Common.Configure_UserMenuAccess(listMenuAccess.Where(x => x.IsActive == true && x.IsDeleted == false).ToList(), listMenuPermission.Where(x => x.IsActive == true && x.IsDeleted == false).ToList());
 
-                        Common.Set_Session_Int(SessionKey.KEY_USER_ID, obj.Id);
-                        Common.Set_Session_Int(SessionKey.KEY_USER_ROLE_ID, obj.RoleId);
+                        Common.Set_Session_Int(SessionKey.KEY_USER_ID, (Int32)obj.Id);
+                        Common.Set_Session_Int(SessionKey.KEY_USER_ROLE_ID, (Int32)obj.RoleId);
 
                         Common.Set_Session(SessionKey.KEY_USER_NAME, obj.UserName);
                         Common.Set_Session(SessionKey.KEY_USER_ROLE, role.Name);

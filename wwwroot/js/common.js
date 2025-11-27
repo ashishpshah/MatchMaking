@@ -248,7 +248,7 @@ $(document).ready(function () {
 
     $('body').on('click', '.btnSubmit', function (e) {
         e.preventDefault();
-        debugger;
+        
         if ($(this).parents('form').length > 0) fnSubmitForm($(this).parents('form').attr('id'));
         else fnSubmitForm($(this).attr('data-form'));
     });
@@ -260,7 +260,7 @@ $(document).ready(function () {
     });
 
     $('.modal').on('hide.bs.modal', function (e) {
-        debugger;
+        
         let $modal = $(this);
         let $form = $modal.find('form');
 

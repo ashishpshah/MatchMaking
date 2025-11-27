@@ -71,8 +71,6 @@ namespace MatchMaking.Infra
 
 				entity.Property(e => e.Country).HasMaxLength(100);
 
-				entity.Property(e => e.CoverPhotoPath).HasMaxLength(300);
-
 				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
 
 				entity.Property(e => e.Education).HasMaxLength(200);
@@ -97,8 +95,6 @@ namespace MatchMaking.Infra
 
 				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
 
-				entity.Property(e => e.Lastname).HasMaxLength(100);
-
 				entity.Property(e => e.MaternalSurname).HasMaxLength(100);
 
 				entity.Property(e => e.Mosal).HasMaxLength(100);
@@ -106,8 +102,6 @@ namespace MatchMaking.Infra
 				entity.Property(e => e.Occupation).HasMaxLength(200);
 
 				entity.Property(e => e.PaternalSurname).HasMaxLength(100);
-
-				entity.Property(e => e.ProfilePhotoPath).HasMaxLength(300);
 
 				entity.Property(e => e.Smoking).HasMaxLength(100);
 

@@ -15,6 +15,5 @@ namespace MatchMaking
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsAdmin { get; set; }
-        public string? ProjectDetailTypeAccess { get; set; }
     }
 }

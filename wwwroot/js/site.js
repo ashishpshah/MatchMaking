@@ -54,19 +54,36 @@ $('body').on('keypress', '.isNumberKey_Decimal', function (evt, obj) {
 
 $('body').on('click', '.btnSubmit', function (e) {
     e.preventDefault();
-    debugger;
+
     if ($(this).parents('form').length > 0) fnSubmitForm($(this).parents('form').attr('id'));
     else fnSubmitForm($(this).attr('data-form'));
 });
 
 $('.modal').on('shown.bs.modal', function (e) {
 
-    /*$('body').append('<div class="modal-backdrop fade show" id="div-modal-backdrop"></div>')*/
+    let $modal = $(this);
+    let $form = $modal.find('form');
 
+    // Reset normal HTML form fields
+    if ($form.length > 0) {
+        $form[0].reset();
+    }
+    /*$('body').append('<div class="modal-backdrop fade show" id="div-modal-backdrop"></div>')*/
+    var button = $(e.relatedTarget);
+
+    var forTarget = button.attr('data-for-target');
+    if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0)
+        $(this).find('form input[type="file"]').attr('name', 'file' + forTarget);
+
+    if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0 && forTarget == 'Others')
+        $(this).find('form input[type="file"]').attr('multiple', '');
+    else
+        $(this).find('form input[type="file"]').removeAttr('multiple');
+
+    $(this).find('form input[type="file"]').imageuploadify();
 });
 
 $('.modal').on('hide.bs.modal', function (e) {
-    debugger;
     let $modal = $(this);
     let $form = $modal.find('form');
 
@@ -76,12 +93,6 @@ $('.modal').on('hide.bs.modal', function (e) {
     }
 
     try {
-        // Reset Select2
-        $modal.find('select.select2').val('').trigger('change');
-
-        // Reset Datepicker
-        $modal.find('.datepicker').datepicker('setDate', null);
-
         // Reset file inputs
         $modal.find('input[type="file"]').val('');
 
@@ -90,7 +101,16 @@ $('.modal').on('hide.bs.modal', function (e) {
 
         // Uncheck radios & checkboxes
         $modal.find('input[type="checkbox"], input[type="radio"]').prop('checked', false);
+    } catch { }
 
+    try {
+        $modal.find('div.imageuploadify').remove();
+        $modal.find('input[type="file"]').val(null).trigger('change');
+    } catch { }
+
+    try {
+        $modal.find('button.btn-close').trigger('blur');     // remove focus
+        $modal.setAttribute("aria-hidden", "true");
     } catch { }
 
     //$('body div#div-modal-backdrop').remove();
@@ -126,6 +146,32 @@ function formValidate($id) {
             return IsValid;
         }
     });
+
+
+    var inputFiles = $($id + ' input[type="file"]');
+
+    if (typeof inputFiles != 'undefined' && inputFiles != null && inputFiles.length > 0) {
+
+        const totalMax = 5 * 1024 * 1024; // 500 MB
+        let totalSize = 0;
+
+        $.each(inputFiles, function (key, input) {
+            if ((typeof input.value != 'undefined' && input.value != null && input.value.length > 0) && !input.hasAttribute('disabled') && !$(input).hasClass('temp') && !$(input).hasClass('temp_fileUpload')) {
+                var file = document.getElementById('' + input.getAttribute('id')).files[0];
+                totalSize += file.size;
+            }
+        });
+
+        if (totalSize > totalMax) {
+            Swal.fire({
+                icon: 'error', title: `Total selected files exceed the limit.<br>` +
+                    `Selected: ${(totalSize / (1024 * 1024)).toFixed(2)} MB<br>` +
+                    `Max Allowed: ${totalMax / (1024 * 1024)} MB`
+            });
+            return false;
+        }
+    }
+
 
     return IsValid;
 }
@@ -196,7 +242,7 @@ function fnSubmitForm($id) {
             processData: false,
             dataType: "json",
             success: function (response) {
-
+                debugger;
                 try {
                     ShowLoader(false);
                     if (response.IsSuccess == true) {
@@ -274,6 +320,41 @@ function CommonAlert_Success(msg) {
         showCancelButton: false,
         confirmButtonText: 'OK',
     });
+}
+
+function CommonConfirmed_Success(msg, functionName, functionParams) { //params = [2, 3, 'xyz'];
+
+    if (msg == null || msg == "")
+        msg = "Data Successfully saved.";
+
+    Swal.fire({
+        icon: 'success',
+        title: msg,
+        showDenyButton: false,
+        showCancelButton: false,
+        confirmButtonText: 'OK'
+    }).then((result) => {
+
+        if (result.isConfirmed && typeof functionName != 'undefined' && functionName != null && functionName != '')
+            if (typeof functionParams != 'undefined' && functionParams != null)
+                if (Array.isArray(functionParams) && functionParams.length > -1) {
+                    this.callback = functionName;
+                    this.callback.apply(this, functionParams);
+                }
+                else this.callback = functionName;
+            else {
+                ShowLoader(true);
+                window.location = functionName;
+            }
+
+        /* Read more about isConfirmed, isDenied below
+        if (result.isConfirmed) {
+            Swal.fire('Saved!', '', 'success')
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info')
+        } */
+
+    })
 }
 
 function CallBack(fn, data, Id) {

@@ -4,6 +4,7 @@ using MatchMaking.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -102,6 +103,221 @@ namespace MatchMaking.Controllers
 			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
 
 			return View(profile ?? new Profile());
+		}
+
+		[HttpPost]
+		public IActionResult Profile(Profile viewModel)
+		{
+			try
+			{
+				if (viewModel != null)
+				{
+					#region Validation
+
+					if (string.IsNullOrEmpty(viewModel.Firstname))
+					{
+						CommonViewModel.Message = "Please enter your name.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					#endregion
+
+
+					#region Database-Transaction
+
+					using (var transaction = _context.BeginTransaction())
+					{
+						try
+						{
+							var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId && x.Id == viewModel.Id).FirstOrDefault();
+
+							if (profile != null)
+							{
+								profile.Firstname = viewModel.Firstname;
+								profile.Fathername = viewModel.Fathername;
+								profile.Mothername = viewModel.Mothername;
+								profile.PaternalSurname = viewModel.PaternalSurname;
+								profile.MaternalSurname = viewModel.MaternalSurname;
+								profile.Mosal = viewModel.Mosal;
+								profile.Gender = viewModel.Gender;
+								profile.LookingForGender = viewModel.LookingForGender;
+								profile.MaritalStatus = viewModel.MaritalStatus;
+								profile.DateOfBirth = viewModel.DateOfBirth;
+								profile.Address = viewModel.Address;
+								profile.City = viewModel.City;
+								profile.State = viewModel.State;
+								profile.Country = viewModel.Country;
+								profile.Education = viewModel.Education;
+								profile.Occupation = viewModel.Occupation;
+								profile.Summary = viewModel.Summary;
+								profile.GroupId = viewModel.GroupId;
+								profile.Interests = viewModel.Interests;
+								profile.Smoking = viewModel.Smoking;
+								profile.Height = viewModel.Height;
+								profile.Weight = viewModel.Weight;
+								profile.HairColor = viewModel.HairColor;
+								profile.EyeColor = viewModel.EyeColor;
+								profile.BodyType = viewModel.BodyType;
+								profile.Ethnicity = viewModel.Ethnicity;
+								profile.Language = viewModel.Language;
+								profile.LastModifiedBy = AppHttpContextAccessor.LoggedUserId;
+								profile.LastModifiedDate = DateTime.Now;
+
+								_context.Using<Profile>().Update(profile);
+							}
+							else
+							{
+								viewModel.UserId = AppHttpContextAccessor.LoggedUserId;
+								viewModel.CreatedBy = AppHttpContextAccessor.LoggedUserId;
+								viewModel.CreatedDate = DateTime.Now;
+
+								viewModel = _context.Using<Profile>().Add(viewModel);
+							}
+
+							//try
+							//{
+							//	if (Request.Form.Files != null && Request.Form.Files.Count > 0 && Request.Form.Files.Any(x => x.Length > 0))
+							//	{
+							//		foreach (var fileItem in Request.Form.Files.Where(x => x.Length > 0).ToList())
+							//		{
+							//			if (!string.IsNullOrEmpty(fileItem.Name) && (fileItem.Name == "fileCover" || fileItem.Name == "fileProfile"))
+							//			{
+							//				string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", fileItem.Name.Replace("file", ""));
+							//				if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+							//				string fullPath = Path.Combine(uploadFolder, viewModel.Id + ".jpg");
+							//				if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+							//				using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
+							//			}
+							//			else
+							//			{
+							//				string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others");
+							//				if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+
+							//				string fullPath = Path.Combine(uploadFolder, viewModel.Id + ".jpg");
+
+							//				string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
+
+							//				int counter = 1;
+							//				while (System.IO.File.Exists(fullPath))
+							//				{
+							//					string newFileName = $"{fileNameWithoutExtension}_{counter}.jpg";
+
+							//					fullPath = Path.Combine(uploadFolder, newFileName);
+							//					counter++;
+							//				}
+
+							//				using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
+							//			}
+							//		}
+							//	}
+							//}
+							//catch { }
+
+							CommonViewModel.IsConfirm = true;
+							CommonViewModel.IsSuccess = true;
+							CommonViewModel.StatusCode = ResponseStatusCode.Success;
+							CommonViewModel.Message = "Record saved successfully ! ";
+
+							CommonViewModel.RedirectURL = Url.Action("Profile", "Home", new { area = "" });
+
+							transaction.Commit();
+
+							return Json(CommonViewModel);
+						}
+						catch (Exception ex) { transaction.Rollback(); }
+					}
+
+					#endregion
+				}
+			}
+			catch (Exception ex) { }
+
+			CommonViewModel.Message = ResponseStatusMessage.Error;
+			CommonViewModel.IsSuccess = false;
+			CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+			return Json(CommonViewModel);
+		}
+
+		[HttpPost]
+		[RequestSizeLimit(500_000_000)]
+		[RequestFormLimits(MultipartBodyLengthLimit = 500_000_000)]
+		public IActionResult UploadPhotos(List<IFormFile> fileProfile = null, List<IFormFile> fileCover = null, List<IFormFile> fileOthers = null)
+		{
+			try
+			{
+				var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+
+				if (profile == null)
+				{
+					profile = new Profile() { UserId = AppHttpContextAccessor.LoggedUserId, IsActive = true, IsDeleted = false, CreatedBy = 1, CreatedDate = DateTime.Now };
+					profile = _context.Using<Profile>().Add(profile);
+				}
+
+				List<IFormFile> files = new List<IFormFile>();
+				if (fileProfile != null && fileProfile.Count() > 0) files.AddRange(fileProfile);
+				if (fileCover != null && fileCover.Count() > 0) files.AddRange(fileCover);
+				if (fileOthers != null && fileOthers.Count() > 0) files.AddRange(fileOthers);
+
+				if (profile != null && files != null && files.Count > 0 && files.Any(x => x.Length > 0))
+				{
+					foreach (var fileItem in files.Where(x => x.Length > 0).ToList())
+					{
+						try
+						{
+							if (!string.IsNullOrEmpty(fileItem.Name) && (fileItem.Name == "fileCover" || fileItem.Name == "fileProfile"))
+							{
+								string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", fileItem.Name.Replace("file", ""));
+								if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+								string fullPath = Path.Combine(uploadFolder, profile.Id + ".jpg");
+								if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+								using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
+							}
+							else
+							{
+								string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others");
+								if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
+
+								string fullPath = Path.Combine(uploadFolder, profile.Id + "_1.jpg");
+
+								string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
+
+								int counter = 1;
+								while (System.IO.File.Exists(fullPath))
+								{
+									string newFileName = $"{fileNameWithoutExtension.Split('_')[0]}_{counter}.jpg";
+
+									fullPath = Path.Combine(uploadFolder, newFileName);
+									counter++;
+								}
+
+								using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
+							}
+						}
+						catch (Exception ex) { continue; }
+
+					}
+
+					CommonViewModel.IsConfirm = true;
+					CommonViewModel.IsSuccess = true;
+					CommonViewModel.StatusCode = ResponseStatusCode.Success;
+					CommonViewModel.Message = "Record saved successfully ! ";
+
+					CommonViewModel.RedirectURL = Url.Action("ProfileUpdate", "Home", new { area = "" });
+
+					return Json(CommonViewModel);
+				}
+			}
+			catch (Exception ex) { }
+
+			CommonViewModel.Message = ResponseStatusMessage.Error;
+			CommonViewModel.IsSuccess = false;
+			CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+			return Json(CommonViewModel);
 		}
 
 		[HttpPost]
@@ -290,6 +506,16 @@ namespace MatchMaking.Controllers
 								_context.Using<UserRoleMapping>().Add(userRole);
 							}
 
+
+							var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == user.Id).FirstOrDefault();
+
+							if (profile == null)
+							{
+								profile = new Profile() { UserId = user.Id, IsActive = true, IsDeleted = false, CreatedBy = 1, CreatedDate = DateTime.Now };
+								profile = _context.Using<Profile>().Add(profile);
+							}
+
+
 							CommonViewModel.IsConfirm = true;
 							CommonViewModel.IsSuccess = true;
 							CommonViewModel.StatusCode = ResponseStatusCode.Success;
@@ -314,6 +540,13 @@ namespace MatchMaking.Controllers
 			CommonViewModel.StatusCode = ResponseStatusCode.Error;
 
 			return Json(CommonViewModel);
+		}
+
+		public IActionResult Logout()
+		{
+			Common.Clear_Session();
+
+			return RedirectToAction("Index", "Home");
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

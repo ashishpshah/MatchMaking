@@ -29,7 +29,7 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<ForgotPassword>(entity =>
 			{
 				entity.HasKey(e => e.Id);
-				entity.ToTable("ForgetPassword");
+				entity.ToTable("ForgetPassword" ,"dbo");
 			});
 
 			modelBuilder.HasDefaultSchema("padhyaso_admin");

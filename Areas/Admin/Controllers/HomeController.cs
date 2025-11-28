@@ -146,6 +146,45 @@ namespace MatchMaking.Areas.Admin.Controllers
         }
 
         // Step 1: Submit email
+        //[HttpPost]
+        //public JsonResult ForgotPassword_SendOTP(string email)
+        //{
+        //    var userExists = _context.Using<User>().Any(u => u.Email == email);
+
+        //    if (!userExists)
+        //    {
+        //        return Json(new { IsSuccess = false, Message = "Email does not exist." });
+        //    }
+
+        //    // Generate OTP
+        //    var otp = new Random().Next(100000, 999999).ToString();
+        //    var otpEntry = new ForgotPassword
+        //    {
+        //        Email = email,
+        //        OTP = otp,
+        //        CreatedAt = DateTime.Now,
+        //        IsUsed = false
+        //    };
+
+        //    _context.Using<ForgotPassword>().Add(otpEntry);
+
+
+        //    Common.SendEmail(
+        //       "Your OTP Code",
+        //       email,
+        //       true,                       // HTML enabled
+        //       "",                         // body will be replaced by template
+        //       "otp_message",              // template name without _enquiry.html
+        //       JsonConvert.SerializeObject(new { otp = otp })
+        //   );
+
+
+        //    // Send Email (use your Common.SendEmail logic)
+        //    // await Common.SendEmail(...);
+
+        //    return Json(new { IsSuccess = true, Message = "OTP sent to email." });
+        //}
+
         [HttpPost]
         public JsonResult ForgotPassword_SendOTP(string email)
         {
@@ -156,53 +195,73 @@ namespace MatchMaking.Areas.Admin.Controllers
                 return Json(new { IsSuccess = false, Message = "Email does not exist." });
             }
 
-            // Generate OTP
-            var otp = new Random().Next(100000, 999999).ToString();
+            // ============================
+            // 1️⃣ Invalidate all previous OTPs
+            // ============================
+            var oldOtps = _context.Using<ForgotPassword>()
+                .GetByCondition(x => x.Email == email && x.IsUsed == false)
+                .ToList();
+
+            foreach (var otp in oldOtps)
+                otp.IsUsed = true;
+
+            // ============================
+            // 2️⃣ Generate NEW OTP
+            // ============================
+            var newOtp = new Random().Next(100000, 999999).ToString();
+
             var otpEntry = new ForgotPassword
             {
                 Email = email,
-                OTP = otp,
+                OTP = newOtp,
                 CreatedAt = DateTime.Now,
                 IsUsed = false
             };
 
             _context.Using<ForgotPassword>().Add(otpEntry);
 
-
+            // Send Email
             Common.SendEmail(
-               "Your OTP Code",
-               email,
-               true,                       // HTML enabled
-               "",                         // body will be replaced by template
-               "otp_message",              // template name without _enquiry.html
-               JsonConvert.SerializeObject(new { otp = otp })
-           );
-            
-
-            // Send Email (use your Common.SendEmail logic)
-            // await Common.SendEmail(...);
+                "Your OTP Code",
+                email,
+                true,
+                "",
+                "otp_message",
+                JsonConvert.SerializeObject(new { otp = newOtp })
+            );
 
             return Json(new { IsSuccess = true, Message = "OTP sent to email." });
         }
 
-        // Step 2: Verify OTP
+
+
         [HttpPost]
         public JsonResult ForgotPassword_VerifyOTP(string email, string otp)
         {
-            var record = _context.Using<ForgotPassword>()
-                .GetByCondition(f => f.Email == email && f.OTP == otp && !f.IsUsed)
+            //  Get latest OTP for user that is not used
+            var lastOtp = _context.Using<ForgotPassword>()
+                .GetByCondition(f => f.Email == email && f.IsUsed == false)
                 .OrderByDescending(f => f.CreatedAt)
                 .FirstOrDefault();
 
-            if (record == null)
+            if (lastOtp == null)
+                return Json(new { IsSuccess = false, Message = "OTP expired or not found." });
+
+            //  Check if OTP expired (5 minutes)
+
+            if ((DateTime.Now - lastOtp.CreatedAt).TotalMinutes >10)
+                return Json(new { IsSuccess = false, Message = "OTP expired (valid only 10 minutes)." });
+
+            //  Check if same OTP
+            if (lastOtp.OTP != otp)
                 return Json(new { IsSuccess = false, Message = "Invalid OTP." });
 
-            // Mark as used
-            record.IsUsed = true;
-            _context.Using<ForgotPassword>().Update(record);
+            // 4️⃣ Mark OTP as used
+            lastOtp.IsUsed = true;
 
             return Json(new { IsSuccess = true, Message = "OTP verified." });
         }
+
 
         // Step 3: Reset Password
         [HttpPost]

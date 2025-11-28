@@ -57,12 +57,12 @@ namespace MatchMaking.Controllers
 						}
 					}
 
-					if (!Common.IsUserLogged() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
+					if (!Common.IsUserLogged() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login", "forgotpassword", "forgotpassword_sendotp", "forgotpassword_verifyotp", "forgotpassword_resetpassword" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
 					{
 						context.Result = new RedirectResult(Url.Content("~/") + (string.IsNullOrEmpty(AreaName) ? "" : AreaName + "/") + "Home/Account");
 						return;
 					}
-					else if (!Common.IsUserLogged() && !Common.IsAdmin() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
+					else if (!Common.IsUserLogged() && !Common.IsAdmin() && !string.IsNullOrEmpty(AreaName) && !(Convert.ToString(ControllerName).ToLower() == "home" && (new string[] { "account", "login", "forgotpassword", "forgotpassword_sendotp", "forgotpassword_verifyotp", "forgotpassword_resetpassword" }).Any(x => x == Convert.ToString(ActionName).ToLower())))
 					{
 						context.Result = new RedirectResult(Url.Content("~/") + "Home/Login");
 						return;

@@ -14,9 +14,10 @@ namespace MatchMaking.Infra
 
 		public virtual DbSet<Menu> Menus { get; set; } = null!;
 		public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<JainGroup> JainGroup { get; set; } = null!;
-        public virtual DbSet<ForgotPassword> ForgotPassword { get; set; } = null!;
-        public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
+		public virtual DbSet<JainGroup> JainGroups { get; set; } = null!;
+		public virtual DbSet<Lov> Lovs { get; set; } = null!;
+		public virtual DbSet<ForgotPassword> ForgotPassword { get; set; } = null!;
+		public virtual DbSet<RoleMenuAccess> RoleMenuAccesses { get; set; } = null!;
 		public virtual DbSet<User> Users { get; set; } = null!;
 		public virtual DbSet<UserRoleMapping> UserRoleMappings { get; set; } = null!;
 		public virtual DbSet<UserMenuAccess> UserMenuAccesses { get; set; } = null;
@@ -25,98 +26,86 @@ namespace MatchMaking.Infra
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<Menu>(entity =>
-			{
-				entity.HasKey(e => new { e.Id, e.ParentId });
-
-				entity.ToTable("Menu");
-
-				entity.Property(e => e.Id).ValueGeneratedOnAdd();
-			});
-			//     modelBuilder.Entity<ForgotPassword>().ToTable("ForgetPassword")
-			//.HasKey(x => x.Id);
-
-			modelBuilder.Entity<ForgotPassword>(entity => 
+			modelBuilder.Entity<ForgotPassword>(entity =>
 			{
 				entity.HasKey(e => e.Id);
 				entity.ToTable("ForgetPassword");
 			});
 
-            modelBuilder.Entity<Role>(entity =>
+			modelBuilder.HasDefaultSchema("padhyaso_admin");
+
+			modelBuilder.Entity<JainGroup>(entity =>
 			{
-				entity.Property(e => e.Name).HasMaxLength(50);
+				entity.ToTable("JainGroup", "dbo");
+
+				entity.Property(e => e.Name)
+					.HasMaxLength(200)
+					.IsUnicode(false);
 			});
 
-			modelBuilder.Entity<RoleMenuAccess>(entity =>
+			modelBuilder.Entity<Lov>(entity =>
 			{
-				//entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete }); 
+				entity.HasNoKey();
 
-				entity.ToTable("RoleMenuAccess");
+				entity.ToTable("LOV", "dbo");
+
+				entity.Property(e => e.LovCode).HasColumnName("LOV_Code");
+
+				entity.Property(e => e.LovColumn).HasColumnName("LOV_Column");
+
+				entity.Property(e => e.LovDesc).HasColumnName("LOV_Desc");
 			});
 
-			modelBuilder.Entity<User>(entity =>
+			modelBuilder.Entity<Menu>(entity =>
 			{
-				entity.HasKey(e => new { e.Id });
+				entity.HasKey(e => new { e.Id, e.ParentId });
 
-				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
+				entity.ToTable("Menu", "dbo");
 
-				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
-
-				entity.Property(e => e.NextChangePasswordDate).HasColumnName("Next_Change_Password_Date");
-
-				entity.Property(e => e.NoOfWrongPasswordAttempts).HasColumnName("No_Of_Wrong_Password_Attempts");
+				entity.Property(e => e.Id).ValueGeneratedOnAdd();
 			});
 
-			modelBuilder.Entity<UserRoleMapping>(entity =>
+			modelBuilder.Entity<Profile>(entity =>
 			{
-                entity.HasKey(e => new { e.Id ,e.UserId, e.RoleId });
-                entity.ToTable("UserRoleMapping");
-			});
-            modelBuilder.Entity<JainGroup>(entity =>
-            {
-                entity.HasKey(e => new { e.Id });
-                entity.ToTable("JainGroup");
-            });
-            modelBuilder.Entity<UserMenuAccess>().ToTable("UserMenuAccess");
-            modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
-            modelBuilder.Entity<RoleMenuAccess>().HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
-            modelBuilder.Entity<Profile>(entity =>
-			{
-				entity.Property(e => e.BodyType).HasMaxLength(50);
+				entity.ToTable("Profiles", "dbo");
 
 				entity.Property(e => e.Address).HasMaxLength(100);
+
+				entity.Property(e => e.BodyType).HasMaxLength(50);
 
 				entity.Property(e => e.City).HasMaxLength(100);
 
 				entity.Property(e => e.Country).HasMaxLength(100);
 
-				entity.Property(e => e.CreatedBy).HasDefaultValueSql("((0))");
-
 				entity.Property(e => e.Education).HasMaxLength(200);
 
-				entity.Property(e => e.Ethnicity).HasMaxLength(100);
+				entity.Property(e => e.Diet).HasMaxLength(100);
 
 				entity.Property(e => e.EyeColor).HasMaxLength(50);
 
+				entity.Property(e => e.Fathername).HasMaxLength(100);
+
 				entity.Property(e => e.Firstname).HasMaxLength(100);
 
-				entity.Property(e => e.Mothername).HasMaxLength(100);
-
 				entity.Property(e => e.Gender).HasMaxLength(10);
-
-				entity.Property(e => e.LookingForGender).HasMaxLength(10);
-
-				entity.Property(e => e.MaritalStatus).HasMaxLength(10);
 
 				entity.Property(e => e.HairColor).HasMaxLength(50);
 
 				entity.Property(e => e.Height).HasMaxLength(50);
 
-				entity.Property(e => e.LastModifiedBy).HasDefaultValueSql("((0))");
+				entity.Property(e => e.Interests).HasMaxLength(100);
+
+				entity.Property(e => e.Language).HasMaxLength(100);
+
+				entity.Property(e => e.LookingForGender).HasMaxLength(10);
+
+				entity.Property(e => e.MaritalStatus).HasMaxLength(10);
 
 				entity.Property(e => e.MaternalSurname).HasMaxLength(100);
 
 				entity.Property(e => e.Mosal).HasMaxLength(100);
+
+				entity.Property(e => e.Mothername).HasMaxLength(100);
 
 				entity.Property(e => e.Occupation).HasMaxLength(200);
 
@@ -131,6 +120,41 @@ namespace MatchMaking.Infra
 				entity.Property(e => e.Weight).HasMaxLength(50);
 			});
 
+			modelBuilder.Entity<Role>(entity =>
+			{
+				entity.ToTable("Roles", "dbo");
+
+				entity.Property(e => e.Name).HasMaxLength(50);
+			});
+
+			modelBuilder.Entity<RoleMenuAccess>(entity =>
+			{
+				entity.HasNoKey();
+
+				entity.ToTable("RoleMenuAccess", "dbo");
+			});
+
+			modelBuilder.Entity<User>(entity =>
+			{
+				entity.ToTable("Users", "dbo");
+
+				entity.Property(e => e.NextChangePasswordDate).HasColumnName("Next_Change_Password_Date");
+
+				entity.Property(e => e.NoOfWrongPasswordAttempts).HasColumnName("No_Of_Wrong_Password_Attempts");
+			});
+
+			modelBuilder.Entity<UserMenuAccess>(entity =>
+			{
+				entity.HasNoKey();
+
+				entity.ToTable("UserMenuAccess", "dbo");
+			});
+
+			modelBuilder.Entity<UserRoleMapping>(entity =>
+			{
+				entity.ToTable("UserRoleMapping", "dbo");
+			});
+
 			OnModelCreatingPartial(modelBuilder);
 		}
 
@@ -140,7 +164,7 @@ namespace MatchMaking.Infra
 		{
 			var entities = (from entry in ChangeTracker.Entries()
 							where (entry.State == EntityState.Modified || entry.State == EntityState.Added)
-							//&& (entry.Entity.ToString() != (typeof(Doctor_Department_Mapping)).FullName)
+							&& !(new string[] { (typeof(RoleMenuAccess)).FullName, (typeof(UserMenuAccess)).FullName }).Any(x => x == entry.Entity.ToString())
 							select entry).ToList();
 
 			var user = Common.LoggedUser_Id();
@@ -179,10 +203,10 @@ namespace MatchMaking.Infra
 					}
 				}
 
-		    }
+			}
 
 
-				return base.SaveChanges();
+			return base.SaveChanges();
 		}
 	}
 

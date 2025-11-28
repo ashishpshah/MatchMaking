@@ -144,37 +144,59 @@
 																				<p class="info-name">Name</p>
 																				<p class="info-details">
 																					<input type="text" name="Firstname" value="@Model.Profile.Firstname" class="w-100 mb-0 py-1 px-2 border-1">
-																					<input type="text" name="Id" value="@Model.Profile.Id" class="d-none">
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">I'm a</p>
 																				<p class="info-details">
-																					<select id="Gender" name="Gender" class="">
-																						<option value="M">Male</option>
-																						<option value="F">Female</option>
-																						<option value="O">Others</option>
+																					<select id="Gender" name="Gender" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Gender"))
+																						{
+																							if (Model.Profile.Gender == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
 																					</select>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Loking for a</p>
 																				<p class="info-details">
-																					<select id="LookingForGender" name="LookingForGender" class="">
-																						<option value="M">Male</option>
-																						<option value="F">Female</option>
-																						<option value="O">Others</option>
+																					<select id="LookingForGender" name="LookingForGender" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Gender"))
+																						{
+																							if (Model.Profile.LookingForGender == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
 																					</select>
 																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Marital Status</p>
 																				<p class="info-details">
-																					<select id="MaritalStatus" name="MaritalStatus" class="">
-																						<option value="S">Single</option>
-																						<option value="D">Divorced</option>
-																						<option value="W">Widowed</option>
-																						<option value="S">Separated</option>
+																					<select id="MaritalStatus" name="MaritalStatus" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "MaritalStatus"))
+																						{
+																							if (Model.Profile.MaritalStatus == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
 																					</select>
 																				</p>
 																			</li>
@@ -191,11 +213,39 @@
 																			<br />
 																			<li>
 																				<p class="info-name">Education</p>
-																				<p class="info-details"><input type="text" name="Education" value="@Model.Profile.Education" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details">
+																					<select id="Education" name="Education" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Education"))
+																						{
+																							if (Model.Profile.Education == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																			<li>
 																				<p class="info-name">Occupation</p>
-																				<p class="info-details"><input type="text" name="Occupation" value="@Model.Profile.Occupation" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-details">
+																					<select id="Occupation" name="Occupation" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Occupation"))
+																						{
+																							if (Model.Profile.Occupation == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																		</ul>
 
@@ -204,30 +254,47 @@
 
 																<div class="info-card mb-20">
 																	<div class="info-card-title">
-																		<h6>Myself Summary</h6>
-																	</div>
-																	<div class="info-card-content">
-																		<p><textarea name="Summary" rows="3">@(Model.Profile != null && !string.IsNullOrEmpty(Model.Profile.Summary) ? Model.Profile.Summary : "")</textarea></p>
-																	</div>
-																</div>
-
-																<div class="info-card mb-20">
-																	<div class="info-card-title">
-																		<h6>Lifestyle</h6>
+																		<h6>Family details</h6>
 																	</div>
 																	<div class="info-card-content">
 																		<ul class="info-list">
 																			<li>
-																				<p class="info-name">Interest</p>
-																				<p class="info-details"><input type="text" name="Interests" value="@Model.Profile.Interests" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Jain Group</p>
+																				<p class="info-details">
+																					<select id="GroupId" name="GroupId" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "JainGroup"))
+																						{
+																							if (Model.Profile.GroupId.ToString() == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																			<li>
-																				<p class="info-name">Smoking</p>
-																				<p class="info-details"><input type="text" name="Smoking" value="@Model.Profile.Smoking" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Surname</p>
+																				<p class="info-details"><input type="text" name="PaternalSurname" value="@Model.Profile.PaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																			<li>
-																				<p class="info-name">Language</p>
-																				<p class="info-details"><input type="text" name="Language" value="@Model.Profile.Language" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Father's name</p>
+																				<p class="info-details"><input type="text" name="Fathername" value="@Model.Profile.Fathername" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																			</li>
+																			<li>
+																				<p class="info-name">Mother's name</p>
+																				<p class="info-details"><input type="text" name="Mothername" value="@Model.Profile.Mothername" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																			</li>
+																			<li>
+																				<p class="info-name">Mother’s Family name</p>
+																				<p class="info-details"><input type="text" name="MaternalSurname" value="@Model.Profile.MaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																			</li>
+																			<li>
+																				<p class="info-name">Mother’s native village (Mosal)</p>
+																				<p class="info-details"><input type="text" name="Mosal" value="@Model.Profile.Mosal" class="w-100 mb-0 py-1 px-2 border-1"></p>
 																			</li>
 																		</ul>
 
@@ -276,17 +343,26 @@
 																</div>
 																<div class="info-card mb-20">
 																	<div class="info-card-title">
-																		<h6>Family details</h6>
+																		<h6>Myself Summary</h6>
+																	</div>
+																	<div class="info-card-content">
+																		<p><textarea name="Summary" rows="3">@(Model.Profile != null && !string.IsNullOrEmpty(Model.Profile.Summary) ? Model.Profile.Summary : "")</textarea></p>
+																	</div>
+																</div>
+
+																<div class="info-card mb-20">
+																	<div class="info-card-title">
+																		<h6>Lifestyle</h6>
 																	</div>
 																	<div class="info-card-content">
 																		<ul class="info-list">
 																			<li>
-																				<p class="info-name">Jain Group</p>
+																				<p class="info-name">Interest</p>
 																				<p class="info-details">
-																					<select id="GroupId" name="GroupId" class="">
-																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "JG"))
+																					<select id="Interests" name="Interests" class="w-100" multiple>
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Interest"))
 																						{
-																							if (Model.Profile.GroupId.ToString() == item.Value)
+																							if (Model.Profile.Interests.Split(",").Contains(item.Value))
 																							{
 																								<option value="@item.Value" selected>@item.Text</option>
 																							}
@@ -299,37 +375,76 @@
 																				</p>
 																			</li>
 																			<li>
-																				<p class="info-name">Surname</p>
-																				<p class="info-details"><input type="text" name="PaternalSurname" value="@Model.Profile.PaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Smoking</p>
+																				<p class="info-details">
+																					<select id="Smoking" name="Smoking" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Smoking"))
+																						{
+																							if (Model.Profile.Smoking == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																			<li>
-																				<p class="info-name">Father's name</p>
-																				<p class="info-details"><input type="text" name="Fathername" value="@Model.Profile.Fathername" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Diet</p>
+																				<p class="info-details">
+																					<select id="Diet" name="Diet" class="w-100">
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Diet"))
+																						{
+																							if (Model.Profile.Diet == item.Value)
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																			<li>
-																				<p class="info-name">Mother's name</p>
-																				<p class="info-details"><input type="text" name="Mothername" value="@Model.Profile.Mothername" class="w-100 mb-0 py-1 px-2 border-1"></p>
-																			</li>
-																			<li>
-																				<p class="info-name">Mother’s Family name</p>
-																				<p class="info-details"><input type="text" name="MaternalSurname" value="@Model.Profile.MaternalSurname" class="w-100 mb-0 py-1 px-2 border-1"></p>
-																			</li>
-																			<li>
-																				<p class="info-name">Mother’s native village (Mosal)</p>
-																				<p class="info-details"><input type="text" name="Mosal" value="@Model.Profile.Mosal" class="w-100 mb-0 py-1 px-2 border-1"></p>
+																				<p class="info-name">Language</p>
+																				<p class="info-details">
+																					<select id="Language" name="Language" class="w-100" multiple>
+																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Language"))
+																						{
+																							if (Model.Profile.Language.Split(",").Contains(item.Value))
+																							{
+																								<option value="@item.Value" selected>@item.Text</option>
+																							}
+																							else
+																							{
+																								<option value="@item.Value">@item.Text</option>
+																							}
+																						}
+																					</select>
+																				</p>
 																			</li>
 																		</ul>
 
 																	</div>
 																</div>
-																<div class="info-card mb-20">
-																	<div class="info-card-title">
-																		<button type="button" class="lab-btn pt-0 w-100 btnSubmit" data-form="formProfile">
-																			<span>Submit</span>
-																		</button>
-																	</div>
-																</div>
 															</aside>
+														</div>
+													</div>
+
+													<div class="row w-100">
+														<div class="col-xl-12">
+															<div class="info-card bg-transparent border-0 mb-20">
+																<div class="info-card-title border-0 text-center pt-0">
+																	<button type="button" class="lab-btn pt-0 w-50 btnSubmit" data-form="formProfile">
+																		<span>Submit</span>
+																	</button>
+																</div>
+															</div>
 														</div>
 													</div>
 

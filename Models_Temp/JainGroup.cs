@@ -3,14 +3,10 @@ using System.Collections.Generic;
 
 namespace MatchMaking.Models_Temp
 {
-    public partial class User
+    public partial class JainGroup
     {
         public long Id { get; set; }
-        public string? UserName { get; set; }
-        public string? Password { get; set; }
-        public string? Email { get; set; }
-        public int? NoOfWrongPasswordAttempts { get; set; }
-        public DateTime? NextChangePasswordDate { get; set; }
+        public string Name { get; set; } = null!;
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public long CreatedBy { get; set; }

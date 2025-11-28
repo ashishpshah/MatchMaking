@@ -14,7 +14,14 @@ namespace MatchMaking
 		public bool IsUpdate { get; set; }
 		public bool IsDelete { get; set; }
 
-        [NotMapped] public string RoleName { get; set; } = null;
+		[NotMapped] public override bool IsActive { get; set; }
+		[NotMapped] public override bool IsDeleted { get; set; }
+		[NotMapped] public override long CreatedBy { get; set; }
+		[NotMapped] public override DateTime? CreatedDate { get; set; }
+		[NotMapped] public override long LastModifiedBy { get; set; }
+		[NotMapped] public override DateTime? LastModifiedDate { get; set; }
+
+		[NotMapped] public string RoleName { get; set; } = null;
         [NotMapped] public string MenuName { get; set; } = null;
         [NotMapped] public string Area { get; set; } = null;
         [NotMapped] public string Controller { get; set; } = null;
@@ -27,13 +34,20 @@ namespace MatchMaking
 	public partial class UserMenuAccess : EntitiesBase
 	{
 		[NotMapped] public override long Id { get; set; }
-		public long RoleId { get; set; }
 		public long UserId { get; set; }
+		public long RoleId { get; set; }
 		public long MenuId { get; set; }
+		public bool IsRead { get; set; }
 		public bool IsCreate { get; set; }
 		public bool IsUpdate { get; set; }
-		public bool IsRead { get; set; }
 		public bool IsDelete { get; set; }
+
+		[NotMapped] public override bool IsActive { get; set; }
+		[NotMapped] public override bool IsDeleted { get; set; }
+		[NotMapped] public override long CreatedBy { get; set; }
+		[NotMapped] public override DateTime? CreatedDate { get; set; }
+		[NotMapped] public override long LastModifiedBy { get; set; }
+		[NotMapped] public override DateTime? LastModifiedDate { get; set; }
 
 		[NotMapped] public string RoleName { get; set; } = null;
 		[NotMapped] public string UserName { get; set; } = null;

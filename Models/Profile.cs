@@ -34,7 +34,7 @@ namespace MatchMaking.Models
 		public string? HairColor { get; set; }
 		public string? EyeColor { get; set; }
 		public string? BodyType { get; set; }
-		public string? Ethnicity { get; set; }
+		public string? Diet { get; set; }
 		public string? Language { get; set; }
 
 		public string? FullName { get { return $"{Firstname} {PaternalSurname}"; } }

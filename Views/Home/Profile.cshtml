@@ -150,35 +150,35 @@
 
 												</div>
 											</div>
-											@if (Model != null && !string.IsNullOrEmpty(Model.Summary))
-											{
-												<div class="info-card mb-20">
-													<div class="info-card-title">
-														<h6>Myself Summary</h6>
-													</div>
-													<div class="info-card-content">
-														<p>@Model.Summary</p>
-													</div>
-												</div>
-											}
-
 											<div class="info-card mb-20">
 												<div class="info-card-title">
-													<h6>Lifestyle</h6>
+													<h6>Family details</h6>
 												</div>
 												<div class="info-card-content">
 													<ul class="info-list">
 														<li>
-															<p class="info-name">Interest</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Interests) ? Model.Interests : "")</p>
+															<p class="info-name">Jain Group</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.GroupName) ? Model.GroupName : "")</p>
 														</li>
 														<li>
-															<p class="info-name">Smoking</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Smoking) ? Model.Smoking : "")</p>
+															<p class="info-name">Surname</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.PaternalSurname) ? Model.PaternalSurname : "")</p>
 														</li>
 														<li>
-															<p class="info-name">Language</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Language) ? Model.Language : "")</p>
+															<p class="info-name">Father's name</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Fathername) ? Model.Fathername : "")</p>
+														</li>
+														<li>
+															<p class="info-name">Mother's name</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Mothername) ? Model.Mothername : "")</p>
+														</li>
+														<li>
+															<p class="info-name">Mother’s Family name</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.MaternalSurname) ? Model.MaternalSurname : "")</p>
+														</li>
+														<li>
+															<p class="info-name">Mother’s native village (Mosal)</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Mosal) ? Model.Mosal : "")</p>
 														</li>
 													</ul>
 
@@ -219,35 +219,35 @@
 
 												</div>
 											</div>
+											@if (Model != null && !string.IsNullOrEmpty(Model.Summary))
+											{
+												<div class="info-card mb-20">
+													<div class="info-card-title">
+														<h6>Myself Summary</h6>
+													</div>
+													<div class="info-card-content">
+														<p>@Model.Summary</p>
+													</div>
+												</div>
+											}
+
 											<div class="info-card mb-20">
 												<div class="info-card-title">
-													<h6>Family details</h6>
+													<h6>Lifestyle</h6>
 												</div>
 												<div class="info-card-content">
 													<ul class="info-list">
 														<li>
-															<p class="info-name">Jain Group</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.GroupName) ? Model.GroupName : "")</p>
+															<p class="info-name">Interest</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Interests) ? Model.Interests : "")</p>
 														</li>
 														<li>
-															<p class="info-name">Surname</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.PaternalSurname) ? Model.PaternalSurname : "")</p>
+															<p class="info-name">Smoking</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Smoking) ? Model.Smoking : "")</p>
 														</li>
 														<li>
-															<p class="info-name">Father's name</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Fathername) ? Model.Fathername : "")</p>
-														</li>
-														<li>
-															<p class="info-name">Mother's name</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Mothername) ? Model.Mothername : "")</p>
-														</li>
-														<li>
-															<p class="info-name">Mother’s Family name</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.MaternalSurname) ? Model.MaternalSurname : "")</p>
-														</li>
-														<li>
-															<p class="info-name">Mother’s native village (Mosal)</p>
-															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Mosal) ? Model.Mosal : "")</p>
+															<p class="info-name">Language</p>
+															<p class="info-details">@(Model != null && !string.IsNullOrEmpty(Model.Language) ? Model.Language : "")</p>
 														</li>
 													</ul>
 

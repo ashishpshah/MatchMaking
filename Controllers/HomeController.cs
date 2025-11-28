@@ -5,6 +5,7 @@ using MatchMaking.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Packaging;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Globalization;
@@ -98,9 +99,20 @@ namespace MatchMaking.Controllers
 
 			var jainGroups = _context.Using<JainGroup>().GetAll().ToList();
 
+			List<Lov> SelectListItems = _context.Using<Lov>().GetAll().ToList();
+
 			if (profile != null)
 			{
 				profile.GroupName = jainGroups.Where(x => x.Id == profile.GroupId).Select(x => x.Name).FirstOrDefault();
+				profile.Gender = SelectListItems.Where(x => x.LovColumn == "Gender" && x.LovCode == profile.Gender).Select(x => x.LovDesc).FirstOrDefault();
+				profile.LookingForGender = SelectListItems.Where(x => x.LovColumn == "Gender" && x.LovCode == profile.LookingForGender).Select(x => x.LovDesc).FirstOrDefault();
+				profile.MaritalStatus = SelectListItems.Where(x => x.LovColumn == "MaritalStatus" && x.LovCode == profile.MaritalStatus).Select(x => x.LovDesc).FirstOrDefault();
+				profile.Education = SelectListItems.Where(x => x.LovColumn == "Education" && x.LovCode == profile.Education).Select(x => x.LovDesc).FirstOrDefault();
+				profile.Occupation = SelectListItems.Where(x => x.LovColumn == "Occupation" && x.LovCode == profile.Occupation).Select(x => x.LovDesc).FirstOrDefault();
+				profile.Smoking = SelectListItems.Where(x => x.LovColumn == "Smoking" && x.LovCode == profile.Smoking).Select(x => x.LovDesc).FirstOrDefault();
+				profile.Diet = SelectListItems.Where(x => x.LovColumn == "Diet" && x.LovCode == profile.Diet).Select(x => x.LovDesc).FirstOrDefault();
+				profile.Interests = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Interest" && profile.Interests.Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
+				profile.Language = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Language" && profile.Language.Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
 			}
 
 			return View(profile ?? new Profile());
@@ -110,10 +122,15 @@ namespace MatchMaking.Controllers
 		{
 			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
 
-			var jainGroups = _context.Using<JainGroup>().GetByCondition(x => x.IsActive == true).ToList()
-				.Select(x => new SelectListItem_Custom(x.Id.ToString(), x.Name, "JG")).ToList();
+			List<SelectListItem_Custom> SelectListItems = _context.Using<Lov>().GetAll().OrderBy(x => x.LovColumn).ThenBy(x => x.DisplayOrder).ToList()
+				.Select(x => new SelectListItem_Custom(x.LovCode, x.LovDesc, x.LovColumn)).ToList();
 
-			return View((profile ?? new Profile(), jainGroups));
+			var jainGroups = _context.Using<JainGroup>().GetByCondition(x => x.IsActive == true).ToList()
+				.Select(x => new SelectListItem_Custom(x.Id.ToString(), x.Name, "JainGroup")).ToList();
+
+			if (SelectListItems != null) SelectListItems.AddRange(jainGroups);
+
+			return View((profile ?? new Profile(), SelectListItems));
 		}
 
 		[HttpPost]
@@ -143,7 +160,7 @@ namespace MatchMaking.Controllers
 					{
 						try
 						{
-							var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId && x.Id == viewModel.Id).FirstOrDefault();
+							var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
 
 							if (profile != null)
 							{
@@ -172,7 +189,7 @@ namespace MatchMaking.Controllers
 								profile.HairColor = viewModel.HairColor;
 								profile.EyeColor = viewModel.EyeColor;
 								profile.BodyType = viewModel.BodyType;
-								profile.Ethnicity = viewModel.Ethnicity;
+								profile.Diet = viewModel.Diet;
 								profile.Language = viewModel.Language;
 								profile.LastModifiedBy = AppHttpContextAccessor.LoggedUserId;
 								profile.LastModifiedDate = DateTime.Now;
@@ -187,45 +204,6 @@ namespace MatchMaking.Controllers
 
 								viewModel = _context.Using<Profile>().Add(viewModel);
 							}
-
-							//try
-							//{
-							//	if (Request.Form.Files != null && Request.Form.Files.Count > 0 && Request.Form.Files.Any(x => x.Length > 0))
-							//	{
-							//		foreach (var fileItem in Request.Form.Files.Where(x => x.Length > 0).ToList())
-							//		{
-							//			if (!string.IsNullOrEmpty(fileItem.Name) && (fileItem.Name == "fileCover" || fileItem.Name == "fileProfile"))
-							//			{
-							//				string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", fileItem.Name.Replace("file", ""));
-							//				if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
-							//				string fullPath = Path.Combine(uploadFolder, viewModel.Id + ".jpg");
-							//				if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
-							//				using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
-							//			}
-							//			else
-							//			{
-							//				string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Others");
-							//				if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
-
-							//				string fullPath = Path.Combine(uploadFolder, viewModel.Id + ".jpg");
-
-							//				string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
-
-							//				int counter = 1;
-							//				while (System.IO.File.Exists(fullPath))
-							//				{
-							//					string newFileName = $"{fileNameWithoutExtension}_{counter}.jpg";
-
-							//					fullPath = Path.Combine(uploadFolder, newFileName);
-							//					counter++;
-							//				}
-
-							//				using (var stream = new FileStream(fullPath, FileMode.Create)) { fileItem.CopyTo(stream); }
-							//			}
-							//		}
-							//	}
-							//}
-							//catch { }
 
 							CommonViewModel.IsConfirm = true;
 							CommonViewModel.IsSuccess = true;
@@ -358,7 +336,7 @@ namespace MatchMaking.Controllers
 
 					if (!_context.Using<User>().Any(x => x.UserName.ToLower() == Convert.ToString((viewModel.Username)).ToLower()))
 					{
-						CommonViewModel.Message = "Username not already exist";
+						CommonViewModel.Message = "Username not exist";
 						CommonViewModel.IsSuccess = false;
 						CommonViewModel.StatusCode = ResponseStatusCode.Error;
 
@@ -497,8 +475,7 @@ namespace MatchMaking.Controllers
 								UserName = Convert.ToString((viewModel.Username)),
 								Password = Common.Encrypt(Convert.ToString((viewModel.Password))),
 								NoOfWrongPasswordAttempts = 5,
-								NextChangePasswordDate = DateTime.Now,
-								CreatedBy = 1
+								NextChangePasswordDate = DateTime.Now
 							};
 
 							user = _context.Using<User>().Add(user);
@@ -507,13 +484,13 @@ namespace MatchMaking.Controllers
 
 							if (role == null)
 							{
-								role = new Role() { Name = "Candidate", IsAdmin = true, CreatedBy = 1 };
+								role = new Role() { Name = "Candidate", IsAdmin = true };
 								role = _context.Using<Role>().Add(role);
 							}
 
 							if (role != null)
 							{
-								var userRole = new UserRoleMapping() { UserId = user.Id, RoleId = role.Id, CreatedBy = 1 };
+								var userRole = new UserRoleMapping() { UserId = user.Id, RoleId = role.Id };
 								_context.Using<UserRoleMapping>().Add(userRole);
 							}
 
@@ -522,10 +499,11 @@ namespace MatchMaking.Controllers
 
 							if (profile == null)
 							{
-								profile = new Profile() { UserId = user.Id, IsActive = true, IsDeleted = false, CreatedBy = 1, CreatedDate = DateTime.Now };
+								profile = new Profile() { UserId = user.Id };
 								profile = _context.Using<Profile>().Add(profile);
 							}
 
+							Common.Set_Session_Int(SessionKey.KEY_USER_ID, Convert.ToInt32(user.Id));
 
 							CommonViewModel.IsConfirm = true;
 							CommonViewModel.IsSuccess = true;

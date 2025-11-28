@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace MatchMaking.Models_Temp
 {
-    public partial class RoleMenuAccess
+    public partial class UserMenuAccess
     {
+        public long UserId { get; set; }
         public long RoleId { get; set; }
         public long MenuId { get; set; }
         public bool IsRead { get; set; }

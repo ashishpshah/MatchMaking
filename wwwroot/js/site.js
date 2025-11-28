@@ -191,7 +191,7 @@ function fnSubmitForm($id) {
             if ((typeof input.value != 'undefined' && input.value != null && input.value.length > 0) && !input.hasAttribute('disabled') && !$(input).hasClass('temp'))
                 array.filter(function (obj) {
                     if (obj['name'] == $(input).attr('name')) {
-                        obj['value'] = $('#' + $(input).attr('id') + ' option:selected').val()
+                        obj['value'] = $('#' + $(input).attr('id') + ' option:selected').map(function () { return this.value; }).get().join(',');
                     }
                 })
         });
@@ -242,7 +242,7 @@ function fnSubmitForm($id) {
             processData: false,
             dataType: "json",
             success: function (response) {
-                debugger;
+                
                 try {
                     ShowLoader(false);
                     if (response.IsSuccess == true) {

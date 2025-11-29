@@ -29,7 +29,7 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<ForgotPassword>(entity =>
 			{
 				entity.HasKey(e => e.Id);
-				entity.ToTable("ForgetPassword");
+				entity.ToTable("ForgetPassword" ,"dbo");
 			});
 
 			modelBuilder.HasDefaultSchema("padhyaso_admin");
@@ -37,8 +37,8 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<JainGroup>(entity =>
 			{
 				entity.ToTable("JainGroup", "dbo");
-
-				entity.Property(e => e.Name)
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name)
 					.HasMaxLength(200)
 					.IsUnicode(false);
 			});
@@ -123,15 +123,16 @@ namespace MatchMaking.Infra
 			modelBuilder.Entity<Role>(entity =>
 			{
 				entity.ToTable("Roles", "dbo");
+				entity.HasKey(e => new { e.Id });
 
-				entity.Property(e => e.Name).HasMaxLength(50);
+                entity.Property(e => e.Name).HasMaxLength(50);
 			});
 
 			modelBuilder.Entity<RoleMenuAccess>(entity =>
 			{
-				entity.HasNoKey();
+				entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
 
-				entity.ToTable("RoleMenuAccess", "dbo");
+                entity.ToTable("RoleMenuAccess", "dbo");
 			});
 
 			modelBuilder.Entity<User>(entity =>
@@ -145,9 +146,9 @@ namespace MatchMaking.Infra
 
 			modelBuilder.Entity<UserMenuAccess>(entity =>
 			{
-				entity.HasNoKey();
+				entity.HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
 
-				entity.ToTable("UserMenuAccess", "dbo");
+                entity.ToTable("UserMenuAccess", "dbo");
 			});
 
 			modelBuilder.Entity<UserRoleMapping>(entity =>
@@ -155,7 +156,10 @@ namespace MatchMaking.Infra
 				entity.ToTable("UserRoleMapping", "dbo");
 			});
 
-			OnModelCreatingPartial(modelBuilder);
+            modelBuilder.Entity<Role>().HasKey(e => new { e.Id });
+            modelBuilder.Entity<UserMenuAccess>().HasKey(e => new { e.UserId, e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
+            modelBuilder.Entity<RoleMenuAccess>().HasKey(e => new { e.RoleId, e.MenuId, e.IsCreate, e.IsUpdate, e.IsRead, e.IsDelete });
+            OnModelCreatingPartial(modelBuilder);
 		}
 
 		partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

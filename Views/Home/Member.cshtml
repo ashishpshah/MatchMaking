@@ -1,420 +1,241 @@
-﻿@{
-    ViewData["Title"] = "Members";
+﻿@using MatchMaking.Areas.Admin.Models
+@using MatchMaking.Infra
+@model (List<Profile> listProfile, List<SelectListItem_Custom> SelectListItems)
+
+@{
+	ViewData["Title"] = "Members";
+
+	string folderPath = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile");
 }
 
 
+@section Styles {
+	<style type="text/css">
+		.member-card {
+			display: none;
+			opacity: 0;
+			transition: opacity .4s ease-in-out;
+		}
+
+			.member-card.show {
+				display: block;
+				opacity: 1;
+			}
+
+		/* Active pagination link */
+		#pagination li a.active {
+			background: #df314d;
+			color: #fff !important;
+			border-radius: 4px;
+			padding: 5px 10px;
+		}
+
+		/* Mobile-friendly */
+		@@media (max-width: 480px) {
+			#pagination li a {
+				padding: 4px 6px;
+				font-size: 14px;
+			}
+
+			#pagination li {
+				margin: 2px;
+			}
+		}
+	</style>
+}
+
 <!-- ==========Page Header Section Start Here========== -->
 <section class="page-header-section style-1 bg-pink">
-    <div class="container">
-        <div class="page-header-content">
-            <div class="page-header-inner">
-                <div class="page-title">
-                    <h2>Dating Members</h2>
-                </div>
-                <ol class="breadcrumb">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="active">Members</li>
-                </ol>
-            </div>
-        </div>
-    </div>
+	<div class="container">
+		<div class="page-header-content">
+			<div class="page-header-inner">
+				<div class="page-title">
+					<h2>Dating Members</h2>
+				</div>
+				<ol class="breadcrumb">
+					<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+					<li class="active">Members</li>
+				</ol>
+			</div>
+		</div>
+	</div>
 </section>
 <!-- ==========Page Header Section Ends Here========== -->
 <!-- ==========Member page Section Start Here========== -->
 <section class="member-page-section">
-    <div class="container">
-        <div class="member-filter">
-            <div class="member-filter-inner">
-                <form action="/" class="filter-form">
-                    <div class="gender">
-                        <div class="custom-select right w-100">
-                            <select name="gender" id="gender" class="">
-                                <option value="0">I am a </option>
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                                <option value="3">Others</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="person">
-                        <div class="custom-select right w-100">
-                            <select name="gender" id="gender-two" class="">
-                                <option value="0">Looking for</option>
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                                <option value="3">Others</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="age">
-                        <div class="right d-flex justify-content-between w-100">
-                            <div class="custom-select">
-                                <select name="age-start" id="age">
-                                    <option value="1">18</option>
-                                    <option value="2">19</option>
-                                    <option value="3">20</option>
-                                    <option value="4">21</option>
-                                    <option value="5">22</option>
-                                    <option value="6">23</option>
-                                    <option value="7">24</option>
-                                    <option value="8">25</option>
-                                    <option value="9">26</option>
-                                    <option value="10">27</option>
-                                    <option value="11">28</option>
-                                    <option value="13">29</option>
-                                    <option value="14">30</option>
-                                </select>
-                            </div>
+	<div class="container">
+		<div class="member-filter">
+			<div class="member-filter-inner">
+				<form action="/" class="filter-form">
+					<div class="person">
+						<div class="custom-select right w-100">
+							<select name="gender" id="gender-two" class="">
+								<option value="0">Looking for</option>
+								@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Gender"))
+								{
+									<option value="@item.Value">@item.Text</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="age">
+						<div class="right d-flex justify-content-between w-100">
+							<div class="form-group me-3">
+								<input type="text" name="age-start" id="age-start" class="" placeholder="18" style="background: #f9f9f9 !important; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; box-shadow: none;" />
+							</div>
+							<div class="form-group me-3">
+								<input type="text" name="age-end" id="age-end" class="" placeholder="36" style="background: #f9f9f9 !important; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, 0.1); outline: none; box-shadow: none;" />
+							</div>
+						</div>
+					</div>
+					<div class="city">
+						<div class="custom-select right w-100">
+							<select name="GroupId" id="GroupId" class="">
+								<option value="0"> Select Jain Group </option>
+								@foreach (var item in Model.SelectListItems.Where(x => x.Group == "JainGroup"))
+								{
+									<option value="@item.Value">@item.Text</option>
+								}
+							</select>
+						</div>
+					</div>
+					<button class="lab-btn" type="submit">Search now <i class="icofont-search-2"></i></button>
+				</form>
+			</div>
+		</div>
+		<div class="member-wrapper">
+			<div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center">
+				@if (Model.listProfile != null)
+				{
+					foreach (var profile in Model.listProfile)
+					{
+						<div class="col">
+							<div class="lab-item member-item style-1 style-2">
+								<div class="lab-inner">
+									<div class="lab-thumb">
+										@if (System.IO.File.Exists(System.IO.Path.Combine(folderPath, profile.Id + ".jpg")))
+										{
+											<img src="@(System.IO.Path.Combine(folderPath, profile.Id + ".jpg").Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/"))" alt="member-img">
+										}
+										else
+										{
+											<img src="~/no_image_available.png" alt="member-img">
+										}
 
-                            <div class="custom-select">
-                                <select name="age-end" id="age-two">
-                                    <option value="1">36</option>
-                                    <option value="2">19</option>
-                                    <option value="3">20</option>
-                                    <option value="4">21</option>
-                                    <option value="5">22</option>
-                                    <option value="6">23</option>
-                                    <option value="7">24</option>
-                                    <option value="8">25</option>
-                                    <option value="9">26</option>
-                                    <option value="10">27</option>
-                                    <option value="11">28</option>
-                                    <option value="13">29</option>
-                                    <option value="14">30</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="city">
-                        <div class="custom-select right w-100">
-                            <select name="country" id="country" class="">
-                                <option value="0">
-                                    Choose Your Country
-                                </option>
-                                <option value="1">USA</option>
-                                <option value="2">UK</option>
-                                <option value="3">Spain</option>
-                                <option value="4">Brazil</option>
-                                <option value="5">France</option>
-                                <option value="6">Newzeland</option>
-                                <option value="7">Australia</option>
-                                <option value="8">Bangladesh</option>
-                                <option value="9">Turki</option>
-                                <option value="10">Chine</option>
-                                <option value="11">India</option>
-                                <option value="12">Canada</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="lab-btn" type="submit">Search now <i class="icofont-search-2"></i></button>
-                </form>
-            </div>
-        </div>
-        <div class="member-wrapper">
-            <ul class="member-info mb-4">
-                <li class="all-member">
-                    <p>All Members </p>
-                    <p>20 365 587</p>
-                </li>
-                <li class="member-cat">
-                    <div class="custom-select right w-100">
-                        <select name="member" id="member-cat" class="">
-                            <option value="0">Newest Registerd</option>
-                            <option value="1">Oldest</option>
-                            <option value="2">Popular</option>
-                            <option value="3">Most Active</option>
-                        </select>
-                    </div>
-                </li>
-            </ul>
-            <div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center">
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/01.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Tenma Shyna</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/02.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Maya Statham</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/03.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Cristina Maria</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/04.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Gaurav-Singh</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/05.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Gihan-Fernando</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/06.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/07.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Sweet Admin</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/08.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Gyan-Baffour</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/09.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Zeahra Maria</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/10.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/11.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/12.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/13.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/14.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/15.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/16.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/17.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/18.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/19.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="lab-item member-item style-1 style-2">
-                        <div class="lab-inner">
-                            <div class="lab-thumb">
-                                <img src="~/assets/images/member/20.jpg" alt="member-img">
-                            </div>
-                            <div class="lab-content">
-                                <h6><a asp-area="" asp-controller="Home" asp-action="Profile">Andrea Guido</a> </h6>
-                                <p>Active 1 Day</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="paginations">
-                <ul class="lab-ul d-flex flex-wrap justify-content-center mb-1">
-                    <li>
-                        <a href="#"><i class="icofont-rounded-double-left"></i></a>
-                    </li>
-                    <li>
-                        <a href="#">1</a>
-                    </li>
-                    <li class="d-none d-sm-block">
-                        <a href="#">2</a>
-                    </li>
-                    <li>
-                        <a href="#">...</a>
-                    </li>
-                    <li class="d-none d-sm-block">
-                        <a href="#">4</a>
-                    </li>
-                    <li>
-                        <a href="#">5</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="icofont-rounded-double-right"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
+									</div>
+									<div class="lab-content">
+										<h6>
+											<a href="#" data-bs-toggle="modal" data-bs-target="#modalProfile" data-id="@profile.Id" class="open-profile">@profile.FullName</a>
+										</h6>
+										<div class="d-flex justify-content-between w-100 px-3">
+											<p>@profile.Age years</p>
+											<p>@profile.Gender</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				}
+
+			</div>
+			<div class="paginations">
+				<ul id="pagination" class="lab-ul d-flex flex-wrap justify-content-center mb-1"></ul>
+			</div>
+		</div>
+	</div>
 </section>
 <!-- ==========Member page Section Ends Here========== -->
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			var itemsPerPage = 10;
+			var items = $(".member-item");
+			var totalItems = items.length;
+			var totalPages = Math.ceil(totalItems / itemsPerPage);
+			var currentPage = 1;
+
+			function showPage(page) {
+				currentPage = page;
+
+				var start = (page - 1) * itemsPerPage;
+				var end = start + itemsPerPage;
+
+				items.hide();
+				items.slice(start, end).show();
+
+				buildPagination();
+			}
+
+			function buildPagination() {
+				var html = "";
+
+				// FIRST <<
+				html += "<li><a href='#' class='go-page' data-page='1'><i class='icofont-rounded-double-left'></i></a></li>";
+
+				// PREVIOUS
+				var prevPage = currentPage - 1 <= 0 ? 1 : currentPage - 1;
+				html += "<li><a href='#' class='go-page' data-page='" + prevPage + "'><i class='icofont-rounded-left'></i></a></li>";
+
+				var range = 2;
+				var startPage = Math.max(1, currentPage - range);
+				var endPage = Math.min(totalPages, currentPage + range);
+
+				// LEFT DOTS
+				if (startPage > 1) {
+					html += "<li><a href='#' class='go-page' data-page='1'>1</a></li>";
+
+					if (startPage > 2) {
+						html += "<li><a href='#'>...</a></li>";
+					}
+				}
+
+				// PAGE NUMBERS
+				for (var i = startPage; i <= endPage; i++) {
+					html += "<li><a href='#' class='go-page " + (i === currentPage ? "active" : "") + "' data-page='" + i + "'>" + i + "</a></li>";
+				}
+
+				// RIGHT DOTS
+				if (endPage < totalPages) {
+					if (endPage < totalPages - 1) {
+						html += "<li><a href='#'>...</a></li>";
+					}
+					html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'>" + totalPages + "</a></li>";
+				}
+
+				// NEXT
+				var nextPage = currentPage + 1 >= totalPages ? totalPages : currentPage + 1;
+				html += "<li><a href='#' class='go-page' data-page='" + nextPage + "'><i class='icofont-rounded-right'></i></a></li>";
+
+				// LAST >>
+				html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'><i class='icofont-rounded-double-right'></i></a></li>";
+
+				$("#pagination").html(html);
+			}
+
+			// CLICK EVENT
+			$(document).on("click", ".go-page", function (e) {
+				e.preventDefault();
+				var page = parseInt($(this).data("page"));
+				showPage(page);
+			});
+
+			// INITIAL
+			showPage(1);
+		});
+
+		$(document).on("click", ".open-profile", function (e) {
+			e.preventDefault();
+
+			var id = $(this).data("id");
+
+			$("#profileModalContent").html("<p>Loading...</p>");
+
+			$.get("@Url.Action("Profile","Home")?id=" + id, function (data) {
+				$("#profileModalContent").html(data);
+			});
+		});
+
+	</script>
+}

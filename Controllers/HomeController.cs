@@ -2,6 +2,7 @@
 using MatchMaking.Infra;
 using MatchMaking.Infra.Services;
 using MatchMaking.Models;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -75,9 +76,39 @@ namespace MatchMaking.Controllers
 			return View();
 		}
 
-		public IActionResult Member()
+		public IActionResult Member(string? Gender = null, int ageStart = 0, int ageEnd = 0, int GroupId = 0, bool isFilter = false)
 		{
-			return View();
+			var _listProfile = _context.Using<Profile>().GetByCondition(x => x.IsActive == true && x.UserId != AppHttpContextAccessor.LoggedUserId).ToList();
+
+			var listProfile = _listProfile//.Where(x => System.IO.File.Exists(System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile", x.Id + ".jpg")))
+				.OrderBy(r => Guid.NewGuid()).Take(30).ToList();
+
+			List<SelectListItem_Custom> SelectListItems = _context.Using<Lov>().GetByCondition(x => x.LovColumn == "Gender").OrderBy(x => x.DisplayOrder).ToList()
+				.Select(x => new SelectListItem_Custom(x.LovCode, x.LovDesc, x.LovColumn)).ToList();
+
+			var jainGroups = _context.Using<JainGroup>().GetByCondition(x => x.IsActive == true).ToList()
+				.Select(x => new SelectListItem_Custom(x.Id.ToString(), x.Name, "JainGroup")).ToList();
+
+			if (SelectListItems != null) SelectListItems.AddRange(jainGroups);
+
+			foreach (var profile in listProfile)
+			{
+				profile.GroupName = jainGroups.Where(x => x.Value == profile.GroupId.ToString()).Select(x => x.Text).FirstOrDefault();
+				profile.Gender = SelectListItems.Where(x => x.Group == "Gender" && x.Value == profile.Gender).Select(x => x.Text).FirstOrDefault();
+				profile.LookingForGender = SelectListItems.Where(x => x.Group == "Gender" && x.Value == profile.LookingForGender).Select(x => x.Text).FirstOrDefault();
+				profile.MaritalStatus = SelectListItems.Where(x => x.Group == "MaritalStatus" && x.Value == profile.MaritalStatus).Select(x => x.Text).FirstOrDefault();
+				profile.Education = SelectListItems.Where(x => x.Group == "Education" && x.Value == profile.Education).Select(x => x.Text).FirstOrDefault();
+				profile.Occupation = SelectListItems.Where(x => x.Group == "Occupation" && x.Value == profile.Occupation).Select(x => x.Text).FirstOrDefault();
+				profile.Smoking = SelectListItems.Where(x => x.Group == "Smoking" && x.Value == profile.Smoking).Select(x => x.Text).FirstOrDefault();
+				profile.Diet = SelectListItems.Where(x => x.Group == "Diet" && x.Value == profile.Diet).Select(x => x.Text).FirstOrDefault();
+				profile.Interests = string.Join(", ", SelectListItems.Where(x => x.Group == "Interest" && profile.Interests.Split(",").Contains(x.Value)).Select(x => x.Text).ToArray());
+				profile.Language = string.Join(", ", SelectListItems.Where(x => x.Group == "Language" && profile.Language.Split(",").Contains(x.Value)).Select(x => x.Text).ToArray());
+			}
+
+			if (!isFilter)
+				return View((listProfile ?? new List<Profile>(), SelectListItems));
+			else
+				return Json(listProfile);
 		}
 
 		public IActionResult Community()
@@ -90,12 +121,15 @@ namespace MatchMaking.Controllers
 			return View();
 		}
 
-		public IActionResult Profile()
+		public IActionResult Profile(long? id = 0)
 		{
 			if (AppHttpContextAccessor.LoggedUserId <= 0)
 				return RedirectToAction("Index", "Home", new { Area = "" });
 
-			var profile = _context.Using<Profile>().GetByCondition(x => x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+			var profile = _context.Using<Profile>().GetByCondition(x => (id > 0) ? x.Id == id && x.UserId != AppHttpContextAccessor.LoggedUserId : x.UserId == AppHttpContextAccessor.LoggedUserId).FirstOrDefault();
+
+			if (profile != null && profile.Id == AppHttpContextAccessor.LoggedUserId)
+				return RedirectToAction("Index", "Home", new { Area = "" });
 
 			var jainGroups = _context.Using<JainGroup>().GetAll().ToList();
 
@@ -115,7 +149,10 @@ namespace MatchMaking.Controllers
 				profile.Language = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Language" && profile.Language.Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
 			}
 
-			return View(profile ?? new Profile());
+			if (id > 0)
+				return PartialView(profile ?? new Profile());
+			else
+				return View(profile ?? new Profile());
 		}
 
 		public IActionResult ProfileUpdate()
@@ -195,14 +232,6 @@ namespace MatchMaking.Controllers
 								profile.LastModifiedDate = DateTime.Now;
 
 								_context.Using<Profile>().Update(profile);
-							}
-							else
-							{
-								viewModel.UserId = AppHttpContextAccessor.LoggedUserId;
-								viewModel.CreatedBy = AppHttpContextAccessor.LoggedUserId;
-								viewModel.CreatedDate = DateTime.Now;
-
-								viewModel = _context.Using<Profile>().Add(viewModel);
 							}
 
 							CommonViewModel.IsConfirm = true;

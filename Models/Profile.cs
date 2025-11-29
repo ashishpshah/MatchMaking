@@ -37,8 +37,21 @@ namespace MatchMaking.Models
 		public string? Diet { get; set; }
 		public string? Language { get; set; }
 
-		public string? FullName { get { return $"{Firstname} {PaternalSurname}"; } }
-		public string? FullAddress { get { return $"{Firstname} {PaternalSurname}"; } }
+		[NotMapped] public string? FullName { get { return $"{Firstname} {PaternalSurname}"; } }
+		[NotMapped] public string? FullAddress { get { return $"{Firstname} {PaternalSurname}"; } }
+		[NotMapped]
+		public int Age
+		{
+			get
+			{
+				var today = DateTime.Today;
+				int age = today.Year - DateOfBirth.Value.Year;
+				if (DateOfBirth?.Date > today.AddYears(-age))
+					age--;
+
+				return age;
+			}
+		}
 	}
 
 }

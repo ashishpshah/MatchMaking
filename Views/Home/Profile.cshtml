@@ -3,6 +3,7 @@
 
 @{
 	ViewData["Title"] = "Profile";
+	if (Model.UserId != AppHttpContextAccessor.LoggedUserId) Layout = null;
 
 	DateTime? nullDateTime = null;
 
@@ -86,9 +87,12 @@
 									aria-selected="false">
 								Photos
 							</button>
-							<a asp-area="" asp-controller="Home" asp-action="ProfileUpdate" class="lab-btn text-end mr-2" style="margin-left: auto;">
-								Edit Profile
-							</a>
+							@if (Model.UserId == AppHttpContextAccessor.LoggedUserId)
+							{
+								<a asp-area="" asp-controller="Home" asp-action="ProfileUpdate" class="lab-btn text-end mr-2" style="margin-left: auto;">
+									Edit Profile
+								</a>
+							}
 						</div>
 					</nav>
 					<div class="tab-content" id="nav-tabContent">
@@ -274,23 +278,6 @@
 											</div>
 										</div>
 									}
-								}
-								else
-								{
-									<section class="fore-zero padding-tb bg-ash">
-										<div class="container">
-											<div class="section-wrapper">
-												<div class="zero-item">
-													<div class="zero-content">
-														<h2>No any Photo(s) uploaded.</h2>
-														<a href="#" data-bs-toggle="modal" data-bs-target="#modalUploadPhotos" data-for-target="Others" class="lab-btn">
-															<i class="icofont-camera"></i> <span>Upload Photos</span>
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</section>
 								}
 							</div>
 						</div>

@@ -80,6 +80,7 @@ $('.modal').on('shown.bs.modal', function (e) {
     else
         $(this).find('form input[type="file"]').removeAttr('multiple');
 
+    debugger;
     $(this).find('form input[type="file"]').imageuploadify();
 });
 

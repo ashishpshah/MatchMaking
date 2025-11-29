@@ -139,6 +139,14 @@ namespace MatchMaking.Infra
 		//	}
 		//}
 
+		public static int GetAge(DateTime dob)
+		{
+			var today = DateTime.Today;
+			int age = today.Year - dob.Year;
+			if (dob.Date > today.AddYears(-age)) age--;
+			return age;
+		}
+
 		public static (int Years, int Months, int Days) GetAge(DateTime? dob = null)
 		{
 			if (dob == null || !dob.HasValue)

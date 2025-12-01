@@ -80,7 +80,6 @@ $('.modal').on('shown.bs.modal', function (e) {
     else
         $(this).find('form input[type="file"]').removeAttr('multiple');
 
-    debugger;
     $(this).find('form input[type="file"]').imageuploadify();
 });
 
@@ -225,11 +224,20 @@ function fnSubmitForm($id) {
         if (typeof inputFiles != 'undefined' && inputFiles != null && inputFiles.length > 0)
             $.each(inputFiles, function (key, input) {
                 if ((typeof input.value != 'undefined' && input.value != null && input.value.length > 0) && !input.hasAttribute('disabled') && !$(input).hasClass('temp') && !$(input).hasClass('temp_fileUpload')) {
-                    var file = document.getElementById('' + input.getAttribute('id')).files[0];
-                    if (typeof input.getAttribute('name') == 'undefined' || input.getAttribute('name') == null || input.getAttribute('name').length == 0) {
-                        formData.append("files", file);
-                    } else {
-                        formData.append(input.getAttribute('name'), file);
+                    debugger;
+                    if (input.hasAttribute('multiple') == true) {
+                        for (var i = 0; i < document.getElementById('' + input.getAttribute('id')).files.length; i++) {
+                            var file = document.getElementById('' + input.getAttribute('id')).files[i];
+                            if (typeof input.getAttribute('name') == 'undefined' || input.getAttribute('name') == null || input.getAttribute('name').length == 0)
+                                formData.append("files", file);
+                            else formData.append(input.getAttribute('name'), file);
+                        }
+                    }
+                    else {
+                        var file = document.getElementById('' + input.getAttribute('id')).files[0];
+                        if (typeof input.getAttribute('name') == 'undefined' || input.getAttribute('name') == null || input.getAttribute('name').length == 0)
+                            formData.append("files", file);
+                        else formData.append(input.getAttribute('name'), file);
                     }
                 }
             });
@@ -243,7 +251,7 @@ function fnSubmitForm($id) {
             processData: false,
             dataType: "json",
             success: function (response) {
-                
+
                 try {
                     ShowLoader(false);
                     if (response.IsSuccess == true) {
@@ -360,4 +368,45 @@ function CommonConfirmed_Success(msg, functionName, functionParams) { //params =
 
 function CallBack(fn, data, Id) {
     return fn(data, Id);
+}
+
+
+function fnLoadParialView($id, url) {
+
+    ShowLoader(true);
+
+    try {
+        if (typeof $id != 'undefined' && $id != null && $id.length > 0) {
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: null,
+                contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (response) {
+                    debugger;
+                    $('#' + $id).html('');
+                    $('#' + $id).append(response);
+
+                    fnLoadParialView_Success();
+
+                    setTimeout(function () {
+
+                        $('html, body').scrollTop($('#' + $id).offset().top);
+
+                        ShowLoader(false);
+
+                    }, 1000);
+
+                },
+                failure: function (response) { ShowLoader(false); CommonAlert_Error(null) },
+                error: function (response) { ShowLoader(false); CommonAlert_Error(null) }
+            });
+        }
+    }
+    catch (err) {
+        ShowLoader(false);
+    }
+
 }

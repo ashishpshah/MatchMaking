@@ -368,7 +368,7 @@
 																					<select id="Interests" name="Interests" class="w-100" multiple>
 																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Interest"))
 																						{
-																							if (Model.Profile.Interests.Split(",").Contains(item.Value))
+																							if (Model.Profile.Interests != null && Model.Profile.Interests.Split(",").Contains(item.Value))
 																							{
 																								<option value="@item.Value" selected>@item.Text</option>
 																							}
@@ -422,7 +422,7 @@
 																					<select id="Language" name="Language" class="w-100" multiple>
 																						@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Language"))
 																						{
-																							if (Model.Profile.Language.Split(",").Contains(item.Value))
+																							if (Model.Profile.Language != null && Model.Profile.Language.Split(",").Contains(item.Value))
 																							{
 																								<option value="@item.Value" selected>@item.Text</option>
 																							}

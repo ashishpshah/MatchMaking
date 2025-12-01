@@ -91,6 +91,18 @@ namespace MatchMaking.Controllers
 
 			if (SelectListItems != null) SelectListItems.AddRange(jainGroups);
 
+			if (!string.IsNullOrEmpty(Gender))
+				listProfile = listProfile.Where(x => x.Gender == Gender).ToList();
+
+			if (ageStart > 0)
+				listProfile = listProfile.Where(x => x.Age >= ageStart).ToList();
+
+			if (ageEnd > 0)
+				listProfile = listProfile.Where(x => x.Age <= ageEnd).ToList();
+
+			if (GroupId > 0)
+				listProfile = listProfile.Where(x => x.GroupId == GroupId).ToList();
+
 			foreach (var profile in listProfile)
 			{
 				profile.GroupName = jainGroups.Where(x => x.Value == profile.GroupId.ToString()).Select(x => x.Text).FirstOrDefault();
@@ -108,7 +120,7 @@ namespace MatchMaking.Controllers
 			if (!isFilter)
 				return View((listProfile ?? new List<Profile>(), SelectListItems));
 			else
-				return Json(listProfile);
+				return PartialView("_Partial_Member", listProfile);
 		}
 
 		public IActionResult Community()
@@ -145,8 +157,8 @@ namespace MatchMaking.Controllers
 				profile.Occupation = SelectListItems.Where(x => x.LovColumn == "Occupation" && x.LovCode == profile.Occupation).Select(x => x.LovDesc).FirstOrDefault();
 				profile.Smoking = SelectListItems.Where(x => x.LovColumn == "Smoking" && x.LovCode == profile.Smoking).Select(x => x.LovDesc).FirstOrDefault();
 				profile.Diet = SelectListItems.Where(x => x.LovColumn == "Diet" && x.LovCode == profile.Diet).Select(x => x.LovDesc).FirstOrDefault();
-				profile.Interests = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Interest" && profile.Interests.Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
-				profile.Language = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Language" && profile.Language.Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
+				profile.Interests = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Interest" && (profile.Interests ?? "").Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
+				profile.Language = string.Join(", ", SelectListItems.Where(x => x.LovColumn == "Language" && (profile.Language ?? "").Split(",").Contains(x.LovCode)).Select(x => x.LovDesc).ToArray());
 			}
 
 			if (id > 0)

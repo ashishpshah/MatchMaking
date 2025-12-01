@@ -18,25 +18,14 @@
 									Match is Just a Click Away.
 								</p>
 								<form action="/" class="banner-form">
-									<div class="gender">
-										<label for="gender" class="left">I am a </label>
-										<div class="custom-select right">
-											<select name="gender" id="gender" class="">
-												<option value="0">Select Gender</option>
-												<option value="1">Male</option>
-												<option value="2">Female</option>
-												<option value="3">Others</option>
-											</select>
-										</div>
-									</div>
 									<div class="person">
 										<label for="gender-two" class="left">Looking for</label>
 										<div class="custom-select right">
-											<select name="gender" id="gender-two" class="">
-												<option value="0">Select Gender</option>
-												<option value="1">Male</option>
-												<option value="2">Female</option>
-												<option value="3">Others</option>
+											<select name="gender" id="Gender" class="">
+												<option value="">Select Gender</option>
+												<option value="M">Male</option>
+												<option value="F">Female</option>
+												<option value="O">Others</option>
 											</select>
 										</div>
 									</div>
@@ -44,54 +33,51 @@
 										<label for="age" class="left">Age</label>
 										<div class="right d-flex justify-content-between">
 											<div class="custom-select">
-												<select name="age-start" id="age">
-													<option value="1">18</option>
-													<option value="2">19</option>
-													<option value="3">20</option>
-													<option value="4">21</option>
-													<option value="5">22</option>
-													<option value="6">23</option>
-													<option value="7">24</option>
-													<option value="8">25</option>
-													<option value="9">26</option>
-													<option value="10">27</option>
-													<option value="11">28</option>
-													<option value="13">29</option>
-													<option value="14">30</option>
+												<select name="age-start" id="age-start">
+													<option value="18">18</option>
+													<option value="19">19</option>
+													<option value="20">20</option>
+													<option value="21">21</option>
+													<option value="22">22</option>
+													<option value="23">23</option>
+													<option value="24">24</option>
+													<option value="25">25</option>
+													<option value="26">26</option>
+													<option value="27">27</option>
+													<option value="28">28</option>
+													<option value="29">29</option>
+													<option value="30">30</option>
 												</select>
 											</div>
 
 											<div class="custom-select">
-												<select name="age-end" id="age-two">
-													<option value="1">18+</option>
-													<option value="2">19</option>
-													<option value="3">20</option>
-													<option value="4">21</option>
-													<option value="5">22</option>
-													<option value="6">23</option>
-													<option value="7">24</option>
-													<option value="8">25</option>
-													<option value="9">26</option>
-													<option value="10">27</option>
-													<option value="11">28</option>
-													<option value="13">29</option>
-													<option value="14">30</option>
+												<select name="age-end" id="age-end">
+													<option value="19">19</option>
+													<option value="20">20</option>
+													<option value="21">21</option>
+													<option value="22">22</option>
+													<option value="23">23</option>
+													<option value="24">24</option>
+													<option value="25">25</option>
+													<option value="26">26</option>
+													<option value="27">27</option>
+													<option value="28">28</option>
+													<option value="29">29</option>
+													<option value="30">30</option>
+													<option value="50">50</option>
 												</select>
 											</div>
 										</div>
 
 									</div>
-									<div class="city">
-										<label for="city" class="left">City</label>
-										<input class="right" type="text" id="city" placeholder="Your City Name..">
-									</div>
-									<button class="">Find Your Partner</button>
+
+									<button type="button" class="" onclick="fnSearch()">Find Your Partner</button>
 
 								</form>
 								<ul class="social-list">
 									<li class="google">
 										<a href="#">
-											<img src="assets/images/banner/google.png" alt="img">
+											<img src="~/assets/images/banner/google.png" alt="img">
 											<span>Continue with google</span>
 										</a>
 									</li>
@@ -114,21 +100,21 @@
 				</div>
 				<div class="col-lg-6">
 					<div class="banner-thumb">
-						<img src="assets/images/banner/01.png" alt="img">
+						<img src="~/assets/images/banner/01.png" alt="img">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="all-shapes">
-		<img src="assets/images/banner/banner-shapes/01.png" alt="shape" class="banner-shape shape-1">
-		<img src="assets/images/banner/banner-shapes/02.png" alt="shape" class="banner-shape shape-2">
-		<img src="assets/images/banner/banner-shapes/03.png" alt="shape" class="banner-shape shape-3">
-		<img src="assets/images/banner/banner-shapes/04.png" alt="shape" class="banner-shape shape-4">
-		<img src="assets/images/banner/banner-shapes/05.png" alt="shape" class="banner-shape shape-5">
-		<img src="assets/images/banner/banner-shapes/06.png" alt="shape" class="banner-shape shape-6">
-		<img src="assets/images/banner/banner-shapes/07.png" alt="shape" class="banner-shape shape-7">
-		<img src="assets/images/banner/banner-shapes/08.png" alt="shape" class="banner-shape shape-8">
+		<img src="~/assets/images/banner/banner-shapes/01.png" alt="shape" class="banner-shape shape-1">
+		<img src="~/assets/images/banner/banner-shapes/02.png" alt="shape" class="banner-shape shape-2">
+		<img src="~/assets/images/banner/banner-shapes/03.png" alt="shape" class="banner-shape shape-3">
+		<img src="~/assets/images/banner/banner-shapes/04.png" alt="shape" class="banner-shape shape-4">
+		<img src="~/assets/images/banner/banner-shapes/05.png" alt="shape" class="banner-shape shape-5">
+		<img src="~/assets/images/banner/banner-shapes/06.png" alt="shape" class="banner-shape shape-6">
+		<img src="~/assets/images/banner/banner-shapes/07.png" alt="shape" class="banner-shape shape-7">
+		<img src="~/assets/images/banner/banner-shapes/08.png" alt="shape" class="banner-shape shape-8">
 	</div>
 </section>
 <!-- ================ Banner Section end Here =============== -->
@@ -159,7 +145,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/01.jpg" alt="member-img">
+								<img src="~/assets/images/member/01.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Johanna</a> </h6>
@@ -172,7 +158,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/03.jpg" alt="member-img">
+								<img src="~/assets/images/member/03.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Selinae</a> </h6>
@@ -185,7 +171,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/02.jpg" alt="member-img">
+								<img src="~/assets/images/member/02.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Andrea Guido</a> </h6>
@@ -198,7 +184,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/04.jpg" alt="member-img">
+								<img src="~/assets/images/member/04.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Rocky deo</a> </h6>
@@ -211,7 +197,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/05.jpg" alt="member-img">
+								<img src="~/assets/images/member/05.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Jhon doe</a> </h6>
@@ -224,7 +210,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/06.jpg" alt="member-img">
+								<img src="~/assets/images/member/06.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Angelina</a> </h6>
@@ -237,7 +223,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/07.jpg" alt="member-img">
+								<img src="~/assets/images/member/07.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Andrea Guido</a> </h6>
@@ -250,7 +236,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/08.jpg" alt="member-img">
+								<img src="~/assets/images/member/08.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Jene Aiko</a> </h6>
@@ -263,7 +249,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/09.jpg" alt="member-img">
+								<img src="~/assets/images/member/09.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Anna haek</a> </h6>
@@ -276,7 +262,7 @@
 					<div class="lab-item member-item style-1 style-2">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/member/10.jpg" alt="member-img">
+								<img src="~/assets/images/member/10.jpg" alt="member-img">
 							</div>
 							<div class="lab-content">
 								<h6><a href="profile.html">Andrean Puido</a> </h6>
@@ -303,7 +289,7 @@
 					<div class="lab-item about-item">
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
-								<img src="assets/images/about/01.png" alt="img">
+								<img src="~/assets/images/about/01.png" alt="img">
 							</div>
 							<div class="lab-content">
 								<h2 class="counter">29,991</h2>
@@ -316,7 +302,7 @@
 					<div class="lab-item about-item">
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
-								<img src="assets/images/about/02.png" alt="img">
+								<img src="~/assets/images/about/02.png" alt="img">
 							</div>
 							<div class="lab-content">
 								<h2 class="counter">29,960</h2>
@@ -329,7 +315,7 @@
 					<div class="lab-item about-item">
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
-								<img src="assets/images/about/03.png" alt="img">
+								<img src="~/assets/images/about/03.png" alt="img">
 							</div>
 							<div class="lab-content">
 								<h2 class="counter">29,960</h2>
@@ -342,7 +328,7 @@
 					<div class="lab-item about-item">
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
-								<img src="assets/images/about/04.png" alt="img">
+								<img src="~/assets/images/about/04.png" alt="img">
 							</div>
 							<div class="lab-content">
 								<h2 class="counter">28,960</h2>
@@ -370,7 +356,7 @@
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
 								<div class="thumb-inner">
-									<img src="assets/images/work/01.png" alt="work-img">
+									<img src="~/assets/images/work/01.png" alt="work-img">
 									<div class="step">
 										<span>step</span>
 										<p>01</p>
@@ -393,7 +379,7 @@
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
 								<div class="thumb-inner">
-									<img src="assets/images/work/02.png" alt="work-img">
+									<img src="~/assets/images/work/02.png" alt="work-img">
 									<div class="step">
 										<span>step</span>
 										<p>02</p>
@@ -416,7 +402,7 @@
 						<div class="lab-inner text-center">
 							<div class="lab-thumb">
 								<div class="thumb-inner">
-									<img src="assets/images/work/03.png" alt="work-img">
+									<img src="~/assets/images/work/03.png" alt="work-img">
 									<div class="step">
 										<span>step</span>
 										<p>03</p>
@@ -452,7 +438,7 @@
 					<div class="story-item lab-item">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/story/01.jpg" alt="img">
+								<img src="~/assets/images/story/01.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4><a href="blog-single.html">Image Post Formate</a></h4>
@@ -473,7 +459,7 @@
 					<div class="story-item lab-item">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/story/02.jpg" alt="img">
+								<img src="~/assets/images/story/02.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4><a href="blog-single.html">Couple Of Month</a></h4>
@@ -494,7 +480,7 @@
 					<div class="story-item lab-item">
 						<div class="lab-inner">
 							<div class="lab-thumb">
-								<img src="assets/images/story/03.jpg" alt="img">
+								<img src="~/assets/images/story/03.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4><a href="blog-single.html">Media For Blog Article</a></h4>
@@ -529,7 +515,7 @@
 					<div class="group-item lab-item">
 						<div class="lab-inner d-flex flex-wrap align-items-center p-4">
 							<div class="lab-thumb me-sm-4 mb-4 mb-sm-0">
-								<img src="assets/images/group/01.jpg" alt="img">
+								<img src="~/assets/images/group/01.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4>Active Group A1</h4>
@@ -538,12 +524,12 @@
 									apcations through visionary value
 								</p>
 								<ul class="img-stack d-flex">
-									<li><img src="assets/images/group/group-mem/01.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/02.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/03.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/04.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/05.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/06.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/01.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/02.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/03.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/04.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/05.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/06.png" alt="member-img"></li>
 									<li class="bg-theme">12+</li>
 								</ul>
 								<div class="test">
@@ -559,7 +545,7 @@
 					<div class="group-item lab-item">
 						<div class="lab-inner d-flex flex-wrap align-items-center p-4">
 							<div class="lab-thumb me-sm-4 mb-4 mb-sm-0">
-								<img src="assets/images/group/02.jpg" alt="img">
+								<img src="~/assets/images/group/02.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4>Active Group A2</h4>
@@ -568,12 +554,12 @@
 									apcations through visionary value
 								</p>
 								<ul class="img-stack d-flex">
-									<li><img src="assets/images/group/group-mem/01.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/02.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/03.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/04.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/05.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/06.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/01.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/02.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/03.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/04.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/05.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/06.png" alt="member-img"></li>
 									<li class="bg-theme">12+</li>
 								</ul>
 								<div class="test">
@@ -589,7 +575,7 @@
 					<div class="group-item lab-item">
 						<div class="lab-inner d-flex flex-wrap align-items-center p-4">
 							<div class="lab-thumb me-sm-4 mb-4 mb-sm-0">
-								<img src="assets/images/group/03.jpg" alt="img">
+								<img src="~/assets/images/group/03.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4>Active Group A3</h4>
@@ -598,12 +584,12 @@
 									apcations through visionary value
 								</p>
 								<ul class="img-stack d-flex">
-									<li><img src="assets/images/group/group-mem/01.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/02.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/03.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/04.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/05.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/06.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/01.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/02.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/03.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/04.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/05.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/06.png" alt="member-img"></li>
 									<li class="bg-theme">12+</li>
 								</ul>
 								<div class="test">
@@ -619,7 +605,7 @@
 					<div class="group-item lab-item">
 						<div class="lab-inner d-flex flex-wrap align-items-center p-4">
 							<div class="lab-thumb me-sm-4 mb-4 mb-sm-0">
-								<img src="assets/images/group/04.jpg" alt="img">
+								<img src="~/assets/images/group/04.jpg" alt="img">
 							</div>
 							<div class="lab-content">
 								<h4>Active Group A4</h4>
@@ -628,12 +614,12 @@
 									apcations through visionary value
 								</p>
 								<ul class="img-stack d-flex">
-									<li><img src="assets/images/group/group-mem/01.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/02.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/03.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/04.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/05.png" alt="member-img"></li>
-									<li><img src="assets/images/group/group-mem/06.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/01.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/02.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/03.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/04.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/05.png" alt="member-img"></li>
+									<li><img src="~/assets/images/group/group-mem/06.png" alt="member-img"></li>
 									<li class="bg-theme">12+</li>
 								</ul>
 								<div class="test">
@@ -650,3 +636,11 @@
 	</div>
 </section>
 <!-- ================ Active Group Section end Here =============== -->
+@section Scripts {
+	<script type="text/javascript">
+
+		function fnSearch(){
+			window.location = '@Url.Action("Member", "Home")?Gender='+$('#Gender option:selected').val()+'&ageStart='+$('#age-start option:selected').val()+'&ageEnd='+$('#age-end option:selected').val();
+		}
+	</script>
+}

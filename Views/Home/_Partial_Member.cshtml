@@ -1,0 +1,52 @@
+﻿@using MatchMaking.Areas.Admin.Models
+@using MatchMaking.Infra
+@model List<Profile>
+
+@{
+	Layout = null;
+
+	DateTime? nullDateTime = null;
+
+	string folderPath = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile");
+}
+
+@if (Model != null)
+{
+	foreach (var profile in Model)
+	{
+		<div class="col">
+			<div class="lab-item member-item style-1 style-2">
+				<div class="lab-inner">
+					<div class="lab-thumb">
+						@if (System.IO.File.Exists(System.IO.Path.Combine(folderPath, profile.Id + ".jpg")))
+						{
+							<img src="@(System.IO.Path.Combine(folderPath, profile.Id + ".jpg").Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/"))" alt="member-img">
+						}
+						else
+						{
+							<img src="~/no_image_available.png" alt="member-img">
+						}
+
+					</div>
+					<div class="lab-content">
+						<h6>
+							@if (AppHttpContextAccessor.LoggedUserId > 0)
+							{
+								<a href="#" data-bs-toggle="modal" data-bs-target="#modalProfile" data-id="@profile.Id" class="open-profile">@profile.FullName</a>
+							}
+							else
+							{
+								<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="open-profile">@profile.FullName</a>
+							}
+						</h6>
+						<div class="d-flex justify-content-between w-100 px-3">
+							<p>@profile.Age years</p>
+							<p>@profile.Gender</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+

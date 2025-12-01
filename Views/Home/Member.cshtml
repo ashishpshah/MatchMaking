@@ -69,8 +69,8 @@
 				<form action="/" class="filter-form">
 					<div class="person">
 						<div class="custom-select right w-100">
-							<select name="gender" id="gender-two" class="">
-								<option value="0">Looking for</option>
+							<select name="Gender" id="Gender" class="">
+								<option value="">Looking for</option>
 								@foreach (var item in Model.SelectListItems.Where(x => x.Group == "Gender"))
 								{
 									<option value="@item.Value">@item.Text</option>
@@ -99,12 +99,12 @@
 							</select>
 						</div>
 					</div>
-					<button class="lab-btn" type="submit">Search now <i class="icofont-search-2"></i></button>
+					<button class="lab-btn" type="button" onclick="fnSearch()">Search now <i class="icofont-search-2"></i></button>
 				</form>
 			</div>
 		</div>
 		<div class="member-wrapper">
-			<div class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center">
+			<div id="member_partial" class="row g-3 row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 justify-content-center">
 				@if (Model.listProfile != null)
 				{
 					foreach (var profile in Model.listProfile)
@@ -125,7 +125,14 @@
 									</div>
 									<div class="lab-content">
 										<h6>
-											<a href="#" data-bs-toggle="modal" data-bs-target="#modalProfile" data-id="@profile.Id" class="open-profile">@profile.FullName</a>
+											@if (AppHttpContextAccessor.LoggedUserId > 0)
+											{
+												<a href="#" data-bs-toggle="modal" data-bs-target="#modalProfile" data-id="@profile.Id" class="open-profile">@profile.FullName</a>
+											}
+											else
+											{
+												<a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="open-profile">@profile.FullName</a>
+											}
 										</h6>
 										<div class="d-flex justify-content-between w-100 px-3">
 											<p>@profile.Age years</p>
@@ -148,71 +155,14 @@
 <!-- ==========Member page Section Ends Here========== -->
 @section Scripts {
 	<script type="text/javascript">
+
+		var itemsPerPage = 10;
+		var currentPage = 1;
+
+		var totalItems = $(".member-item").length;
+		var totalPages = Math.ceil(totalItems / itemsPerPage);
+
 		$(document).ready(function () {
-
-			var itemsPerPage = 10;
-			var items = $(".member-item");
-			var totalItems = items.length;
-			var totalPages = Math.ceil(totalItems / itemsPerPage);
-			var currentPage = 1;
-
-			function showPage(page) {
-				currentPage = page;
-
-				var start = (page - 1) * itemsPerPage;
-				var end = start + itemsPerPage;
-
-				items.hide();
-				items.slice(start, end).show();
-
-				buildPagination();
-			}
-
-			function buildPagination() {
-				var html = "";
-
-				// FIRST <<
-				html += "<li><a href='#' class='go-page' data-page='1'><i class='icofont-rounded-double-left'></i></a></li>";
-
-				// PREVIOUS
-				var prevPage = currentPage - 1 <= 0 ? 1 : currentPage - 1;
-				html += "<li><a href='#' class='go-page' data-page='" + prevPage + "'><i class='icofont-rounded-left'></i></a></li>";
-
-				var range = 2;
-				var startPage = Math.max(1, currentPage - range);
-				var endPage = Math.min(totalPages, currentPage + range);
-
-				// LEFT DOTS
-				if (startPage > 1) {
-					html += "<li><a href='#' class='go-page' data-page='1'>1</a></li>";
-
-					if (startPage > 2) {
-						html += "<li><a href='#'>...</a></li>";
-					}
-				}
-
-				// PAGE NUMBERS
-				for (var i = startPage; i <= endPage; i++) {
-					html += "<li><a href='#' class='go-page " + (i === currentPage ? "active" : "") + "' data-page='" + i + "'>" + i + "</a></li>";
-				}
-
-				// RIGHT DOTS
-				if (endPage < totalPages) {
-					if (endPage < totalPages - 1) {
-						html += "<li><a href='#'>...</a></li>";
-					}
-					html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'>" + totalPages + "</a></li>";
-				}
-
-				// NEXT
-				var nextPage = currentPage + 1 >= totalPages ? totalPages : currentPage + 1;
-				html += "<li><a href='#' class='go-page' data-page='" + nextPage + "'><i class='icofont-rounded-right'></i></a></li>";
-
-				// LAST >>
-				html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'><i class='icofont-rounded-double-right'></i></a></li>";
-
-				$("#pagination").html(html);
-			}
 
 			// CLICK EVENT
 			$(document).on("click", ".go-page", function (e) {
@@ -225,6 +175,67 @@
 			showPage(1);
 		});
 
+		function showPage(page) {
+			currentPage = page;
+
+			totalItems = $(".member-item").length;
+			totalPages = Math.ceil(totalItems / itemsPerPage);
+
+			var start = (page - 1) * itemsPerPage;
+			var end = start + itemsPerPage;
+
+			$(".member-item").hide();
+			$(".member-item").slice(start, end).show();
+
+			buildPagination();
+		}
+
+		function buildPagination() {
+			var html = "";
+
+			// FIRST <<
+			html += "<li><a href='#' class='go-page' data-page='1'><i class='icofont-rounded-double-left'></i></a></li>";
+
+			// PREVIOUS
+			var prevPage = currentPage - 1 <= 0 ? 1 : currentPage - 1;
+			html += "<li><a href='#' class='go-page' data-page='" + prevPage + "'><i class='icofont-rounded-left'></i></a></li>";
+
+			var range = 2;
+			var startPage = Math.max(1, currentPage - range);
+			var endPage = Math.min(totalPages, currentPage + range);
+
+			// LEFT DOTS
+			if (startPage > 1) {
+				html += "<li><a href='#' class='go-page' data-page='1'>1</a></li>";
+
+				if (startPage > 2) {
+					html += "<li><a href='#'>...</a></li>";
+				}
+			}
+
+			// PAGE NUMBERS
+			for (var i = startPage; i <= endPage; i++) {
+				html += "<li><a href='#' class='go-page " + (i === currentPage ? "active" : "") + "' data-page='" + i + "'>" + i + "</a></li>";
+			}
+
+			// RIGHT DOTS
+			if (endPage < totalPages) {
+				if (endPage < totalPages - 1) {
+					html += "<li><a href='#'>...</a></li>";
+				}
+				html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'>" + totalPages + "</a></li>";
+			}
+
+			// NEXT
+			var nextPage = currentPage + 1 >= totalPages ? totalPages : currentPage + 1;
+			html += "<li><a href='#' class='go-page' data-page='" + nextPage + "'><i class='icofont-rounded-right'></i></a></li>";
+
+			// LAST >>
+			html += "<li><a href='#' class='go-page' data-page='" + totalPages + "'><i class='icofont-rounded-double-right'></i></a></li>";
+
+			$("#pagination").html(html);
+		}
+
 		$(document).on("click", ".open-profile", function (e) {
 			e.preventDefault();
 
@@ -232,10 +243,17 @@
 
 			$("#profileModalContent").html("<p>Loading...</p>");
 
-			$.get("@Url.Action("Profile","Home")?id=" + id, function (data) {
+			$.get("@Url.Action("Profile", "Home")?id=" + id, function (data) {
 				$("#profileModalContent").html(data);
 			});
 		});
 
+		function fnLoadParialView_Success(){
+			showPage(1);
+		}
+
+		function fnSearch(){
+			fnLoadParialView('member_partial', '@Url.Action("Member", "Home")?Gender='+$('#Gender option:selected').val()+'&ageStart='+$('#age-start').val()+'&ageEnd='+$('#age-end').val()+'&GroupId='+$('#GroupId option:selected').val()+'&isFilter=true')
+		}
 	</script>
 }

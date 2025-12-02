@@ -16,3 +16,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.profile-section .member-profile .profile-item .profile-cover img {
+    height: 250px;
+}

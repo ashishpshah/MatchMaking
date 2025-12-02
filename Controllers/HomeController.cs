@@ -19,9 +19,9 @@ namespace MatchMaking.Controllers
 
 		public IActionResult Index()
 		{
-			var list = _context.Using<User>().GetAll().ToList();
-
 			var (IsSuccess, Message, Id) = (false, "", (long)0);
+
+			var list = _context.Using<User>().GetAll().ToList();
 
 			if (list == null || list.Count == 0)
 			{
@@ -300,7 +300,7 @@ namespace MatchMaking.Controllers
 						{
 							if (!string.IsNullOrEmpty(fileItem.Name) && (fileItem.Name == "fileCover" || fileItem.Name == "fileProfile"))
 							{
-								string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", fileItem.Name.Replace("file", ""));
+								string uploadFolder = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", fileItem.Name == "fileCover" ? "Cover" : "Profile");
 								if (!Directory.Exists(uploadFolder)) Directory.CreateDirectory(uploadFolder);
 								string fullPath = Path.Combine(uploadFolder, profile.Id + ".jpg");
 								if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);

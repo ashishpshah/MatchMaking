@@ -72,9 +72,6 @@
 							<span></span>
 							<span></span>
 						</div>
-						<div class="ellepsis-bar d-lg-none">
-							<i class="icofont-info-square"></i>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -149,7 +146,7 @@
 	}
 	@if (AppHttpContextAccessor.LoggedUserId > 0)
 	{
-		<div class="modal fade" id="modalUploadPhotos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalUploadPhotosLabel" aria-hidden="true">
+		<div class="modal fade" id="modalUploadPhotos" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalUploadPhotosLabel" aria-hidden="false">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
 					<div class="modal-header" style="padding: 0.3rem 0.75rem;">
@@ -158,12 +155,50 @@
 					</div>
 					<div class="modal-body">
 						<form id="formUploadPhotos" asp-area="" asp-controller="Home" asp-action="UploadPhotos" method="post" enctype="multipart/form-data" class="account-form">
-							<input type="file" id="inputUploadPhoto" accept="image/*" multiple class="d-none">
+							<input type="file" id="inputUploadPhoto" name="fileOthers" accept="image/*" multiple class="d-none">
 						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
 						<button type="button" class="btn btn-primary btnSubmit" data-form="formUploadPhotos" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modalProfilePhoto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalProfilePhotoLabel" aria-hidden="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
+					<div class="modal-header" style="padding: 0.3rem 0.75rem;">
+						<h3 class="title">Upload Photo(s)</h3>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formProfilePhoto" asp-area="" asp-controller="Home" asp-action="UploadPhotos" method="post" enctype="multipart/form-data" class="account-form">
+							<input type="file" id="inputProfilePhoto" name="fileProfile" accept="image/*" class="d-none">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
+						<button type="button" class="btn btn-primary btnSubmit" data-form="formProfilePhoto" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modalCoverPhoto" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalCoverPhotoLabel" aria-hidden="false">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content" style="border: 5px solid #df314d;border-radius: 8px; box-shadow: 0px 2px 4px 0px rgba(33, 0, 83, 0.3);">
+					<div class="modal-header" style="padding: 0.3rem 0.75rem;">
+						<h3 class="title">Upload Photo(s)</h3>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" tabindex="-1"></button>
+					</div>
+					<div class="modal-body">
+						<form id="formCoverPhoto" asp-area="" asp-controller="Home" asp-action="UploadPhotos" method="post" enctype="multipart/form-data" class="account-form">
+							<input type="file" id="inputCoverPhoto" name="fileCover" accept="image/*" class="d-none">
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" tabindex="-1">Close</button>
+						<button type="button" class="btn btn-primary btnSubmit" data-form="formCoverPhoto" style="background:var(--bs-green); border-color:var(--bs-success)">Submit</button>
 					</div>
 				</div>
 			</div>

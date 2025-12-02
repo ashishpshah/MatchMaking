@@ -69,16 +69,16 @@ $('.modal').on('shown.bs.modal', function (e) {
         $form[0].reset();
     }
     /*$('body').append('<div class="modal-backdrop fade show" id="div-modal-backdrop"></div>')*/
-    var button = $(e.relatedTarget);
+    //var button = $(e.relatedTarget);
 
-    var forTarget = button.attr('data-for-target');
-    if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0)
-        $(this).find('form input[type="file"]').attr('name', 'file' + forTarget);
+    //var forTarget = button.attr('data-for-target');
+    //if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0)
+    //    $(this).find('form input[type="file"]').attr('name', 'file' + forTarget);
 
-    if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0 && forTarget == 'Others')
-        $(this).find('form input[type="file"]').attr('multiple', '');
-    else
-        $(this).find('form input[type="file"]').removeAttr('multiple');
+    //if (typeof forTarget != 'undefined' && forTarget != null && forTarget.length > 0 && forTarget == 'Others')
+    //    $(this).find('form input[type="file"]').attr('multiple', '');
+    //else
+    //    $(this).find('form input[type="file"]').removeAttr('multiple');
 
     $(this).find('form input[type="file"]').imageuploadify();
 });

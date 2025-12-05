@@ -10,7 +10,7 @@
 	string folderPath = System.IO.Path.Combine(AppHttpContextAccessor.WebRootPath, "UploadPhotos", "Profile");
 }
 
-@if (Model != null)
+@if (Model != null && Model.Count() > 0)
 {
 	foreach (var profile in Model)
 	{
@@ -20,11 +20,11 @@
 					<div class="lab-thumb">
 						@if (System.IO.File.Exists(System.IO.Path.Combine(folderPath, profile.Id + ".jpg")))
 						{
-							<img src="@(System.IO.Path.Combine(folderPath, profile.Id + ".jpg").Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/"))" alt="member-img">
+							<img src="@(System.IO.Path.Combine(folderPath, profile.Id + ".jpg").Replace(AppHttpContextAccessor.WebRootPath, "").Replace("\\", "/"))" class="member-img" alt="member-img">
 						}
 						else
 						{
-							<img src="~/no_image_available.png" alt="member-img">
+							<img src="~/no_image_available.png" class="member-img" alt="member-img">
 						}
 
 					</div>
@@ -49,4 +49,7 @@
 		</div>
 	}
 }
-
+else
+{
+	<p class="w-100 text-center">We couldn’t find any results for your search.</p>
+}

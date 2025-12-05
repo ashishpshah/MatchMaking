@@ -2835,7 +2835,7 @@ textarea::placeholder {
 }
 @media (min-width: 1200px) {
   .profile-section .member-profile .profile-item .profile-information .profile-pic {
-    height: 320px;
+    height: 250px;
     width: 220px;
     transform: translate(20px, 20px);
   }

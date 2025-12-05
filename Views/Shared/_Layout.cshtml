@@ -99,8 +99,12 @@
 					</div>
 					<div class="modal-body">
 						<form id="formRegister" asp-area="" asp-controller="Home" asp-action="Register" method="post" enctype="multipart/form-data" class="account-form">
+							<div class="form-group right d-flex justify-content-between">
+								<input type="text" placeholder="Firstname" name="Firstname" class="w-50" data-required data-msg="The Firstname field is required." autocomplete="off">
+								<input type="text" placeholder="Lastname" name="Surname" class="w-50" data-required data-msg="The Lastname field is required." autocomplete="off">
+							</div>
 							<div class="form-group">
-								<input type="text" placeholder="Email" name="Username" data-required data-msg="The Email field is required." autocomplete="off">
+								<input type="text" placeholder="Email" name="Email" data-required data-msg="The Email field is required." autocomplete="off">
 							</div>
 							<div class="form-group">
 								<input type="password" placeholder="Password" name="Password" data-required data-msg="The Password field is required." autocomplete="off">

@@ -103,7 +103,7 @@ namespace MatchMaking.Controllers
 			if (GroupId > 0)
 				listProfile = listProfile.Where(x => x.GroupId == GroupId).ToList();
 
-			foreach (var profile in listProfile)
+			foreach (var profile in listProfile.Where(x => !string.IsNullOrEmpty(x.FullName) && x.FullName.Trim().Length > 0))
 			{
 				profile.GroupName = jainGroups.Where(x => x.Value == profile.GroupId.ToString()).Select(x => x.Text).FirstOrDefault();
 				profile.Gender = SelectListItems.Where(x => x.Group == "Gender" && x.Value == profile.Gender).Select(x => x.Text).FirstOrDefault();
@@ -118,7 +118,18 @@ namespace MatchMaking.Controllers
 			}
 
 			if (!isFilter)
-				return View((listProfile ?? new List<Profile>(), SelectListItems));
+			{
+				dynamic filters = new
+				{
+					Gender = Gender,
+					ageStart = ageStart,
+					ageEnd = ageEnd,
+					GroupId = GroupId,
+					isFilter = isFilter
+				};
+
+				return View((listProfile ?? new List<Profile>(), SelectListItems, filters));
+			}
 			else
 				return PartialView("_Partial_Member", listProfile);
 		}
@@ -351,7 +362,7 @@ namespace MatchMaking.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Login(RegisterViewModel viewModel)
+		public IActionResult Login(LoginViewModel viewModel)
 		{
 			try
 			{
@@ -448,7 +459,25 @@ namespace MatchMaking.Controllers
 				{
 					#region Validation
 
-					if (string.IsNullOrEmpty(viewModel.Username))
+					if (string.IsNullOrEmpty(viewModel.Firstname))
+					{
+						CommonViewModel.Message = "Please enter Firstname.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (string.IsNullOrEmpty(viewModel.Surname))
+					{
+						CommonViewModel.Message = "Please enter Lastname.";
+						CommonViewModel.IsSuccess = false;
+						CommonViewModel.StatusCode = ResponseStatusCode.Error;
+
+						return Json(CommonViewModel);
+					}
+
+					if (string.IsNullOrEmpty(viewModel.Email))
 					{
 						CommonViewModel.Message = "Please enter Email.";
 						CommonViewModel.IsSuccess = false;
@@ -457,7 +486,7 @@ namespace MatchMaking.Controllers
 						return Json(CommonViewModel);
 					}
 
-					if (!string.IsNullOrEmpty(viewModel.Username) && !ValidateField.IsValidEmail(viewModel.Username))
+					if (!string.IsNullOrEmpty(viewModel.Email) && !ValidateField.IsValidEmail(viewModel.Email))
 					{
 						CommonViewModel.Message = "Please enter valid Email.";
 						CommonViewModel.IsSuccess = false;
@@ -493,9 +522,9 @@ namespace MatchMaking.Controllers
 						return Json(CommonViewModel);
 					}
 
-					if (_context.Using<User>().Any(x => x.UserName.ToLower() == Convert.ToString((viewModel.Username)).ToLower()))
+					if (_context.Using<User>().Any(x => x.Email.ToLower() == Convert.ToString((viewModel.Email)).ToLower()))
 					{
-						CommonViewModel.Message = "Username already exist. Please try another Username.";
+						CommonViewModel.Message = "Email already exist. Please try another Email.";
 						CommonViewModel.IsSuccess = false;
 						CommonViewModel.StatusCode = ResponseStatusCode.Error;
 
@@ -513,7 +542,8 @@ namespace MatchMaking.Controllers
 						{
 							var user = new User()
 							{
-								UserName = Convert.ToString((viewModel.Username)),
+								UserName = Convert.ToString((viewModel.Email)),
+								Email = Convert.ToString((viewModel.Email)),
 								Password = Common.Encrypt(Convert.ToString((viewModel.Password))),
 								NoOfWrongPasswordAttempts = 5,
 								NextChangePasswordDate = DateTime.Now
@@ -540,7 +570,7 @@ namespace MatchMaking.Controllers
 
 							if (profile == null)
 							{
-								profile = new Profile() { UserId = user.Id };
+								profile = new Profile() { UserId = user.Id, Firstname = viewModel.Firstname, PaternalSurname = viewModel.Surname };
 								profile = _context.Using<Profile>().Add(profile);
 							}
 
@@ -549,7 +579,7 @@ namespace MatchMaking.Controllers
 							CommonViewModel.IsConfirm = true;
 							CommonViewModel.IsSuccess = true;
 							CommonViewModel.StatusCode = ResponseStatusCode.Success;
-							CommonViewModel.Message = "Record saved successfully ! ";
+							CommonViewModel.Message = "User registered successfully!";
 
 							CommonViewModel.RedirectURL = Url.Action("Profile", "Home", new { area = "" });
 

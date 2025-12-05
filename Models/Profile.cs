@@ -44,10 +44,14 @@ namespace MatchMaking.Models
 		{
 			get
 			{
-				var today = DateTime.Today;
-				int age = today.Year - DateOfBirth.Value.Year;
-				if (DateOfBirth?.Date > today.AddYears(-age))
-					age--;
+				int age = 0;
+
+				if (DateOfBirth!=null)
+				{
+					var today = DateTime.Today;
+					age = today.Year - DateOfBirth.Value.Year;
+					if (DateOfBirth?.Date > today.AddYears(-age)) age--;
+				}
 
 				return age;
 			}

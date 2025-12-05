@@ -2814,7 +2814,7 @@ textarea::placeholder {
 }
 @media (min-width: 1200px) {
   .profile-section .member-profile .profile-item .profile-information {
-    margin-top: -294px;
+    margin-top: -235px;
   }
 }
 .profile-section .member-profile .profile-item .profile-information .profile-pic {

@@ -260,7 +260,7 @@ namespace MatchMaking.Controllers
 							CommonViewModel.IsConfirm = true;
 							CommonViewModel.IsSuccess = true;
 							CommonViewModel.StatusCode = ResponseStatusCode.Success;
-							CommonViewModel.Message = "Record saved successfully ! ";
+							CommonViewModel.Message = "Profile updated successfully ! ";
 
 							CommonViewModel.RedirectURL = Url.Action("Profile", "Home", new { area = "" });
 
@@ -345,7 +345,7 @@ namespace MatchMaking.Controllers
 					CommonViewModel.IsConfirm = true;
 					CommonViewModel.IsSuccess = true;
 					CommonViewModel.StatusCode = ResponseStatusCode.Success;
-					CommonViewModel.Message = "Record saved successfully ! ";
+					CommonViewModel.Message = "Photo(s) uploaded successfully ! ";
 
 					CommonViewModel.RedirectURL = Url.Action("ProfileUpdate", "Home", new { area = "" });
 

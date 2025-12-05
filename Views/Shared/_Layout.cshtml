@@ -45,7 +45,6 @@
 						<ul class="menu">
 							<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
 							<li><a asp-area="" asp-controller="Home" asp-action="Member">Members</a></li>
-							<li><a asp-area="" asp-controller="Home" asp-action="Community">Community</a></li>
 
 							<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
 							@if (AppHttpContextAccessor.LoggedUserId > 0)
@@ -99,9 +98,11 @@
 					</div>
 					<div class="modal-body">
 						<form id="formRegister" asp-area="" asp-controller="Home" asp-action="Register" method="post" enctype="multipart/form-data" class="account-form">
-							<div class="form-group right d-flex justify-content-between">
-								<input type="text" placeholder="Firstname" name="Firstname" class="w-50" data-required data-msg="The Firstname field is required." autocomplete="off">
-								<input type="text" placeholder="Lastname" name="Surname" class="w-50" data-required data-msg="The Lastname field is required." autocomplete="off">
+							<div class="form-group">
+								<input type="text" placeholder="Firstname" name="Firstname" data-required data-msg="The Firstname field is required." autocomplete="off">
+							</div>
+							<div class="form-group">
+								<input type="text" placeholder="Lastname" name="Surname" data-required data-msg="The Lastname field is required." autocomplete="off">
 							</div>
 							<div class="form-group">
 								<input type="text" placeholder="Email" name="Email" data-required data-msg="The Email field is required." autocomplete="off">

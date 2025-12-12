@@ -3,79 +3,524 @@
 }
 
 
+@section Styles {
+	<style type="text/css">
+		/* FORMS */
+		#qbox-container {
+			background: url(../../assets/images/work/bg.png);
+			background-repeat: repeat;
+			position: relative;
+			padding: 62px;
+			min-height: 630px;
+			box-shadow: 10px 8px 21px 0px rgba(204, 204, 204, 0.75);
+			-webkit-box-shadow: 10px 8px 21px 0px rgba(204, 204, 204, 0.75);
+			-moz-box-shadow: 10px 8px 21px 0px rgba(204, 204, 204, 0.75);
+		}
+
+		#steps-container {
+			margin: auto;
+			vertical-align: middle;
+			align-items: center;
+		}
+
+		.step {
+			display: none;
+		}
+
+			.step h4 {
+				margin: 0 0 26px 0;
+				padding: 0;
+				position: relative;
+				font-weight: 500;
+				font-size: 23px;
+				font-size: 1.4375rem;
+				line-height: 1.6;
+			}
+
+		button#prev-btn, button#next-btn, button#submit-btn {
+			font-size: 17px;
+			font-weight: bold;
+			position: relative;
+			width: 130px;
+			height: 50px;
+			background: #DC3545;
+			margin: 0 auto;
+			margin-top: 20px;
+			overflow: hidden;
+			z-index: 1;
+			cursor: pointer;
+			transition: color .3s;
+			text-align: center;
+			color: #fff;
+			border: 0;
+			-webkit-border-bottom-right-radius: 5px;
+			-webkit-border-bottom-left-radius: 5px;
+			-moz-border-radius-bottomright: 5px;
+			-moz-border-radius-bottomleft: 5px;
+			border-bottom-right-radius: 5px;
+			border-bottom-left-radius: 5px;
+		}
+
+			button#prev-btn:after, button#next-btn:after, button#submit-btn:after {
+				position: absolute;
+				top: 90%;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: #cc0616;
+				content: "";
+				z-index: -2;
+				transition: transform .3s;
+			}
+
+			button#prev-btn:hover::after, button#next-btn:hover::after, button#submit-btn:hover::after {
+				transform: translateY(-80%);
+				transition: transform .3s;
+			}
+
+		.progress {
+			border-radius: 0px !important;
+		}
+
+		.q__question {
+			position: relative;
+		}
+
+			.q__question:not(:last-child) {
+				margin-bottom: 10px;
+			}
+
+		.question__input {
+			position: absolute;
+			left: -9999px;
+		}
+
+		.question__label {
+			position: relative;
+			display: block;
+			line-height: 40px;
+			border: 1px solid #ced4da;
+			border-radius: 5px;
+			background-color: #fff;
+			padding: 5px 20px 5px 50px;
+			cursor: pointer;
+			transition: all 0.15s ease-in-out;
+		}
+
+			.question__label:hover {
+				border-color: #DC3545;
+			}
+
+			.question__label:before, .question__label:after {
+				position: absolute;
+				content: "";
+			}
+
+			.question__label:before {
+				top: 12px;
+				left: 10px;
+				width: 26px;
+				height: 26px;
+				border-radius: 50%;
+				background-color: #fff;
+				box-shadow: inset 0 0 0 1px #ced4da;
+				-webkit-transition: all 0.15s ease-in-out;
+				-moz-transition: all 0.15s ease-in-out;
+				-o-transition: all 0.15s ease-in-out;
+				transition: all 0.15s ease-in-out;
+			}
+
+		.question__input:checked + .question__label:before {
+			background-color: #DC3545;
+			box-shadow: 0 0 0 0;
+		}
+
+		.question__input:checked + .question__label:after {
+			top: 22px;
+			left: 18px;
+			width: 10px;
+			height: 5px;
+			border-left: 2px solid #fff;
+			border-bottom: 2px solid #fff;
+			transform: rotate(-45deg);
+		}
+
+		.form-check-input:checked, .form-check-input:focus {
+			background-color: #DC3545 !important;
+			outline: none !important;
+			border: none !important;
+		}
+
+		input:focus {
+			outline: none;
+		}
+
+		#input-container {
+			display: inline-block;
+			box-shadow: none !important;
+			margin-top: 36px !important;
+		}
+
+		label.form-check-label.radio-lb {
+			margin-right: 15px;
+		}
+
+		#q-box__buttons {
+			text-align: center;
+		}
+
+		input[type="text"], input[type="email"] {
+			padding: 8px 14px;
+		}
+
+			input[type="text"]:focus, input[type="email"]:focus {
+				border: 1px solid #DC3545;
+				border-radius: 5px;
+				outline: 0px !important;
+				-webkit-appearance: none;
+				box-shadow: none !important;
+				-webkit-transition: all 0.15s ease-in-out;
+				-moz-transition: all 0.15s ease-in-out;
+				-o-transition: all 0.15s ease-in-out;
+				transition: all 0.15s ease-in-out;
+			}
+
+		.form-check-input:checked[type=radio], .form-check-input:checked[type=radio]:hover, .form-check-input:checked[type=radio]:focus, .form-check-input:checked[type=radio]:active {
+			border: none !important;
+			-webkit-outline: 0px !important;
+			box-shadow: none !important;
+		}
+
+		.form-check-input:focus, input[type="radio"]:hover {
+			box-shadow: none;
+			cursor: pointer !important;
+		}
+
+		#success {
+			display: none;
+		}
+
+			#success h4 {
+				color: #DC3545;
+			}
+
+		.back-link {
+			font-weight: 700;
+			color: #DC3545;
+			text-decoration: none;
+			font-size: 18px;
+		}
+
+			.back-link:hover {
+				color: #82000a;
+			}
+
+
+		/* .radio-tile-group {
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: center;
+				} */
+
+		.radio-tile-group .input-container {
+			position: relative;
+			/* height: 7rem;
+			width: 7rem; */
+			margin: 0.5rem;
+		}
+
+			.radio-tile-group .input-container .radio-button {
+				opacity: 0;
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				margin: 0;
+				cursor: pointer;
+			}
+
+			.radio-tile-group .input-container .radio-tile {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				width: 100%;
+				height: 100%;
+				border: 2px solid #DC3545;
+				border-radius: 5px;
+				padding: 1rem;
+				transition: transform 300ms ease;
+			}
+
+			.radio-tile-group .input-container .icon svg {
+				fill: #DC3545 !important;
+				width: 3rem;
+				height: 3rem;
+			}
+
+			.radio-tile-group .input-container .radio-tile-label {
+				text-align: center;
+				font-size: 0.75rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				color: #DC3545;
+			}
+
+			.radio-tile-group .input-container .radio-button:checked + .radio-tile {
+				background-color: #DC3545;
+				border: 2px solid #DC3545;
+				color: white;
+				transform: scale(1.1, 1.1);
+			}
+
+				.radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg,
+				.radio-tile-group .input-container .radio-button:checked + g {
+					fill: white !important;
+					background-color: #DC3545 !important;
+				}
+
+				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label {
+					color: white;
+					background-color: #DC3545;
+				}
+	</style>
+}
+
 <!-- ================ Banner Section start Here =============== -->
 <section class="banner-section">
 	<div class="container">
 		<div class="section-wrapper">
 			<div class="row align-items-end">
 				<div class="col-lg-6">
-					<div class="banner-content">
-						<div class="intro-form">
-							<div class="intro-form-inner">
-								<h3>Introducing Jain Connect</h3>
-								<p>
-									Serious Dating With <strong>Jain Connect </strong> Your Perfect
-									Match is Just a Click Away.
-								</p>
-								<form action="/" class="banner-form">
-									<div class="person">
-										<label for="gender-two" class="left">Looking for</label>
-										<div class="custom-select right">
-											<select name="gender" id="Gender" class="">
-												<option value="">Select Gender</option>
-												<option value="M">Male</option>
-												<option value="F">Female</option>
-												<option value="O">Others</option>
-											</select>
-										</div>
-									</div>
-									<div class="age">
-										<label for="age" class="left">Age</label>
-										<div class="right d-flex justify-content-between">
-											<div class="custom-select">
-												<select name="age-start" id="age-start">
-													<option value="18">18</option>
-													<option value="19">19</option>
-													<option value="20">20</option>
-													<option value="21">21</option>
-													<option value="22">22</option>
-													<option value="23">23</option>
-													<option value="24">24</option>
-													<option value="25">25</option>
-													<option value="26">26</option>
-													<option value="27">27</option>
-													<option value="28">28</option>
-													<option value="29">29</option>
-													<option value="30">30</option>
-												</select>
+					<div id="qbox-container">
+						<form class="needs-validation" id="form-wrapper" method="post" name="form-wrapper" novalidate="">
+							<div id="steps-container">
+								<div class="step d-block text-center">
+									<h4 class="mb-0 text-bold">Select Gender </h4>
+									<h6 class="mb-2">Choose the gender for matrimonial profile search</h6>
+									<div class="form-check ps-0 q-box d-flex justify-content-center align-items-center">
+										<div class="radio-tile-group">
+											<div class="input-container">
+												<input id="Male" class="radio-button" type="radio" name="radio" />
+												<div class="radio-tile">
+													<div class="icon walk-icon">
+														<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+															<title>Icon Male</title>
+															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																<g id="Male" stroke="#DC3545" stroke-width="2">
+																	<path d="M50,89 C28.4608948,89 11,71.5391052 11,50 C11,28.702089 28.8012779,11 50,11 C71.3811739,11 89,28.8647602 89,50 C89,71.5391052 71.5391052,89 50,89 Z" id="Oval"></path>
+																	<path d="M34.5,59 C32.0147186,59 30,56.9852814 30,54.5 C30,53.1996039 30.5532818,51.9907899 31.5049437,51.1414086 C32.3241732,50.4102265 33.3788668,50 34.5,50 C36.9852814,50 39,52.0147186 39,54.5 C39,56.9852814 36.9852814,59 34.5,59 Z" id="eye"></path>
+																	<path d="M65,59 C62.790861,59 61,57.209139 61,55 C61,53.844 61.4917357,52.7696523 62.3377558,52.0145589 C63.0660084,51.3645758 64.0033341,51 65,51 C67.209139,51 69,52.790861 69,55 C69,57.209139 67.209139,59 65,59 Z" id="eye"></path>
+																	<path d="M13,39 C13,39 18.3404984,39.6508711 28,35 C37.6595016,30.3491289 40,26 40,26 C40,26 50.99493,36.4771587 58,38 C65.00507,39.5228413 75,42 86,36" id="Path-9"></path>
+																	<path d="M40.0417765,73.6204199 C43.0857241,74.4024099 46.5428621,75 50,75 C53.4660267,75 57.0521869,74.3993329 60.2588177,73.6143844" id="Path-8"></path>
+																</g>
+															</g>
+														</svg>
+													</div>
+													<label for="Male" class="radio-tile-label">
+														<p class="font-bold mt-2">Male</p>
+														<span class="text-blue-100 text-sm">Looking for Bride</span>
+													</label>
+												</div>
 											</div>
 
-											<div class="custom-select">
-												<select name="age-end" id="age-end">
-													<option value="19">19</option>
-													<option value="20">20</option>
-													<option value="21">21</option>
-													<option value="22">22</option>
-													<option value="23">23</option>
-													<option value="24">24</option>
-													<option value="25">25</option>
-													<option value="26">26</option>
-													<option value="27">27</option>
-													<option value="28">28</option>
-													<option value="29">29</option>
-													<option value="30">30</option>
-													<option value="50">50</option>
-												</select>
+											<div class="input-container">
+												<input id="Female" class="radio-button" type="radio" name="radio" />
+												<div class="radio-tile">
+													<div class="icon bike-icon">
+														<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+															<title>Icon Female</title>
+															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+																<g id="Female" stroke="#DC3545" stroke-width="2">
+																	<path d="M34.5,59 C32.0147186,59 30,56.9852814 30,54.5 C30,53.1996039 30.5532818,51.9907899 31.5049437,51.1414086 C32.3241732,50.4102265 33.3788668,50 34.5,50 C36.9852814,50 39,52.0147186 39,54.5 C39,56.9852814 36.9852814,59 34.5,59 Z" id="eye"></path>
+																	<path d="M65,59 C62.790861,59 61,57.209139 61,55 C61,53.844 61.4917357,52.7696523 62.3377558,52.0145589 C63.0660084,51.3645758 64.0033341,51 65,51 C67.209139,51 69,52.790861 69,55 C69,57.209139 67.209139,59 65,59 Z" id="eye"></path>
+																	<path d="M40.0417765,73.6204199 C43.0857241,74.4024099 46.5428621,75 50,75 C53.4660267,75 57.0521869,74.3993329 60.2588177,73.6143844" id="Path-8"></path>
+																	<path d="M89,85.7475102 C88.8955878,85.9344664 88.7467384,86.1876581 88.5568273,86.4896509 C88.099056,87.2175897 87.5756991,87.9455147 86.9988116,88.620918 C86.4739467,89.2354147 85.9304177,89.775041 85.375305,90.2191312 C84.8658937,90.6266602 84.2662576,91.0180436 83.595144,91.3893912 C82.7730663,91.8442719 81.887807,92.2460964 81,92.5896591 L81,40 L81,38.8469903 L79.8585786,39.0100505 C79.6614656,39.0382095 79.2577272,39.0826578 78.6591173,39.1278359 C74.3930423,39.4498038 68.7942651,39.2189264 62.1788854,38.0161301 C57.0399578,37.0817796 52.3111466,34.9372575 48.0532571,31.9450012 C45.9977761,30.5005001 44.1879399,28.9525501 42.6417908,27.4063877 C42.1025143,26.8671065 41.6354717,26.3675518 41.2428426,25.9209461 C41.0110166,25.65725 40.857774,25.472798 40.7852536,25.3808257 L40.0214746,24.4121805 L39.2317787,25.3598156 C39.1671043,25.4374249 39.0389509,25.5878658 38.8531645,25.8006757 C38.5410991,26.1581324 38.1830018,26.5571551 37.7847578,26.9872586 C36.6466602,28.2164041 35.4176003,29.445464 34.1458501,30.5900392 C32.5231664,32.0504545 30.951344,33.2630032 29.4855042,34.1425071 C29.0304384,34.4155466 28.5310795,34.7026476 27.9916336,35.002074 C27.4450358,35.3054703 26.8605908,35.6196896 26.2435123,35.9426764 C24.8349714,36.6799246 23.3234177,37.4285751 21.8115464,38.1490329 C21.2821626,38.4013022 20.7906968,38.6319577 20.3498881,38.8361138 C20.0860774,38.958295 19.8982917,39.04426 19.7992478,39.0891363 L19.211955,39.3552353 L19.211955,40 L19.211955,92.7152178 C19.1364886,92.6917076 19.0597241,92.667071 18.9817486,92.6412798 C17.9021752,92.2841999 16.8226398,91.7852694 15.8208322,91.1247895 C15.4101539,90.8540341 15.0203834,90.5606598 14.6544853,90.2439252 C14.1170024,89.7786609 13.5401931,89.1607001 12.9460031,88.4291975 C12.4227493,87.7850238 11.9163214,87.0910824 11.4478335,86.3968037 C11.2837801,86.1536836 11.1364341,85.928256 11.0082743,85.7265874 C11.0054836,85.7221962 11.0027255,85.7178532 11,85.713559 C11,85.0832089 11,84.7118308 11,81.6747405 C11,77.349481 11,77.349481 11,72.1591696 C11,71.5103806 11,71.5103806 11,70.8632812 C11,64.359375 11,64.359375 11,60 C11,52.5915787 11.1864157,47.4651466 11.4954955,44.2198091 C11.6016611,43.1050696 11.7139336,42.3079355 11.8230104,41.7807306 C11.8772398,41.5186217 11.907738,41.4205921 11.8944272,41.4472136 L11.8944272,41.4472136 L11.9531333,41.3298014 L11.979547,41.2012154 C11.9897736,41.151431 12.0134457,41.0449892 12.0517573,40.8856927 C12.1171311,40.6138739 12.199539,40.2967548 12.3001685,39.9381396 C12.5895905,38.9067215 12.9661965,37.7545848 13.4393808,36.5121684 C14.7929142,32.9582632 16.645561,29.4037594 19.0699875,26.0905275 C25.9786458,16.6491245 36.058878,11 50,11 C63.9680262,11 73.8677356,15.9210538 80.4573453,24.1261723 C82.7631629,26.9972841 84.4914427,30.0758538 85.7229878,33.1528363 C86.1530722,34.2273906 86.4899505,35.2232906 86.743943,36.1140543 C86.8941528,36.6408474 86.9824164,37.0099991 87.0191959,37.1949955 C87.0506645,37.3173809 87.0767576,37.4156648 87.1148011,37.570556 C87.1802255,37.836927 87.25369,38.161866 87.3332396,38.5463556 C87.562761,39.6557092 87.7931539,41.0150273 88.0087721,42.6321637 C88.6278466,47.2752226 89,53.0436001 89,60 L89,85.7475102 Z" id="Path-9"></path>
+																	<path d="M19,75 C19,75 30,90 50,90 C70,90 81,75 81,75" id="Path-10"></path>
+																</g>
+															</g>
+														</svg>
+													</div>
+													<label for="Female" class="radio-tile-label">
+														<p class="font-bold mt-2">Female</p>
+														<span class="text-pink-100 text-sm">Looking for Groom</span>
+													</label>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+								<div class="step">
+									<h4>Are you experiencing a high fever, dry cough, tiredness and loss of taste or smell?</h4>
+									<div class="form-check ps-0 q-box">
+										<div class="q-box__question">
+											<input class="form-check-input question__input" id="q_2_yes" name="q_2" type="radio" value="Yes">
+											<label class="form-check-label question__label" for="q_2_yes">Yes</label>
+										</div>
+										<div class="q-box__question">
+											<input checked="" class="form-check-input question__input" id="q_2_no" name="q_2" type="radio" value="No">
+											<label class="form-check-label question__label" for="q_2_no">No</label>
+										</div>
+									</div>
+								</div>
+								<div class="step">
+									<h4>Are you having diarrhoea, stomach pain, conjunctivitis, vomiting and headache?</h4>
+									<div class="form-check ps-0 q-box">
+										<div class="q-box__question">
+											<input class="form-check-input question__input" id="q_3_yes" name="q_3" type="radio" value="Yes">
+											<label class="form-check-label question__label" for="q_3_yes">Yes</label>
+										</div>
+										<div class="q-box__question">
+											<input checked="" class="form-check-input question__input" id="q_3_no" name="q_3" type="radio" value="No">
+											<label class="form-check-label question__label" for="q_3_no">No</label>
+										</div>
+									</div>
+								</div>
+								<div class="step">
+									<h4>Have you traveled to any of these countries with the highest number of COVID-19 cases in the world for the past 2 weeks?</h4>
+									<div class="row">
+										<div class="col-lg-6">
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input q-checkbox" id="q_4_uk" name="q_4" type="checkbox" value="uk">
+													<label class="form-check-label question__label" for="q_4_uk">UK</label>
+												</div>
+											</div>
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_us" name="q_4" type="checkbox" value="us">
+													<label class="form-check-label question__label" for="q_4_us">US</label>
+												</div>
+											</div>
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_br" name="q_3" type="checkbox" value="br">
+													<label class="form-check-label question__label" for="q_4_br">Brazil</label>
+												</div>
 											</div>
 										</div>
-
+										<div class="col-lg-6">
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_de" name="q_4" type="checkbox" value="de">
+													<label class="form-check-label question__label" for="q_4_de">Germany</label>
+												</div>
+											</div>
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_in" name="q_4" type="checkbox" value="in">
+													<label class="form-check-label question__label" for="q_4_in">India</label>
+												</div>
+											</div>
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_eu" name="q_4" type="checkbox" value="eu">
+													<label class="form-check-label question__label" for="q_4_eu">Europe</label>
+												</div>
+											</div>
+										</div>
+										<div class="col-lg-12">
+											<div class="form-check ps-0 q-box">
+												<div class="q-box__question">
+													<input class="form-check-input question__input" id="q_4_none" name="q_4" type="checkbox" value="none">
+													<label class="form-check-label question__label" for="q_4_none">I did not travelled to any of these countries</label>
+												</div>
+											</div>
+										</div>
 									</div>
-
-									<button type="button" class="" onclick="fnSearch()">Find Your Partner</button>
-
-								</form>
+								</div>
+								<div class="step">
+									<h4>Are you experiencing any of these serious symptoms of COVID-19 below?</h4>
+									<div class="row">
+										<div class="form-check ps-0 q-box">
+											<div class="q-box__question">
+												<input class="form-check-input question__input" id="q_5_breathing" name="q_5_breathing" type="checkbox" value="breathing">
+												<label class="form-check-label question__label" for="q_5_breathing">Difficulty breathing or shortness of breath</label>
+											</div>
+										</div>
+										<div class="form-check ps-0 q-box">
+											<div class="q-box__question">
+												<input class="form-check-input question__input" id="q_5_chest" name="q_5_chest" type="checkbox" value="chest pain">
+												<label class="form-check-label question__label" for="q_5_chest">Chest pain or pressure</label>
+											</div>
+										</div>
+										<div class="form-check ps-0 q-box">
+											<div class="q-box__question">
+												<input class="form-check-input question__input" id="q_5_speech" name="q_5_speech" type="checkbox" value="speech problem">
+												<label class="form-check-label question__label" for="q_5_speech">Loss of speech or movement</label>
+											</div>
+										</div>
+										<div class="form-check ps-0 q-box">
+											<div class="q-box__question">
+												<input class="form-check-input question__input" id="q_5_pale" name="q_5_pale" type="checkbox" value="pale">
+												<label class="form-check-label question__label" for="q_5_pale">Pale, gray or blue-colored skin, lips or nail beds</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="step">
+									<h4>Provide us with your personal information</h4>
+									<div class="mt-1">
+										<label class="form-label">Complete Name:</label>
+										<input class="form-control" id="full_name" name="full_name" type="text">
+									</div>
+									<div class="mt-2">
+										<label class="form-label">Complete Address:</label>
+										<input class="form-control" id="address" name="address" type="text">
+									</div>
+									<div class="mt-2">
+										<label class="form-label">Email:</label>
+										<input class="form-control" id="email" name="email" type="email">
+									</div>
+									<div class="mt-2">
+										<label class="form-label">Phone / Mobile Number:</label>
+										<input class="form-control" id="phone" name="phone" type="text">
+									</div>
+									<div class="row mt-2">
+										<div class="col-lg-2 col-md-2 col-3">
+											<label class="form-label">Age:</label>
+											<div class="input-container">
+												<input class="form-control" id="age" name="age" type="text">
+											</div>
+										</div>
+										<div class="col-lg-8">
+											<div id="input-container">
+												<input class="form-check-input" name="gender" type="radio" value="male">
+												<label class="form-check-label radio-lb">Male</label>
+												<input class="form-check-input" name="gender" type="radio" value="female">
+												<label class="form-check-label radio-lb">Female</label>
+												<input checked="" class="form-check-input" name="gender" type="radio" value="undefined">
+												<label class="form-check-label radio-lb">Rather not say</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="step">
+									<div class="mt-1">
+										<div class="closing-text">
+											<h4>That's about it! Stay healthy!</h4>
+											<p>We will assess your information and will let you know soon if you need to get tested for COVID-19.</p>
+											<p>Click on the submit button to continue.</p>
+										</div>
+									</div>
+								</div>
+								<div id="success">
+									<div class="mt-5">
+										<h4>Success! We'll get back to you ASAP!</h4>
+										<p>Meanwhile, clean your hands often, use soap and water, or an alcohol-based hand rub, maintain a safe distance from anyone who is coughing or sneezing and always wear a mask when physical distancing is not possible.</p>
+										<a class="back-link" href="">Go back from the beginning ➜</a>
+									</div>
+								</div>
 							</div>
-						</div>
+							<div id="q-box__buttons">
+								<button id="prev-btn" type="button" class="d-none">Previous</button>
+								<button id="next-btn" type="button" class="d-inline-block">Next</button>
+								<button id="submit-btn" type="submit" class="d-none">Submit</button>
+							</div>
+						</form>
 					</div>
 				</div>
 				<div class="col-lg-6">
@@ -253,5 +698,100 @@
 		function fnSearch(){
 			window.location = '@Url.Action("Member", "Home")?Gender='+$('#Gender option:selected').val()+'&ageStart='+$('#age-start option:selected').val()+'&ageEnd='+$('#age-end option:selected').val();
 		}
+
+		let step = document.getElementsByClassName('step');
+		   let prevBtn = document.getElementById('prev-btn');
+		   let nextBtn = document.getElementById('next-btn');
+		   let submitBtn = document.getElementById('submit-btn');
+		   let form = document.getElementsByTagName('form')[0];
+		   let preloader = document.getElementById('preloader-wrapper');
+		   let bodyElement = document.querySelector('body');
+		   let succcessDiv = document.getElementById('success');
+
+		   form.onsubmit = () => { return false }
+
+		   let current_step = 0;
+		   let stepCount = 6
+		   step[current_step].classList.add('d-block');
+		   if(current_step == 0){
+			  prevBtn.classList.add('d-none');
+			  submitBtn.classList.add('d-none');
+			  nextBtn.classList.add('d-inline-block');
+		   }
+
+
+		   nextBtn.addEventListener('click', () => {
+			  current_step++;
+			  let previous_step = current_step - 1;
+			  if(( current_step > 0) && (current_step <= stepCount)){
+				prevBtn.classList.remove('d-none');
+				prevBtn.classList.add('d-inline-block');
+				step[current_step].classList.remove('d-none');
+				step[current_step].classList.add('d-block');
+				step[previous_step].classList.remove('d-block');
+				step[previous_step].classList.add('d-none');
+				if (current_step == stepCount){
+				  submitBtn.classList.remove('d-none');
+				  submitBtn.classList.add('d-inline-block');
+				  nextBtn.classList.remove('d-inline-block');
+				  nextBtn.classList.add('d-none');
+				}
+			  } else {
+				if(current_step > stepCount){
+					form.onsubmit = () => { return true }
+				}
+			  }
+			progress((100 / stepCount) * current_step);
+			});
+
+
+		   prevBtn.addEventListener('click', () => {
+			 if(current_step > 0){
+				current_step--;
+				let previous_step = current_step + 1;
+				prevBtn.classList.add('d-none');
+				prevBtn.classList.add('d-inline-block');
+				step[current_step].classList.remove('d-none');
+				step[current_step].classList.add('d-block')
+				step[previous_step].classList.remove('d-block');
+				step[previous_step].classList.add('d-none');
+				if(current_step < stepCount){
+				   submitBtn.classList.remove('d-inline-block');
+				   submitBtn.classList.add('d-none');
+				   nextBtn.classList.remove('d-none');
+				   nextBtn.classList.add('d-inline-block');
+				   prevBtn.classList.remove('d-none');
+				   prevBtn.classList.add('d-inline-block');
+				}
+			 }
+
+			 if(current_step == 0){
+				prevBtn.classList.remove('d-inline-block');
+				prevBtn.classList.add('d-none');
+			 }
+			progress((100 / stepCount) * current_step);
+		   });
+
+
+		submitBtn.addEventListener('click', () => {
+			preloader.classList.add('d-block');
+
+			const timer = ms => new Promise(res => setTimeout(res, ms));
+
+			timer(3000)
+			  .then(() => {
+				   bodyElement.classList.add('loaded');
+			  }).then(() =>{
+				  step[stepCount].classList.remove('d-block');
+				  step[stepCount].classList.add('d-none');
+				  prevBtn.classList.remove('d-inline-block');
+				  prevBtn.classList.add('d-none');
+				  submitBtn.classList.remove('d-inline-block');
+				  submitBtn.classList.add('d-none');
+				  succcessDiv.classList.remove('d-none');
+				  succcessDiv.classList.add('d-block');
+			  })
+
+		});
 	</script>
 }

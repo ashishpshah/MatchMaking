@@ -1995,12 +1995,12 @@ select {
 
 /* @@@@@@@@@@@@@  Banner Section Start Here  @@@@@@@@@@@@@@ */
 .banner-section {
-  padding-top: 200px;
+  padding-top: 90px;
   background: #fff3f3;
 }
 @media (min-width: 576px) {
   .banner-section {
-    padding-top: 270px;
+    padding-top: 90px;
   }
 }
 .banner-section .section-wrapper .banner-content .intro-form {

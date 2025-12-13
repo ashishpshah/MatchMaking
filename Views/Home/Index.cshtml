@@ -1,4 +1,9 @@
-﻿@{
+﻿@using MatchMaking.Areas.Admin.Models
+@using MatchMaking.Infra
+
+@model List<SelectListItem_Custom>
+
+@{
 	ViewData["Title"] = "Home Page";
 }
 
@@ -23,11 +28,11 @@
 			align-items: center;
 		}
 
-		.step {
+		.form-step {
 			display: none;
 		}
 
-			.step h4 {
+			.form-step h4 {
 				margin: 0 0 26px 0;
 				padding: 0;
 				position: relative;
@@ -217,15 +222,15 @@
 
 
 		/* .radio-tile-group {
-					display: flex;
-					flex-wrap: wrap;
-					justify-content: center;
-				} */
+																																																	display: flex;
+																																																	flex-wrap: wrap;
+																																																	justify-content: center;
+																																																} */
 
 		.radio-tile-group .input-container {
 			position: relative;
 			/* height: 7rem;
-			width: 7rem; */
+																																															width: 7rem; */
 			margin: 0.5rem;
 		}
 
@@ -285,6 +290,86 @@
 					color: white;
 					background-color: #DC3545;
 				}
+
+		.customSelectbox {
+			display: none;
+		}
+
+		.cusSelBlock {
+			position: relative;
+			width: 100%;
+			font-family: Arial, sans-serif;
+		}
+
+		.selectLabel {
+			font-family: "Jost", sans-serif;
+			color: #210053;
+			background: #fff;
+			border: 1px solid #DC3545;
+			cursor: pointer;
+			padding: 0 50px 0 20px;
+			line-height: 50px;
+			height: 50px;
+			position: relative;
+			user-select: none;
+		}
+
+			.selectLabel::after {
+				content: "▼";
+				position: absolute;
+				right: 15px;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+
+			.selectLabel.active::after {
+				content: "▲";
+			}
+
+		/* dropdown */
+		.options {
+			position: absolute;
+			top: 50px;
+			left: 0;
+			width: 100%;
+			max-height: 0;
+			overflow-y: auto;
+			background: #fff;
+			font-family: "Jost", sans-serif;
+			color: #210053;
+			/* border: 1px solid #DC3545; */
+			border-top: none;
+			transition: max-height 300ms ease;
+			z-index: 999;
+		}
+
+		/* open state */
+		.cusSelBlock.open .options {
+			max-height: 250px;
+		}
+
+		/* list items */
+		.options li {
+			list-style: none;
+			padding: 0 20px;
+			height: 50px;
+			line-height: 50px;
+			cursor: pointer;
+			border: 1px solid #DC3545;
+			border-top-width: 0px;
+		}
+
+			.options li:hover,
+			.options li.active {
+				background: #DC3545;
+				color: #fff;
+			}
+
+		/* hide scrollbar (optional) */
+		.options::-webkit-scrollbar {
+			width: 0;
+		}
+
 	</style>
 }
 
@@ -295,21 +380,22 @@
 			<div class="row align-items-end">
 				<div class="col-lg-6">
 					<div id="qbox-container">
+						<p class="fw-bold h3 text-center mb-5">Welcome to Jain Matrimony!</p>
 						<form class="needs-validation" id="form-wrapper" method="post" name="form-wrapper" novalidate="">
 							<div id="steps-container">
-								<div class="step d-block text-center">
+								<div class="form-step d-block text-center">
 									<h4 class="mb-0 text-bold">Select Gender </h4>
 									<h6 class="mb-2">Choose the gender for matrimonial profile search</h6>
 									<div class="form-check ps-0 q-box d-flex justify-content-center align-items-center">
 										<div class="radio-tile-group">
 											<div class="input-container">
-												<input id="Male" class="radio-button" type="radio" name="radio" />
+												<input id="M" class="radio-button" type="radio" name="gender" value="M" />
 												<div class="radio-tile">
 													<div class="icon walk-icon">
 														<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 															<title>Icon Male</title>
 															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																<g id="Male" stroke="#DC3545" stroke-width="2">
+																<g id="M" stroke="#DC3545" stroke-width="2">
 																	<path d="M50,89 C28.4608948,89 11,71.5391052 11,50 C11,28.702089 28.8012779,11 50,11 C71.3811739,11 89,28.8647602 89,50 C89,71.5391052 71.5391052,89 50,89 Z" id="Oval"></path>
 																	<path d="M34.5,59 C32.0147186,59 30,56.9852814 30,54.5 C30,53.1996039 30.5532818,51.9907899 31.5049437,51.1414086 C32.3241732,50.4102265 33.3788668,50 34.5,50 C36.9852814,50 39,52.0147186 39,54.5 C39,56.9852814 36.9852814,59 34.5,59 Z" id="eye"></path>
 																	<path d="M65,59 C62.790861,59 61,57.209139 61,55 C61,53.844 61.4917357,52.7696523 62.3377558,52.0145589 C63.0660084,51.3645758 64.0033341,51 65,51 C67.209139,51 69,52.790861 69,55 C69,57.209139 67.209139,59 65,59 Z" id="eye"></path>
@@ -319,7 +405,7 @@
 															</g>
 														</svg>
 													</div>
-													<label for="Male" class="radio-tile-label">
+													<label for="M" class="radio-tile-label">
 														<p class="font-bold mt-2">Male</p>
 														<span class="text-blue-100 text-sm">Looking for Bride</span>
 													</label>
@@ -327,13 +413,13 @@
 											</div>
 
 											<div class="input-container">
-												<input id="Female" class="radio-button" type="radio" name="radio" />
+												<input id="F" class="radio-button" type="radio" name="gender" value="F" />
 												<div class="radio-tile">
 													<div class="icon bike-icon">
 														<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 															<title>Icon Female</title>
 															<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-																<g id="Female" stroke="#DC3545" stroke-width="2">
+																<g id="F" stroke="#DC3545" stroke-width="2">
 																	<path d="M34.5,59 C32.0147186,59 30,56.9852814 30,54.5 C30,53.1996039 30.5532818,51.9907899 31.5049437,51.1414086 C32.3241732,50.4102265 33.3788668,50 34.5,50 C36.9852814,50 39,52.0147186 39,54.5 C39,56.9852814 36.9852814,59 34.5,59 Z" id="eye"></path>
 																	<path d="M65,59 C62.790861,59 61,57.209139 61,55 C61,53.844 61.4917357,52.7696523 62.3377558,52.0145589 C63.0660084,51.3645758 64.0033341,51 65,51 C67.209139,51 69,52.790861 69,55 C69,57.209139 67.209139,59 65,59 Z" id="eye"></path>
 																	<path d="M40.0417765,73.6204199 C43.0857241,74.4024099 46.5428621,75 50,75 C53.4660267,75 57.0521869,74.3993329 60.2588177,73.6143844" id="Path-8"></path>
@@ -343,7 +429,7 @@
 															</g>
 														</svg>
 													</div>
-													<label for="Female" class="radio-tile-label">
+													<label for="F" class="radio-tile-label">
 														<p class="font-bold mt-2">Female</p>
 														<span class="text-pink-100 text-sm">Looking for Groom</span>
 													</label>
@@ -353,115 +439,88 @@
 										</div>
 									</div>
 								</div>
-								<div class="step">
-									<h4>Are you experiencing a high fever, dry cough, tiredness and loss of taste or smell?</h4>
-									<div class="form-check ps-0 q-box">
+								<div class="form-step">
+									<h4>Choose the Age</h4>
+									<div class="form-check ps-0 q-box d-flex flex-column d-flex justify-content-center">
 										<div class="q-box__question">
-											<input class="form-check-input question__input" id="q_2_yes" name="q_2" type="radio" value="Yes">
-											<label class="form-check-label question__label" for="q_2_yes">Yes</label>
+											<div class="d-flex flex-row mb-3">
+												<div class="p-2 w-100">Age from</div>
+
+												<select name="age-start" class="customSelectbox">
+													@for (int i = 18; i <= 60; i++)
+													{
+														if (i == 18)
+														{
+															<option value="@i" selected>@i</option>
+														}
+														else
+														{
+															<option value="@i">@i</option>
+														}
+													}
+												</select>
+											</div>
 										</div>
 										<div class="q-box__question">
-											<input checked="" class="form-check-input question__input" id="q_2_no" name="q_2" type="radio" value="No">
-											<label class="form-check-label question__label" for="q_2_no">No</label>
+											<div class="d-flex flex-row mb-3">
+												<div class="p-2 w-100">Age to</div>
+
+												<select name="age-end" class="customSelectbox">
+													@for (int i = 18; i <= 60; i++)
+													{
+														if (i == 30)
+														{
+															<option value="@i" selected>@i</option>
+														}
+														else
+														{
+															<option value="@i">@i</option>
+														}
+													}
+												</select>
+											</div>
 										</div>
 									</div>
 								</div>
-								<div class="step">
-									<h4>Are you having diarrhoea, stomach pain, conjunctivitis, vomiting and headache?</h4>
-									<div class="form-check ps-0 q-box">
-										<div class="q-box__question">
-											<input class="form-check-input question__input" id="q_3_yes" name="q_3" type="radio" value="Yes">
-											<label class="form-check-label question__label" for="q_3_yes">Yes</label>
-										</div>
-										<div class="q-box__question">
-											<input checked="" class="form-check-input question__input" id="q_3_no" name="q_3" type="radio" value="No">
-											<label class="form-check-label question__label" for="q_3_no">No</label>
-										</div>
-									</div>
-								</div>
-								<div class="step">
-									<h4>Have you traveled to any of these countries with the highest number of COVID-19 cases in the world for the past 2 weeks?</h4>
+								<div class="form-step">
+									<h4>Choose Jain Group(s)</h4>
 									<div class="row">
+
+										@{
+											var items = Model
+											.OrderBy(x => x.Text == "Other") // "Other" becomes last
+											.ToList();
+
+											int half = (int)Math.Ceiling(items.Count / 2.0);
+											var leftColumn = items.Take(half).ToList();
+											var rightColumn = items.Skip(half).ToList();
+										}
+
 										<div class="col-lg-6">
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input q-checkbox" id="q_4_uk" name="q_4" type="checkbox" value="uk">
-													<label class="form-check-label question__label" for="q_4_uk">UK</label>
+											@foreach (var item in leftColumn)
+											{
+												<div class="form-check ps-0 q-box mb-3">
+													<div class="q-box__question">
+														<input class="form-check-input question__input q-checkbox" id="GroupId_@item.Value" name="GroupId" type="radio" value="@item.Value">
+														<label class="form-check-label question__label" for="GroupId_@item.Value">@item.Text</label>
+													</div>
 												</div>
-											</div>
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_us" name="q_4" type="checkbox" value="us">
-													<label class="form-check-label question__label" for="q_4_us">US</label>
-												</div>
-											</div>
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_br" name="q_3" type="checkbox" value="br">
-													<label class="form-check-label question__label" for="q_4_br">Brazil</label>
-												</div>
-											</div>
+											}
 										</div>
 										<div class="col-lg-6">
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_de" name="q_4" type="checkbox" value="de">
-													<label class="form-check-label question__label" for="q_4_de">Germany</label>
+											@foreach (var item in rightColumn)
+											{
+												<div class="form-check ps-0 q-box mb-3">
+													<div class="q-box__question">
+														<input class="form-check-input question__input q-checkbox" id="GroupId_@item.Value" name="GroupId" type="radio" value="@item.Value">
+														<label class="form-check-label question__label" for="GroupId_@item.Value">@item.Text</label>
+													</div>
 												</div>
-											</div>
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_in" name="q_4" type="checkbox" value="in">
-													<label class="form-check-label question__label" for="q_4_in">India</label>
-												</div>
-											</div>
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_eu" name="q_4" type="checkbox" value="eu">
-													<label class="form-check-label question__label" for="q_4_eu">Europe</label>
-												</div>
-											</div>
-										</div>
-										<div class="col-lg-12">
-											<div class="form-check ps-0 q-box">
-												<div class="q-box__question">
-													<input class="form-check-input question__input" id="q_4_none" name="q_4" type="checkbox" value="none">
-													<label class="form-check-label question__label" for="q_4_none">I did not travelled to any of these countries</label>
-												</div>
-											</div>
+											}
 										</div>
 									</div>
 								</div>
-								<div class="step">
-									<h4>Are you experiencing any of these serious symptoms of COVID-19 below?</h4>
-									<div class="row">
-										<div class="form-check ps-0 q-box">
-											<div class="q-box__question">
-												<input class="form-check-input question__input" id="q_5_breathing" name="q_5_breathing" type="checkbox" value="breathing">
-												<label class="form-check-label question__label" for="q_5_breathing">Difficulty breathing or shortness of breath</label>
-											</div>
-										</div>
-										<div class="form-check ps-0 q-box">
-											<div class="q-box__question">
-												<input class="form-check-input question__input" id="q_5_chest" name="q_5_chest" type="checkbox" value="chest pain">
-												<label class="form-check-label question__label" for="q_5_chest">Chest pain or pressure</label>
-											</div>
-										</div>
-										<div class="form-check ps-0 q-box">
-											<div class="q-box__question">
-												<input class="form-check-input question__input" id="q_5_speech" name="q_5_speech" type="checkbox" value="speech problem">
-												<label class="form-check-label question__label" for="q_5_speech">Loss of speech or movement</label>
-											</div>
-										</div>
-										<div class="form-check ps-0 q-box">
-											<div class="q-box__question">
-												<input class="form-check-input question__input" id="q_5_pale" name="q_5_pale" type="checkbox" value="pale">
-												<label class="form-check-label question__label" for="q_5_pale">Pale, gray or blue-colored skin, lips or nail beds</label>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="step">
+								@* <div class="form-step">
 									<h4>Provide us with your personal information</h4>
 									<div class="mt-1">
 										<label class="form-label">Complete Name:</label>
@@ -479,41 +538,7 @@
 										<label class="form-label">Phone / Mobile Number:</label>
 										<input class="form-control" id="phone" name="phone" type="text">
 									</div>
-									<div class="row mt-2">
-										<div class="col-lg-2 col-md-2 col-3">
-											<label class="form-label">Age:</label>
-											<div class="input-container">
-												<input class="form-control" id="age" name="age" type="text">
-											</div>
-										</div>
-										<div class="col-lg-8">
-											<div id="input-container">
-												<input class="form-check-input" name="gender" type="radio" value="male">
-												<label class="form-check-label radio-lb">Male</label>
-												<input class="form-check-input" name="gender" type="radio" value="female">
-												<label class="form-check-label radio-lb">Female</label>
-												<input checked="" class="form-check-input" name="gender" type="radio" value="undefined">
-												<label class="form-check-label radio-lb">Rather not say</label>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="step">
-									<div class="mt-1">
-										<div class="closing-text">
-											<h4>That's about it! Stay healthy!</h4>
-											<p>We will assess your information and will let you know soon if you need to get tested for COVID-19.</p>
-											<p>Click on the submit button to continue.</p>
-										</div>
-									</div>
-								</div>
-								<div id="success">
-									<div class="mt-5">
-										<h4>Success! We'll get back to you ASAP!</h4>
-										<p>Meanwhile, clean your hands often, use soap and water, or an alcohol-based hand rub, maintain a safe distance from anyone who is coughing or sneezing and always wear a mask when physical distancing is not possible.</p>
-										<a class="back-link" href="">Go back from the beginning ➜</a>
-									</div>
-								</div>
+								</div> *@
 							</div>
 							<div id="q-box__buttons">
 								<button id="prev-btn" type="button" class="d-none">Previous</button>
@@ -722,11 +747,11 @@
 			window.location = '@Url.Action("Member", "Home")?Gender='+$('#Gender option:selected').val()+'&ageStart='+$('#age-start option:selected').val()+'&ageEnd='+$('#age-end option:selected').val();
 		}
 
-		let step = document.getElementsByClassName('step');
+		   let form = document.getElementsByTagName('form')[0];
+		   let step = document.getElementsByClassName('form-step');
 		   let prevBtn = document.getElementById('prev-btn');
 		   let nextBtn = document.getElementById('next-btn');
 		   let submitBtn = document.getElementById('submit-btn');
-		   let form = document.getElementsByTagName('form')[0];
 		   let preloader = document.getElementById('preloader-wrapper');
 		   let bodyElement = document.querySelector('body');
 		   let succcessDiv = document.getElementById('success');
@@ -734,7 +759,7 @@
 		   form.onsubmit = () => { return false }
 
 		   let current_step = 0;
-		   let stepCount = 6
+		   let stepCount = step.length - 1
 		   step[current_step].classList.add('d-block');
 		   if(current_step == 0){
 			  prevBtn.classList.add('d-none');
@@ -764,7 +789,7 @@
 					form.onsubmit = () => { return true }
 				}
 			  }
-			progress((100 / stepCount) * current_step);
+			//progress((100 / stepCount) * current_step);
 			});
 
 
@@ -792,29 +817,106 @@
 				prevBtn.classList.remove('d-inline-block');
 				prevBtn.classList.add('d-none');
 			 }
-			progress((100 / stepCount) * current_step);
+			//progress((100 / stepCount) * current_step);
 		   });
 
 
 		submitBtn.addEventListener('click', () => {
-			preloader.classList.add('d-block');
+			const params = new URLSearchParams();
 
-			const timer = ms => new Promise(res => setTimeout(res, ms));
+			const gender = $('input[name="gender"]:checked').val();
+			if (gender) params.append('gender', gender);
 
-			timer(3000)
-			  .then(() => {
-				   bodyElement.classList.add('loaded');
-			  }).then(() =>{
-				  step[stepCount].classList.remove('d-block');
-				  step[stepCount].classList.add('d-none');
-				  prevBtn.classList.remove('d-inline-block');
-				  prevBtn.classList.add('d-none');
-				  submitBtn.classList.remove('d-inline-block');
-				  submitBtn.classList.add('d-none');
-				  succcessDiv.classList.remove('d-none');
-				  succcessDiv.classList.add('d-block');
-			  })
+			params.append('ageStart', $('select[name="age-start"]').val());
+			params.append('ageEnd', $('select[name="age-end"]').val());
+
+			const groupId = $('input[name="GroupId"]:checked').val();
+			if (groupId) params.append('GroupId', groupId);
+
+			// params.append('full_name', $('#full_name').val());
+			// params.append('address', $('#address').val());
+			// params.append('email', $('#email').val());
+			// params.append('phone', $('#phone').val());
+			window.location.href = '@Url.Action("Member", "Home")?' + params.toString();
+		});
+
+		$(function () {
+
+			$('.customSelectbox').each(function () {
+
+				const $select = $(this);
+				const $wrapper = $('<div class="cusSelBlock"></div>');
+				const $label = $('<div class="selectLabel"></div>');
+				const $list = $('<ul class="options"></ul>');
+
+				// wrap select
+				$select.wrap($wrapper);
+				$select.after($label).after($list);
+
+				const $block = $select.parent('.cusSelBlock');
+
+				// initial label text
+				$label.text($select.find('option:selected').text());
+
+				// create list items
+				$select.find('option').each(function (i) {
+					$('<li>', {
+						text: $(this).text(),
+						tabindex: i,
+						'data-value': $(this).val()
+					}).appendTo($list);
+				});
+
+				// toggle dropdown
+				$label.on('click', function () {
+					$('.cusSelBlock').not($block).removeClass('open');
+					$block.toggleClass('open');
+					$list.find('li').first().focus();
+				});
+
+				// option click
+				$list.on('click', 'li', function () {
+					selectOption($(this));
+				});
+
+				// keyboard navigation
+				$list.on('keydown', 'li', function (e) {
+					const $current = $(this);
+
+					if (e.key === 'ArrowDown') {
+						e.preventDefault();
+						$current.next().focus();
+					}
+
+					if (e.key === 'ArrowUp') {
+						e.preventDefault();
+						$current.prev().focus();
+					}
+
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						selectOption($current);
+					}
+				});
+
+				function selectOption($item) {
+					$label.text($item.text());
+					$select.val($item.data('value')).trigger('change');
+					$list.find('li').removeClass('active');
+					$item.addClass('active');
+					$block.removeClass('open');
+				}
+
+				// close on outside click
+				$(document).on('click', function (e) {
+					if (!$(e.target).closest($block).length) {
+						$block.removeClass('open');
+					}
+				});
+
+			});
 
 		});
+
 	</script>
 }

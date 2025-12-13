@@ -73,7 +73,15 @@ namespace MatchMaking.Controllers
 				}
 			}
 
-			return View();
+
+			List<SelectListItem_Custom> SelectListItems = new List<SelectListItem_Custom>();
+
+			var jainGroups = _context.Using<JainGroup>().GetByCondition(x => x.IsActive == true).ToList()
+				.Select(x => new SelectListItem_Custom(x.Id.ToString(), x.Name, "JainGroup")).ToList();
+
+			if (jainGroups != null) SelectListItems.AddRange(jainGroups);
+
+			return View(SelectListItems);
 		}
 
 		public IActionResult Member(string? Gender = null, int ageStart = 0, int ageEnd = 0, int GroupId = 0, bool isFilter = false)

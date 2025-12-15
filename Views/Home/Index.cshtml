@@ -222,15 +222,15 @@
 
 
 		/* .radio-tile-group {
-																																																			display: flex;
-																																																			flex-wrap: wrap;
-																																																			justify-content: center;
-																																																		} */
+																																																															display: flex;
+																																																															flex-wrap: wrap;
+																																																															justify-content: center;
+																																																														} */
 
 		.radio-tile-group .input-container {
 			position: relative;
 			/* height: 7rem;
-																																																	width: 7rem; */
+																																																													width: 7rem; */
 			margin: 0.5rem;
 		}
 
@@ -270,13 +270,13 @@
 				font-weight: 600;
 				text-transform: uppercase;
 				letter-spacing: 1px;
-				color: #DC3545;
+				color: #DC3545 !important;
 			}
 
 			.radio-tile-group .input-container .radio-button:checked + .radio-tile {
 				background-color: #DC3545;
 				border: 2px solid #DC3545;
-				color: white;
+				color: white !important;
 				transform: scale(1.1, 1.1);
 			}
 
@@ -286,9 +286,15 @@
 					background-color: #DC3545 !important;
 				}
 
-				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label {
-					color: white;
-					background-color: #DC3545;
+				.radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg > g {
+					fill: white !important;
+					background-color: #DC3545 !important;
+				}
+
+				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label p,
+				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label span {
+					color: white !important;
+					background-color: #DC3545 !important;
 				}
 
 		.customSelectbox {
@@ -387,9 +393,10 @@
 									<div class="form-step d-block text-center">
 										<h4 class="mb-0 text-bold">Select Gender </h4>
 										<h6 class="mb-2">Choose the gender for matrimonial profile search</h6>
-										<div class="form-check ps-0 q-box d-flex justify-content-center align-items-center">
-											<div class="radio-tile-group">
-												<div class="input-container">
+										<div class="form-check ps-0 q-box">
+											<div class="radio-tile-group d-flex justify-content-center align-items-center">
+
+												<div class="input-container flex-fill">
 													<input id="M" class="radio-button" type="radio" name="gender" value="M" />
 													<div class="radio-tile">
 														<div class="icon walk-icon">
@@ -413,7 +420,7 @@
 													</div>
 												</div>
 
-												<div class="input-container">
+												<div class="input-container flex-fill">
 													<input id="F" class="radio-button" type="radio" name="gender" value="F" />
 													<div class="radio-tile">
 														<div class="icon bike-icon">

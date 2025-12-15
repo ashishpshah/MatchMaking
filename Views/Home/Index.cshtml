@@ -1,7 +1,7 @@
 ﻿@using MatchMaking.Areas.Admin.Models
 @using MatchMaking.Infra
 
-@model List<SelectListItem_Custom>
+@model (MemberStatsVM Status, List<SelectListItem_Custom> SelectListItems)
 
 @{
 	ViewData["Title"] = "Home Page";
@@ -222,15 +222,15 @@
 
 
 		/* .radio-tile-group {
-																																																															display: flex;
-																																																															flex-wrap: wrap;
-																																																															justify-content: center;
-																																																														} */
+																																																																	display: flex;
+																																																																	flex-wrap: wrap;
+																																																																	justify-content: center;
+																																																																} */
 
 		.radio-tile-group .input-container {
 			position: relative;
 			/* height: 7rem;
-																																																													width: 7rem; */
+																																																															width: 7rem; */
 			margin: 0.5rem;
 		}
 
@@ -286,10 +286,10 @@
 					background-color: #DC3545 !important;
 				}
 
-				.radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg > g {
-					fill: white !important;
-					background-color: #DC3545 !important;
-				}
+					.radio-tile-group .input-container .radio-button:checked + .radio-tile .icon svg > g {
+						fill: white !important;
+						background-color: #DC3545 !important;
+					}
 
 				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label p,
 				.radio-tile-group .input-container .radio-button:checked + .radio-tile .radio-tile-label span {
@@ -495,9 +495,7 @@
 										<div class="row">
 
 											@{
-												var items = Model
-												.OrderBy(x => x.Text == "Other") // "Other" becomes last
-												.ToList();
+												var items = Model.SelectListItems.OrderBy(x => x.Text == "Other").ToList();
 
 												int half = (int)Math.Ceiling(items.Count / 2.0);
 												var leftColumn = items.Take(half).ToList();
@@ -593,7 +591,7 @@
 								<img src="~/assets/images/about/01.png" alt="img">
 							</div>
 							<div class="lab-content">
-								<h2 class="counter">29,991</h2>
+								<h2 class="counter">@Model.Status.TotalMembers</h2>
 								<p>Members in Total</p>
 							</div>
 						</div>
@@ -606,7 +604,7 @@
 								<img src="~/assets/images/about/02.png" alt="img">
 							</div>
 							<div class="lab-content">
-								<h2 class="counter">29,960</h2>
+								<h2 class="counter">@Model.Status.MembersOnline</h2>
 								<p>Members Online</p>
 							</div>
 						</div>
@@ -619,7 +617,7 @@
 								<img src="~/assets/images/about/03.png" alt="img">
 							</div>
 							<div class="lab-content">
-								<h2 class="counter">29,960</h2>
+								<h2 class="counter">@Model.Status.MenOnline</h2>
 								<p>Men Online</p>
 							</div>
 						</div>
@@ -632,7 +630,7 @@
 								<img src="~/assets/images/about/04.png" alt="img">
 							</div>
 							<div class="lab-content">
-								<h2 class="counter">28,960</h2>
+								<h2 class="counter">@Model.Status.WomenOnline</h2>
 								<p>Women Online</p>
 							</div>
 						</div>

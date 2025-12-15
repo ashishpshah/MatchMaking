@@ -81,7 +81,18 @@ namespace MatchMaking.Controllers
 
 			if (jainGroups != null) SelectListItems.AddRange(jainGroups);
 
-			return View(SelectListItems);
+
+			var listProfile = _context.Using<Profile>().GetAll().ToList();
+
+			var status = new MemberStatsVM
+			{
+				TotalMembers = listProfile.Count(),
+				MembersOnline = listProfile.Count(p => p.IsActive),
+				MenOnline = listProfile.Count(p => p.Gender == "M"),
+				WomenOnline = listProfile.Count(p => p.Gender == "F" && p.IsActive)
+			};
+
+			return View((status, SelectListItems));
 		}
 
 		public IActionResult Member(string? Gender = null, int ageStart = 0, int ageEnd = 0, int GroupId = 0, bool isFilter = false)
@@ -623,4 +634,5 @@ namespace MatchMaking.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 	}
+
 }
